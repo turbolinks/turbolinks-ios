@@ -13,7 +13,23 @@
 		1FAAF2211B3C673E004AF265 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FAAF2201B3C673E004AF265 /* Images.xcassets */; };
 		1FAAF2241B3C673E004AF265 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FAAF2221B3C673E004AF265 /* LaunchScreen.xib */; };
 		1FAAF2301B3C673E004AF265 /* turbolinks_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FAAF22F1B3C673E004AF265 /* turbolinks_iosTests.swift */; };
+		1FAAF26B1B3CA511004AF265 /* app.coffee in Resources */ = {isa = PBXBuildFile; fileRef = 1FAAF26A1B3CA511004AF265 /* app.coffee */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		1FAAF2691B3CA474004AF265 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.coffee";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			name = "Compile CoffeeScript";
+			outputFiles = (
+				"$(DERIVED_FILE_DIR)/$(INPUT_FILE_BASE).js",
+			);
+			script = "PATH=$PATH:/usr/local/bin\ncoffee -c -o ${DERIVED_FILE_DIR} ${INPUT_FILE_PATH}";
+		};
+/* End PBXBuildRule section */
 
 /* Begin PBXContainerItemProxy section */
 		1FAAF22A1B3C673E004AF265 /* PBXContainerItemProxy */ = {
@@ -36,6 +52,7 @@
 		1FAAF2291B3C673E004AF265 /* turbolinks-iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "turbolinks-iosTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FAAF22E1B3C673E004AF265 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1FAAF22F1B3C673E004AF265 /* turbolinks_iosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = turbolinks_iosTests.swift; sourceTree = "<group>"; };
+		1FAAF26A1B3CA511004AF265 /* app.coffee */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = app.coffee; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +94,7 @@
 		1FAAF2161B3C673E004AF265 /* turbolinks-ios */ = {
 			isa = PBXGroup;
 			children = (
+				1FAAF26A1B3CA511004AF265 /* app.coffee */,
 				1FAAF2191B3C673E004AF265 /* AppDelegate.swift */,
 				1FAAF21B1B3C673E004AF265 /* WebViewController.swift */,
 				1FAAF21D1B3C673E004AF265 /* Main.storyboard */,
@@ -124,6 +142,7 @@
 				1FAAF2121B3C673E004AF265 /* Resources */,
 			);
 			buildRules = (
+				1FAAF2691B3CA474004AF265 /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -194,6 +213,7 @@
 			files = (
 				1FAAF21F1B3C673E004AF265 /* Main.storyboard in Resources */,
 				1FAAF2241B3C673E004AF265 /* LaunchScreen.xib in Resources */,
+				1FAAF26B1B3CA511004AF265 /* app.coffee in Resources */,
 				1FAAF2211B3C673E004AF265 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
