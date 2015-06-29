@@ -4,6 +4,8 @@ import WebKit
 class WebViewController: UIViewController, WKScriptMessageHandler {
     @IBOutlet var mainView : UIView?
 
+    var URL = NSURL(string: "http://turbolinks.dev/")
+
     lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
@@ -19,20 +21,34 @@ class WebViewController: UIViewController, WKScriptMessageHandler {
         return webView
     }()
 
+    init(URL: NSURL) {
+        super.init(nibName: nil, bundle: nil)
+        self.URL = URL
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+
     override func loadView() {
-        super.loadView()
+        self.view = webView
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        var URL = NSURL(string: "http://turbolinks.dev/")
-        self.webView.loadRequest(NSURLRequest(URL: URL!))
-        self.view = webView
+        self.webView.loadRequest(NSURLRequest(URL: self.URL!))
     }
 
     // MARK: - WKScriptMessageHandler
 
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         println("\(message.name): \(message.body)")
+
+        if let body = message.body as? [String: AnyObject] {
+            if body["name"] as? String == "page:before-change" {
+                let webViewController = WebViewController(URL: NSURL(string: body["data"] as! String)!)
+                self.navigationController?.pushViewController(webViewController, animated: true)
+            }
+        }
     }
 }
