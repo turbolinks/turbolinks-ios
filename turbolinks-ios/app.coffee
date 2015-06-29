@@ -9,6 +9,6 @@
     @messageHandler.postMessage {name, data}
 
 
-document.addEventListener 'DOMContentLoaded', ->
-  for key, event of Turbolinks.EVENTS
-    $(document).on event, (event) -> AppBridge.log(event.type)
+document.addEventListener "page:before-change", (event) ->
+  AppBridge.postNativeMessage "page:before-change", event.data.url
+  event.preventDefault()
