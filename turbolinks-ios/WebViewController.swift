@@ -2,8 +2,6 @@ import UIKit
 import WebKit
 
 class WebViewController: UIViewController, WKScriptMessageHandler {
-    @IBOutlet var mainView : UIView?
-
     var URL = NSURL(string: "http://turbolinks.dev/")
 
     lazy var webView: WKWebView = {

@@ -18,9 +18,6 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Home" id="QOM-WP-f2w"/>
-                    <connections>
-                        <outlet property="mainView" destination="kh9-bI-dsS" id="Ku6-M1-mWS"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
