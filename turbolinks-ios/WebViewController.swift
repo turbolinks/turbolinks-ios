@@ -5,34 +5,46 @@ protocol WebViewControllerNavigationDelegate {
     func pageWillChange(URL: NSURL!)
 }
 
-class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
-    class ScriptHandler: NSObject, WKScriptMessageHandler {
-        static let instance: ScriptHandler = {
-            return ScriptHandler()
-        }()
+class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
+    var delegate: WebViewControllerNavigationDelegate?
 
-        var delegate: WebViewControllerNavigationDelegate?
+    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+        if let body = message.body as? [String: AnyObject] {
+            var name = body["name"] as? String
+            var data = body["data"] as? String
 
-        func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
-            if let body = message.body as? [String: AnyObject] {
-                var name = body["name"] as? String
-                var data = body["data"] as? String
-
-                switch name! {
-                case "page:before-change":
-                    self.delegate?.pageWillChange(NSURL(string: data!))
-                case "log":
-                    println(data)
-                default:
-                    println("Unhandled message: \(name): \(data)")
-                }
+            switch name! {
+            case "page:before-change":
+                self.delegate?.pageWillChange(NSURL(string: data!))
+            case "log":
+                println(data)
+            default:
+                println("Unhandled message: \(name): \(data)")
             }
         }
     }
+}
 
-    var URL = NSURL(string: "http://turbolinks.dev/")
+class WebViewPool {
+    var members = [ WKWebView ]()
+    var currentIndex = 0
 
-    static let sharedWebView: WKWebView = {
+    init(scriptMessageHandler: WKScriptMessageHandler) {
+        self.members.append(createWebView(scriptMessageHandler))
+        self.members.append(createWebView(scriptMessageHandler))
+    }
+
+    func next() -> WKWebView {
+        if currentIndex == members.count - 1 {
+            currentIndex = 0
+        } else {
+            currentIndex += 1
+        }
+
+        return members[currentIndex]
+    }
+
+    private func createWebView(scriptMessageHandler: WKScriptMessageHandler) -> WKWebView {
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
 
@@ -42,13 +54,20 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
 
         let appSource = NSString(contentsOfURL: NSBundle.mainBundle().URLForResource("app", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
         webView.configuration.userContentController.addUserScript(WKUserScript(source: appSource as! String, injectionTime: WKUserScriptInjectionTime.AtDocumentStart, forMainFrameOnly: true))
-        webView.configuration.userContentController.addScriptMessageHandler(ScriptHandler.instance, name: "bridgeMessage")
+        webView.configuration.userContentController.addScriptMessageHandler(scriptMessageHandler, name: "bridgeMessage")
 
         return webView
-    }()
+    }
+}
+
+class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
+    var URL = NSURL(string: "http://turbolinks.dev/")
+
+    static let scriptMessageHandler = ScriptMessageHandler()
+    static let webViewPool = WebViewPool(scriptMessageHandler: scriptMessageHandler)
 
     lazy var webView: WKWebView = {
-        return WebViewController.sharedWebView
+        return WebViewController.webViewPool.next()
     }()
 
     override func viewDidLoad() {
@@ -59,16 +78,17 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        prepareScriptHandler()
+        prepareScriptMessageHandler()
         insertWebView()
         loadRequest()
     }
 
-    private func prepareScriptHandler() {
-        ScriptHandler.instance.delegate = self
+    private func prepareScriptMessageHandler() {
+        WebViewController.scriptMessageHandler.delegate = self
     }
 
     private func insertWebView() {
+        self.webView = WebViewController.webViewPool.next()
         view.addSubview(webView)
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
