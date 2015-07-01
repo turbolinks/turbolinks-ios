@@ -66,7 +66,7 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
         super.viewWillAppear(animated)
         prepareScriptHandler()
         insertWebView()
-        loadRequest()
+        performInitialLoad()
     }
 
     private func prepareScriptHandler() {
@@ -79,7 +79,7 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
     }
 
-    private func loadRequest() {
+    private func performInitialLoad() {
         if webView.URL == nil {
             let request = NSURLRequest(URL: URL)
             webView.loadRequest(request)
