@@ -2,8 +2,8 @@ import UIKit
 import WebKit
 
 protocol WebViewControllerNavigationDelegate {
-    func visitLocation(URL: NSURL!)
-    func locationDidChange(URL: NSURL!)
+    func visitLocation(URL: NSURL)
+    func locationDidChange(URL: NSURL)
 }
 
 class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
@@ -15,23 +15,26 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
         var delegate: WebViewControllerNavigationDelegate?
 
         func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
-            if let body = message.body as? [String: AnyObject] {
-                var name = body["name"] as? String
-                var data = body["data"] as? String
-
-                switch name! {
-                case "visitLocation":
-                    self.delegate?.visitLocation(NSURL(string: data!))
-                case "locationChanged":
-                    self.delegate?.locationDidChange(NSURL(string: data!))
-                default:
-                    println("Unhandled message: \(name): \(data)")
-                }
+            if let body = message.body as? [String: AnyObject],
+                name = body["name"] as? String,
+                data = body["data"] as? String {
+                    switch name {
+                    case "visitLocation":
+                        if let location = NSURL(string: data) {
+                            self.delegate?.visitLocation(location)
+                        }
+                    case "locationChanged":
+                        if let location = NSURL(string: data) {
+                            self.delegate?.locationDidChange(location)
+                        }
+                    default:
+                        println("Unhandled message: \(name): \(data)")
+                    }
             }
         }
     }
 
-    var URL = NSURL(string: "http://turbolinks.dev/")
+    var URL = NSURL(string: "http://turbolinks.dev/")!
     var activeSessionTask: NSURLSessionTask?
 
     static let sharedWebView: WKWebView = {
@@ -78,7 +81,7 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
 
     private func loadRequest() {
         if webView.URL == nil {
-            let request = NSURLRequest(URL: URL!)
+            let request = NSURLRequest(URL: URL)
             webView.loadRequest(request)
         }
     }
@@ -113,20 +116,20 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
     
     // MARK - WebViewControllerNavigationDelegate
 
-    func visitLocation(URL: NSURL!) {
-        let request = NSURLRequest(URL: URL)
+    func visitLocation(location: NSURL) {
+        let request = NSURLRequest(URL: location)
         loadRequest(request)
     }
     
-    func locationDidChange(URL: NSURL!) {
+    func locationDidChange(location: NSURL) {
         
     }
 }
 
 func JSONStringify(object: AnyObject) -> NSString {
     if let data = NSJSONSerialization.dataWithJSONObject([object], options: nil, error: nil),
-           string = NSString(data: data, encoding: NSUTF8StringEncoding) {
-        return string.substringWithRange(NSRange(location: 1, length: string.length - 2))
+        string = NSString(data: data, encoding: NSUTF8StringEncoding) {
+            return string.substringWithRange(NSRange(location: 1, length: string.length - 2))
     } else {
         return "null"
     }
