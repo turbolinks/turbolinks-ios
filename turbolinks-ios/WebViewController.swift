@@ -2,7 +2,8 @@ import UIKit
 import WebKit
 
 protocol WebViewControllerNavigationDelegate {
-    func pageWillChange(URL: NSURL!)
+    func visitLocation(URL: NSURL!)
+    func locationDidChange(URL: NSURL!)
 }
 
 class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
@@ -19,10 +20,10 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
                 var data = body["data"] as? String
 
                 switch name! {
-                case "page:before-change":
-                    self.delegate?.pageWillChange(NSURL(string: data!))
-                case "log":
-                    println(data)
+                case "visitLocation":
+                    self.delegate?.visitLocation(NSURL(string: data!))
+                case "locationChanged":
+                    self.delegate?.locationDidChange(NSURL(string: data!))
                 default:
                     println("Unhandled message: \(name): \(data)")
                 }
@@ -31,6 +32,7 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
     }
 
     var URL = NSURL(string: "http://turbolinks.dev/")
+    var activeSessionTask: NSURLSessionTask?
 
     static let sharedWebView: WKWebView = {
         let configuration = WKWebViewConfiguration()
@@ -41,8 +43,8 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
         webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
 
         let appSource = NSString(contentsOfURL: NSBundle.mainBundle().URLForResource("app", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
-        webView.configuration.userContentController.addUserScript(WKUserScript(source: appSource as! String, injectionTime: WKUserScriptInjectionTime.AtDocumentStart, forMainFrameOnly: true))
-        webView.configuration.userContentController.addScriptMessageHandler(ScriptHandler.instance, name: "bridgeMessage")
+        webView.configuration.userContentController.addUserScript(WKUserScript(source: appSource as! String, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true))
+        webView.configuration.userContentController.addScriptMessageHandler(ScriptHandler.instance, name: "turbolinks")
 
         return webView
     }()
@@ -76,21 +78,56 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
 
     private func loadRequest() {
         if webView.URL == nil {
-            webView.loadRequest(NSURLRequest(URL: URL!))
-        } else {
-            loadRequestWithTurbolinks()
+            let request = NSURLRequest(URL: URL!)
+            webView.loadRequest(request)
         }
     }
 
-    private func loadRequestWithTurbolinks() {
-        webView.evaluateJavaScript("Turbolinks.visit('\(URL!.absoluteString!)')", completionHandler: nil)
+    private func loadRequest(request: NSURLRequest) {
+        if let sessionTask = activeSessionTask {
+            sessionTask.cancel()
+        }
+       
+        let session = NSURLSession.sharedSession()
+        activeSessionTask = session.dataTaskWithRequest(request, completionHandler: { (data: NSData!, response: NSURLResponse!, error: NSError!) -> Void in
+            if let httpResponse = response as? NSHTTPURLResponse {
+                if httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 {
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        self.loadResponse(NSString(data: data, encoding: NSUTF8StringEncoding)!)
+                    })
+                }
+            }
+        })
+
+        activeSessionTask?.resume()
     }
 
-    // MARK - WebViewControllerNavigationDelegate
-
-    func pageWillChange(URL: NSURL!) {
+    private func loadResponse(response: NSString) {
         let webViewController = WebViewController()
         webViewController.URL = URL
         navigationController?.pushViewController(webViewController, animated: true)
+
+        let serializedResponse = JSONStringify(response)
+        webView.evaluateJavaScript("Turbolinks.controller.loadResponse(\(serializedResponse))", completionHandler: nil)
+    }
+    
+    // MARK - WebViewControllerNavigationDelegate
+
+    func visitLocation(URL: NSURL!) {
+        let request = NSURLRequest(URL: URL)
+        loadRequest(request)
+    }
+    
+    func locationDidChange(URL: NSURL!) {
+        
+    }
+}
+
+func JSONStringify(object: AnyObject) -> NSString {
+    if let data = NSJSONSerialization.dataWithJSONObject([object], options: nil, error: nil),
+           string = NSString(data: data, encoding: NSUTF8StringEncoding) {
+        return string.substringWithRange(NSRange(location: 1, length: string.length - 2))
+    } else {
+        return "null"
     }
 }

@@ -1,14 +1,17 @@
-@AppBridge =
-  messageHandler:
-    window.webkit.messageHandlers.bridgeMessage
+class Turbolinks.NativeAdapter
+  constructor: (@delegate) ->
+    @messageHandler = webkit.messageHandlers.turbolinks
 
-  log: (message) ->
-    @postNativeMessage "log", message
+  visitLocation: (url) ->
+    @postMessage("visitLocation", url)
 
-  postNativeMessage: (name, data) ->
-    @messageHandler.postMessage {name, data}
+  locationChanged: (url) ->
+    @postMessage("locationChanged", url)
+
+  # Private
+
+  postMessage: (name, data) ->
+    @messageHandler.postMessage({name, data})
 
 
-document.addEventListener "page:before-change", (event) ->
-  AppBridge.postNativeMessage "page:before-change", event.data.url
-  event.preventDefault()
+Turbolinks.controller.adapter = new Turbolinks.NativeAdapter Turbolinks.controller
