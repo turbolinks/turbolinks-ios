@@ -21,11 +21,11 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
                     switch name {
                     case "visitLocation":
                         if let location = NSURL(string: data) {
-                            self.delegate?.visitLocation(location)
+                            delegate?.visitLocation(location)
                         }
                     case "locationChanged":
                         if let location = NSURL(string: data) {
-                            self.delegate?.locationDidChange(location)
+                            delegate?.locationDidChange(location)
                         }
                     default:
                         println("Unhandled message: \(name): \(data)")
