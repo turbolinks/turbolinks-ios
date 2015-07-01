@@ -93,14 +93,13 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
        
         let session = NSURLSession.sharedSession()
         activeSessionTask = session.dataTaskWithRequest(request) { (data, response, error) in
-            if let httpResponse = response as? NSHTTPURLResponse {
-                if httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 {
+            if let httpResponse = response as? NSHTTPURLResponse
+                where httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 {
                     dispatch_async(dispatch_get_main_queue()) {
                         if let response = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
                             self.loadResponse(response)
                         }
                     }
-                }
             }
         }
 
