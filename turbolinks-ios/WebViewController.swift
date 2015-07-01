@@ -64,11 +64,23 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
     var URL = NSURL(string: "http://turbolinks.dev/")
 
     static let scriptMessageHandler = ScriptMessageHandler()
-    static let webViewPool = WebViewPool(scriptMessageHandler: scriptMessageHandler)
 
-    lazy var webView: WKWebView = {
-        return WebViewController.webViewPool.next()
+    static let sharedWebView: WKWebView = {
+        let configuration = WKWebViewConfiguration()
+        configuration.userContentController = WKUserContentController()
+
+        let webView = WKWebView(frame: CGRectZero, configuration: configuration)
+        webView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
+
+        let appSource = NSString(contentsOfURL: NSBundle.mainBundle().URLForResource("app", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
+        webView.configuration.userContentController.addUserScript(WKUserScript(source: appSource as! String, injectionTime: WKUserScriptInjectionTime.AtDocumentStart, forMainFrameOnly: true))
+        webView.configuration.userContentController.addScriptMessageHandler(scriptMessageHandler, name: "bridgeMessage")
+
+        return webView
     }()
+
+    lazy var webView: WKWebView = WebViewController.sharedWebView
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,7 +100,6 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
     }
 
     private func insertWebView() {
-        self.webView = WebViewController.webViewPool.next()
         view.addSubview(webView)
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
