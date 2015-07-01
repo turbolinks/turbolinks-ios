@@ -96,7 +96,9 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
             if let httpResponse = response as? NSHTTPURLResponse {
                 if httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        self.loadResponse(NSString(data: data, encoding: NSUTF8StringEncoding)!)
+                        if let response = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
+                            self.loadResponse(response)
+                        }
                     })
                 }
             }
@@ -105,7 +107,7 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
         activeSessionTask?.resume()
     }
 
-    private func loadResponse(response: NSString) {
+    private func loadResponse(response: String) {
         let webViewController = WebViewController()
         webViewController.URL = URL
         navigationController?.pushViewController(webViewController, animated: true)
@@ -126,10 +128,10 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
     }
 }
 
-func JSONStringify(object: AnyObject) -> NSString {
+func JSONStringify(object: AnyObject) -> String {
     if let data = NSJSONSerialization.dataWithJSONObject([object], options: nil, error: nil),
-        string = NSString(data: data, encoding: NSUTF8StringEncoding) {
-            return string.substringWithRange(NSRange(location: 1, length: string.length - 2))
+        string = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
+            return string[Range(start: string.startIndex.successor(), end: string.endIndex.predecessor())]
     } else {
         return "null"
     }
