@@ -25,47 +25,14 @@ class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 }
 
-class WebViewPool {
-    var members = [ WKWebView ]()
-    var currentIndex = 0
-
-    init(scriptMessageHandler: WKScriptMessageHandler) {
-        self.members.append(createWebView(scriptMessageHandler))
-        self.members.append(createWebView(scriptMessageHandler))
-    }
-
-    func next() -> WKWebView {
-        if currentIndex == members.count - 1 {
-            currentIndex = 0
-        } else {
-            currentIndex += 1
-        }
-
-        return members[currentIndex]
-    }
-
-    private func createWebView(scriptMessageHandler: WKScriptMessageHandler) -> WKWebView {
-        let configuration = WKWebViewConfiguration()
-        configuration.userContentController = WKUserContentController()
-
-        let webView = WKWebView(frame: CGRectZero, configuration: configuration)
-        webView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
-
-        let appSource = NSString(contentsOfURL: NSBundle.mainBundle().URLForResource("app", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
-        webView.configuration.userContentController.addUserScript(WKUserScript(source: appSource as! String, injectionTime: WKUserScriptInjectionTime.AtDocumentStart, forMainFrameOnly: true))
-        webView.configuration.userContentController.addScriptMessageHandler(scriptMessageHandler, name: "bridgeMessage")
-
-        return webView
-    }
-}
-
 class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
-    var URL = NSURL(string: "http://turbolinks.dev/")
-
     static let scriptMessageHandler = ScriptMessageHandler()
+    static let sharedWebView = WebViewController.createWebView(scriptMessageHandler)
 
-    static let sharedWebView: WKWebView = {
+    var URL = NSURL(string: "http://turbolinks.dev/")
+    let webView = WebViewController.sharedWebView
+
+    class func createWebView(scriptMessageHandler: WKScriptMessageHandler) -> WKWebView {
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
 
@@ -78,9 +45,7 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
         webView.configuration.userContentController.addScriptMessageHandler(scriptMessageHandler, name: "bridgeMessage")
 
         return webView
-    }()
-
-    lazy var webView: WKWebView = WebViewController.sharedWebView
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
