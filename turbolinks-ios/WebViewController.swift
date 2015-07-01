@@ -6,38 +6,38 @@ protocol WebViewControllerNavigationDelegate {
     func locationDidChange(URL: NSURL)
 }
 
-class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
-    class ScriptHandler: NSObject, WKScriptMessageHandler {
-        static let instance: ScriptHandler = {
-            return ScriptHandler()
-        }()
-
-        var delegate: WebViewControllerNavigationDelegate?
-
-        func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
-            if let body = message.body as? [String: AnyObject],
-                name = body["name"] as? String,
-                data = body["data"] as? String {
-                    switch name {
-                    case "visitLocation":
-                        if let location = NSURL(string: data) {
-                            delegate?.visitLocation(location)
-                        }
-                    case "locationChanged":
-                        if let location = NSURL(string: data) {
-                            delegate?.locationDidChange(location)
-                        }
-                    default:
-                        println("Unhandled message: \(name): \(data)")
+class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
+    var delegate: WebViewControllerNavigationDelegate?
+    
+    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+        if let body = message.body as? [String: AnyObject],
+            name = body["name"] as? String,
+            data = body["data"] as? String {
+                switch name {
+                case "visitLocation":
+                    if let location = NSURL(string: data) {
+                        delegate?.visitLocation(location)
                     }
-            }
+                case "locationChanged":
+                    if let location = NSURL(string: data) {
+                        delegate?.locationDidChange(location)
+                    }
+                default:
+                    println("Unhandled message: \(name): \(data)")
+                }
         }
     }
+}
+
+class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
+    static let scriptMessageHandler = ScriptMessageHandler()
+    static let sharedWebView = WebViewController.createWebView(scriptMessageHandler)
 
     var URL = NSURL(string: "http://turbolinks.dev/")!
     var activeSessionTask: NSURLSessionTask?
+    let webView = WebViewController.sharedWebView
 
-    static let sharedWebView: WKWebView = {
+    class func createWebView(scriptMessageHandler: WKScriptMessageHandler) -> WKWebView {
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
 
@@ -47,14 +47,10 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
 
         let appSource = NSString(contentsOfURL: NSBundle.mainBundle().URLForResource("app", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
         webView.configuration.userContentController.addUserScript(WKUserScript(source: appSource as! String, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true))
-        webView.configuration.userContentController.addScriptMessageHandler(ScriptHandler.instance, name: "turbolinks")
+        webView.configuration.userContentController.addScriptMessageHandler(scriptMessageHandler, name: "turbolinks")
 
         return webView
-    }()
-
-    lazy var webView: WKWebView = {
-        return WebViewController.sharedWebView
-    }()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,13 +60,13 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        prepareScriptHandler()
+        prepareScriptMessageHandler()
         insertWebView()
         performInitialLoad()
     }
 
-    private func prepareScriptHandler() {
-        ScriptHandler.instance.delegate = self
+    private func prepareScriptMessageHandler() {
+        WebViewController.scriptMessageHandler.delegate = self
     }
 
     private func insertWebView() {
