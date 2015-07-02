@@ -81,6 +81,7 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
         if webView.URL == nil {
             webView.loadRequest(request)
         } else {
+            navigateToLocation(URL)
             loadRequest(request)
         }
     }
@@ -108,6 +109,11 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
     private func loadResponse(response: String) {
         let serializedResponse = JSONStringify(response)
         webView.evaluateJavaScript("Turbolinks.controller.loadResponse(\(serializedResponse))", completionHandler: nil)
+    }
+    
+    private func navigateToLocation(location: NSURL) {
+        let serializedURL = JSONStringify("\(location)")
+        webView.evaluateJavaScript("Turbolinks.controller.history.push(\(serializedURL))", completionHandler: nil)
     }
     
     // MARK - WebViewControllerNavigationDelegate
