@@ -33,7 +33,7 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
     static let scriptMessageHandler = ScriptMessageHandler()
     static let sharedWebView = WebViewController.createWebView(scriptMessageHandler)
 
-    var URL = NSURL(string: "http://turbolinks.dev/")!
+    var URL = NSURL(string: "http://bc3.dev/195539477/")!
     var activeSessionTask: NSURLSessionTask?
     let webView = WebViewController.sharedWebView
 
