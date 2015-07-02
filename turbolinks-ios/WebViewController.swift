@@ -81,6 +81,7 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
         if webView.URL == nil {
             webView.loadRequest(request)
         } else {
+            // This isn't the right time to call navigateToLocation. We should wait to call it until we know it's the final destination, on viewDidAppear. We should also make sure to only call loadResponse on or after viewDidAppear.
             navigateToLocation(URL)
             loadRequest(request)
         }
