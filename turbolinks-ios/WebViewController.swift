@@ -1,13 +1,13 @@
 import UIKit
 import WebKit
 
-protocol WebViewControllerNavigationDelegate {
+protocol WebViewControllerNavigationDelegate: class {
     func visitLocation(URL: NSURL)
     func locationDidChange(URL: NSURL)
 }
 
 class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
-    var delegate: WebViewControllerNavigationDelegate?
+    weak var delegate: WebViewControllerNavigationDelegate?
     
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         if let body = message.body as? [String: AnyObject],
@@ -62,7 +62,7 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
         super.viewWillAppear(animated)
         prepareScriptMessageHandler()
         insertWebView()
-        performInitialLoad()
+        performRequest()
     }
 
     private func prepareScriptMessageHandler() {
@@ -75,10 +75,13 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
     }
 
-    private func performInitialLoad() {
+    private func performRequest() {
+        let request = NSURLRequest(URL: URL)
+
         if webView.URL == nil {
-            let request = NSURLRequest(URL: URL)
             webView.loadRequest(request)
+        } else {
+            loadRequest(request)
         }
     }
 
@@ -103,10 +106,6 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
     }
 
     private func loadResponse(response: String) {
-        let webViewController = WebViewController()
-        webViewController.URL = URL
-        navigationController?.pushViewController(webViewController, animated: true)
-
         let serializedResponse = JSONStringify(response)
         webView.evaluateJavaScript("Turbolinks.controller.loadResponse(\(serializedResponse))", completionHandler: nil)
     }
@@ -114,8 +113,9 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
     // MARK - WebViewControllerNavigationDelegate
 
     func visitLocation(location: NSURL) {
-        let request = NSURLRequest(URL: location)
-        loadRequest(request)
+        let webViewController = WebViewController()
+        webViewController.URL = location
+        navigationController?.pushViewController(webViewController, animated: true)
     }
     
     func locationDidChange(location: NSURL) {
