@@ -29,13 +29,20 @@ class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
     }
 }
 
-class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
+class WebViewController: UIViewController, WKNavigationDelegate, WebViewControllerNavigationDelegate {
     static let scriptMessageHandler = ScriptMessageHandler()
     static let sharedWebView = WebViewController.createWebView(scriptMessageHandler)
 
     var URL = NSURL(string: "http://bc3.dev/195539477/")!
     var activeSessionTask: NSURLSessionTask?
     let webView = WebViewController.sharedWebView
+
+    lazy var loadingIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+        indicator.setTranslatesAutoresizingMaskIntoConstraints(false)
+        indicator.color = UIColor.grayColor()
+        return indicator
+     }()
 
     class func createWebView(scriptMessageHandler: WKScriptMessageHandler) -> WKWebView {
         let configuration = WKWebViewConfiguration()
@@ -54,18 +61,25 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         edgesForExtendedLayout = .None
         automaticallyAdjustsScrollViewInsets = false
+
+        view.backgroundColor = UIColor.whiteColor()
+        webView.backgroundColor = view.backgroundColor
+        webView.scrollView.backgroundColor = view.backgroundColor
     }
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        prepareScriptMessageHandler()
+        configureWebView()
         insertWebView()
+        showLoadingIndicator()
         performRequest()
     }
 
-    private func prepareScriptMessageHandler() {
+    private func configureWebView() {
+        webView.navigationDelegate = self
         WebViewController.scriptMessageHandler.delegate = self
     }
 
@@ -91,7 +105,7 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
         if let sessionTask = activeSessionTask {
             sessionTask.cancel()
         }
-       
+
         let session = NSURLSession.sharedSession()
         activeSessionTask = session.dataTaskWithRequest(request) { (data, response, error) in
             if let httpResponse = response as? NSHTTPURLResponse
@@ -110,6 +124,10 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
     private func loadResponse(response: String) {
         let serializedResponse = JSONStringify(response)
         webView.evaluateJavaScript("Turbolinks.controller.loadResponse(\(serializedResponse))", completionHandler: nil)
+
+        // FIXME: Move this to a more appropriate time. Since JavaScript is processed async,
+        // this may not be when the response is actually loaded.
+        responseDidLoad()
     }
     
     private func navigateToLocation(location: NSURL) {
@@ -117,7 +135,38 @@ class WebViewController: UIViewController, WebViewControllerNavigationDelegate {
         webView.evaluateJavaScript("Turbolinks.controller.history.push(\(serializedURL))", completionHandler: nil)
     }
     
-    // MARK - WebViewControllerNavigationDelegate
+    private func responseDidLoad() {
+        hideLoadingIndicator()
+    }
+
+    // MARK: Loading Indicator
+
+    private func showLoadingIndicator() {
+        view.addSubview(loadingIndicator)
+        view.addConstraint(NSLayoutConstraint(item: loadingIndicator, attribute: .CenterX, relatedBy: .Equal, toItem: view, attribute: .CenterX, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: loadingIndicator, attribute: .CenterY, relatedBy: .Equal, toItem: view, attribute: .CenterY, multiplier: 1, constant: 0))
+
+        webView.alpha = 0
+        loadingIndicator.startAnimating()
+    }
+
+    private func hideLoadingIndicator() {
+        UIView.animateWithDuration(0.2, animations: { () -> Void in
+            self.loadingIndicator.alpha = 0
+            self.webView.alpha = 1
+        }, completion: { (_) -> Void in
+            self.loadingIndicator.removeFromSuperview()
+            self.loadingIndicator.alpha = 1
+        })
+    }
+
+    // MARK: WKNavigationDelegate
+
+    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+        responseDidLoad()
+    }
+
+    // MARK: WebViewControllerNavigationDelegate
 
     func visitLocation(location: NSURL) {
         let webViewController = WebViewController()
