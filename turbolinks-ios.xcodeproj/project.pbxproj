@@ -14,6 +14,8 @@
 		1FAAF2241B3C673E004AF265 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FAAF2221B3C673E004AF265 /* LaunchScreen.xib */; };
 		1FAAF2301B3C673E004AF265 /* turbolinks_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FAAF22F1B3C673E004AF265 /* turbolinks_iosTests.swift */; };
 		1FAAF26B1B3CA511004AF265 /* app.coffee in Resources */ = {isa = PBXBuildFile; fileRef = 1FAAF26A1B3CA511004AF265 /* app.coffee */; };
+		1FBD8F9A1B4AE293001C0417 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBD8F991B4AE293001C0417 /* NavigationController.swift */; };
+		1FBD8F9B1B4AE293001C0417 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBD8F991B4AE293001C0417 /* NavigationController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -53,6 +55,7 @@
 		1FAAF22E1B3C673E004AF265 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1FAAF22F1B3C673E004AF265 /* turbolinks_iosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = turbolinks_iosTests.swift; sourceTree = "<group>"; };
 		1FAAF26A1B3CA511004AF265 /* app.coffee */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = app.coffee; sourceTree = "<group>"; };
+		1FBD8F991B4AE293001C0417 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +99,7 @@
 			children = (
 				1FAAF26A1B3CA511004AF265 /* app.coffee */,
 				1FAAF2191B3C673E004AF265 /* AppDelegate.swift */,
+				1FBD8F991B4AE293001C0417 /* NavigationController.swift */,
 				1FAAF21B1B3C673E004AF265 /* WebViewController.swift */,
 				1FAAF21D1B3C673E004AF265 /* Main.storyboard */,
 				1FAAF2201B3C673E004AF265 /* Images.xcassets */,
@@ -233,6 +237,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1FAAF21C1B3C673E004AF265 /* WebViewController.swift in Sources */,
+				1FBD8F9A1B4AE293001C0417 /* NavigationController.swift in Sources */,
 				1FAAF21A1B3C673E004AF265 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -242,6 +247,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1FAAF2301B3C673E004AF265 /* turbolinks_iosTests.swift in Sources */,
+				1FBD8F9B1B4AE293001C0417 /* NavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -26,7 +26,7 @@
         <!--Navigation Controller-->
         <scene sceneID="NAh-KW-i93">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="dd5-XL-rsj" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="dd5-XL-rsj" customClass="NavigationController" customModule="turbolinks_ios" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="mKw-l6-bFw">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
