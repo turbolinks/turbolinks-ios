@@ -15,7 +15,11 @@
 		1FAAF2301B3C673E004AF265 /* turbolinks_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FAAF22F1B3C673E004AF265 /* turbolinks_iosTests.swift */; };
 		1FAAF26B1B3CA511004AF265 /* app.coffee in Resources */ = {isa = PBXBuildFile; fileRef = 1FAAF26A1B3CA511004AF265 /* app.coffee */; };
 		1FBD8F9A1B4AE293001C0417 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBD8F991B4AE293001C0417 /* NavigationController.swift */; };
-		1FBD8F9B1B4AE293001C0417 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBD8F991B4AE293001C0417 /* NavigationController.swift */; };
+		1FBD8F9C1B4AE9CE001C0417 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBD8F991B4AE293001C0417 /* NavigationController.swift */; };
+		1FBD8F9D1B4AE9D1001C0417 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FAAF21B1B3C673E004AF265 /* WebViewController.swift */; };
+		1FBD8F9E1B4AE9D5001C0417 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FAAF2191B3C673E004AF265 /* AppDelegate.swift */; };
+		1FBD8F9F1B4AE9DF001C0417 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1FAAF21D1B3C673E004AF265 /* Main.storyboard */; };
+		1FBD8FA01B4AE9E5001C0417 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FAAF2221B3C673E004AF265 /* LaunchScreen.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -226,6 +230,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1FBD8FA01B4AE9E5001C0417 /* LaunchScreen.xib in Resources */,
+				1FBD8F9F1B4AE9DF001C0417 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -246,8 +252,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1FBD8F9E1B4AE9D5001C0417 /* AppDelegate.swift in Sources */,
 				1FAAF2301B3C673E004AF265 /* turbolinks_iosTests.swift in Sources */,
-				1FBD8F9B1B4AE293001C0417 /* NavigationController.swift in Sources */,
+				1FBD8F9D1B4AE9D1001C0417 /* WebViewController.swift in Sources */,
+				1FBD8F9C1B4AE9CE001C0417 /* NavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
