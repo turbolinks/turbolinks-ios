@@ -1,11 +1,22 @@
 import UIKit
+import WebKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, SessionDelegate {
 
     var window: UIWindow?
+    var session: Session?
+
+    // MARK: UIApplicationDelegate
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        if let navigationController = window?.rootViewController as? UINavigationController {
+            self.session = Session()
+            session!.navigationController = navigationController
+            session!.delegate = self
+            session!.visit(NSURL(string: "http://bc3.dev/195539477/")!)
+        }
+
         return true
     }
 
@@ -29,5 +40,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+
+    // MARK: SessionDelegate
+
+    func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: Session) {
+
+    }
+
+    func visitableForSession(session: Session, location: NSURL) -> Visitable {
+        let visitable = WebViewController()
+        visitable.location = location
+        visitable.visitableDelegate = session
+        return visitable
     }
 }
