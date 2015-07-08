@@ -31,6 +31,22 @@ class WebViewController: UIViewController, Visitable {
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        visitableDelegate?.visitableWebViewWillAppear(self)
+    }
+
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        visitableDelegate?.visitableWebViewWillDisappear(self)
+    }
+
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        visitableDelegate?.visitableWebViewDidDisappear(self)
+    }
+
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        visitableDelegate?.visitableWebViewDidAppear(self)
     }
 
     // MARK: Web View
@@ -80,14 +96,5 @@ class WebViewController: UIViewController, Visitable {
     }
 
     func hideScreenshot() {
-    }
-}
-
-func JSONStringify(object: AnyObject) -> String {
-    if let data = NSJSONSerialization.dataWithJSONObject([object], options: nil, error: nil),
-        string = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
-            return string[Range(start: string.startIndex.successor(), end: string.endIndex.predecessor())]
-    } else {
-        return "null"
     }
 }

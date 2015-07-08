@@ -3,7 +3,7 @@ class Turbolinks.NativeAdapter
     @messageHandler = webkit.messageHandlers.turbolinks
 
   visitLocation: (url) ->
-    @postMessage("visitLocation", url)
+    @postMessage("visit", url)
 
   locationChanged: (url) ->
     @postMessage("locationChanged", url)
