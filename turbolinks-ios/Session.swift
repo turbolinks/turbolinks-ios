@@ -34,6 +34,7 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
     var location: NSURL?
     var activeSessionTask: NSURLSessionTask?
     var visiting: Bool = false
+    var initialized: Bool = false
     var activeVisitable: Visitable?
 
     lazy var webView: WKWebView = {
@@ -54,6 +55,12 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
         return webView
     }()
 
+    // MARK: WKNavigationDelegate
+    
+    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+        self.initialized = true
+    }
+   
     // MARK: WKScriptMessageHandler
 
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
