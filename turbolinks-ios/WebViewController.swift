@@ -8,13 +8,6 @@ class WebViewController: UIViewController, Visitable {
     var viewController: UIViewController { return self }
     var hasScreenshot: Bool { return false }
 
-    lazy var loadingIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
-        indicator.setTranslatesAutoresizingMaskIntoConstraints(false)
-        indicator.color = UIColor.grayColor()
-        return indicator
-    }()
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -22,6 +15,8 @@ class WebViewController: UIViewController, Visitable {
         automaticallyAdjustsScrollViewInsets = false
 
         view.backgroundColor = UIColor.whiteColor()
+        
+        insertActivityIndicator()
     }
 
     override func viewWillDisappear(animated: Bool) {
@@ -51,37 +46,37 @@ class WebViewController: UIViewController, Visitable {
         view.addSubview(webView)
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
+        view.sendSubviewToBack(webView)
     }
 
     func deactivateWebView() {
         webView = nil
     }
 
-    // MARK: Loading Indicator
+    // MARK: Activity Indicator
 
-    func showLoadingIndicator() {
-        if let webView = self.webView {
-            view.addSubview(loadingIndicator)
-            view.addConstraint(NSLayoutConstraint(item: loadingIndicator, attribute: .CenterX, relatedBy: .Equal, toItem: view, attribute: .CenterX, multiplier: 1, constant: 0))
-            view.addConstraint(NSLayoutConstraint(item: loadingIndicator, attribute: .CenterY, relatedBy: .Equal, toItem: view, attribute: .CenterY, multiplier: 1, constant: 0))
-            
-            webView.alpha = 0
-            loadingIndicator.startAnimating()
-        }
+    lazy var activityIndicator: UIActivityIndicatorView = {
+        let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
+        activityIndicator.setTranslatesAutoresizingMaskIntoConstraints(false)
+        activityIndicator.color = UIColor.grayColor()
+        return activityIndicator
+    }()
+    
+    func showActivityIndicator() {
+        activityIndicator.startAnimating()
+        view.bringSubviewToFront(activityIndicator)
     }
 
-    func hideLoadingIndicator() {
-        if let webView = self.webView {
-            UIView.animateWithDuration(0.2, animations: { () -> Void in
-                self.loadingIndicator.alpha = 0
-                webView.alpha = 1
-            }, completion: { (_) -> Void in
-                self.loadingIndicator.removeFromSuperview()
-                self.loadingIndicator.alpha = 1
-            })
-        }
+    func hideActivityIndicator() {
+        activityIndicator.stopAnimating()
     }
 
+    private func insertActivityIndicator() {
+        view.addSubview(activityIndicator)
+        view.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterX, relatedBy: .Equal, toItem: view, attribute: .CenterX, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterY, relatedBy: .Equal, toItem: view, attribute: .CenterY, multiplier: 1, constant: 0))
+    }
+   
     // MARK: Screenshots
 
     func updateScreenshot() {

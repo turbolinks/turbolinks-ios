@@ -16,8 +16,8 @@ protocol Visitable: class {
 
     func activateWebView(webView: WKWebView)
     func deactivateWebView()
-    func showLoadingIndicator()
-    func hideLoadingIndicator()
+    func showActivityIndicator()
+    func hideActivityIndicator()
     func updateScreenshot()
     func showScreenshot()
     func hideScreenshot()
@@ -64,6 +64,7 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         self.initialized = true
         didNavigate()
+        activeVisitable?.hideActivityIndicator()
     }
    
     // MARK: WKScriptMessageHandler
@@ -133,6 +134,8 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
                 willNavigateBackwardToVisitable(visitable)
             }
         }
+
+        visitable.showActivityIndicator()
     }
 
     func visitableWebViewDidAppear(visitable: Visitable) {
@@ -188,6 +191,7 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
         let responseJSON = JSONStringify(response)
         webView.evaluateJavaScript("Turbolinks.controller.loadResponse(\(responseJSON))", completionHandler: nil)
         println("loaded response after successful navigation")
+        activeVisitable?.hideActivityIndicator()
     }
     
     // MARK: Navigation Lifecycle
