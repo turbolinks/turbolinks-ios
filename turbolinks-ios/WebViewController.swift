@@ -29,19 +29,19 @@ class WebViewController: UIViewController, Visitable {
         view.backgroundColor = UIColor.whiteColor()
     }
 
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        visitableDelegate?.visitableWebViewWillAppear(self)
-    }
-
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
         visitableDelegate?.visitableWebViewWillDisappear(self)
     }
-
+    
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         visitableDelegate?.visitableWebViewDidDisappear(self)
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        visitableDelegate?.visitableWebViewWillAppear(self)
     }
 
     override func viewDidAppear(animated: Bool) {
