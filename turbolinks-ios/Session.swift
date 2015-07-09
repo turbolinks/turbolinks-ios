@@ -25,13 +25,12 @@ protocol Visitable: class {
 
 protocol SessionDelegate: class {
     func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: Session)
-    func visitableForSession(session: Session, location: NSURL) -> Visitable
+    func presentVisitable(visitable: Visitable, forSession session: Session)
+    func visitableForLocation(location: NSURL, session: Session) -> Visitable
 }
 
 class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, VisitableDelegate {
     weak var delegate: SessionDelegate?
-
-    var navigationController: UINavigationController?
 
     var initialized: Bool = false
     var visiting: Bool = false
@@ -92,9 +91,9 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
         self.visiting = true
         self.location = location
 
-        if let visitable = delegate?.visitableForSession(self, location: location) {
+        if let visitable = delegate?.visitableForLocation(location, session: self) {
             willNavigate()
-            pushVisitable(visitable)
+            presentVisitable(visitable)
             issueRequestForURL(location)
         }
     }
@@ -103,10 +102,13 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
         didNavigate()
     }
     
-    private func pushVisitable(visitable: Visitable) {
-        if let navigationController = self.navigationController {
+    private func presentVisitable(visitable: Visitable) -> Bool {
+        if let delegate = self.delegate {
             visitable.activateWebView(webView)
-            navigationController.pushViewController(visitable.viewController, animated: true)
+            delegate.presentVisitable(visitable, forSession: self)
+            return true
+        } else {
+            return false
         }
     }
 

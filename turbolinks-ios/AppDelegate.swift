@@ -6,17 +6,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SessionDelegate {
 
     var window: UIWindow?
     var session: Session?
+    var navigationController: UINavigationController? {
+        return window?.rootViewController as? UINavigationController
+    }
 
     // MARK: UIApplicationDelegate
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        if let navigationController = window?.rootViewController as? UINavigationController {
-            self.session = Session()
-            session!.navigationController = navigationController
-            session!.delegate = self
-            session!.visit(NSURL(string: "http://bc3.dev/195539477/")!)
-        }
-
+        self.session = Session()
+        session!.delegate = self
+        session!.visit(NSURL(string: "http://bc3.dev/195539477/")!)
         return true
     }
 
@@ -45,10 +44,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SessionDelegate {
     // MARK: SessionDelegate
 
     func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: Session) {
-
+        // ...
     }
 
-    func visitableForSession(session: Session, location: NSURL) -> Visitable {
+    func presentVisitable(visitable: Visitable, forSession session: Session) {
+        navigationController?.pushViewController(visitable.viewController, animated: true)
+    }
+    
+    func visitableForLocation(location: NSURL, session: Session) -> Visitable {
         let visitable = WebViewController()
         visitable.location = location
         visitable.visitableDelegate = session
