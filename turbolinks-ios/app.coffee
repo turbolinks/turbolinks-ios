@@ -15,3 +15,5 @@ class Turbolinks.NativeAdapter
 
 
 Turbolinks.controller.adapter = new Turbolinks.NativeAdapter Turbolinks.controller
+
+document.documentElement.setAttribute("data-bridge-configuration", "ios")

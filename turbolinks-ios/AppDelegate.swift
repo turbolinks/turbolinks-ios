@@ -13,6 +13,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SessionDelegate {
     // MARK: UIApplicationDelegate
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        NSUserDefaults.standardUserDefaults().registerDefaults(["UserAgent": "BC3 iOS"])
+        
         self.session = Session()
         session!.delegate = self
         session!.visit(NSURL(string: "http://bc3.dev/195539477/")!)
