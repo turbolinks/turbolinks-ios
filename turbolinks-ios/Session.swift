@@ -135,7 +135,7 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
 
     // MARK: Request/Response Cycle
 
-    func issueRequestForURL(location: NSURL) {
+    private func issueRequestForURL(location: NSURL) {
         let request = NSURLRequest(URL: location)
 
         if webView.URL == nil {
