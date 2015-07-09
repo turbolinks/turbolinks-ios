@@ -88,13 +88,16 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
     }
 
     func visit(location: NSURL) {
-        self.visiting = true
-        self.location = location
-
         if let visitable = delegate?.visitableForLocation(location, session: self) {
-            willNavigate()
-            presentVisitable(visitable)
-            issueRequestForURL(location)
+            self.visiting = true
+
+            if presentVisitable(visitable) {
+                self.location = location
+                willNavigate()
+                issueRequestForURL(location)
+            } else {
+                self.visiting = false
+            }
         }
     }
 
