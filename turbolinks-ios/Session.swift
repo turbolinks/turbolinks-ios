@@ -107,7 +107,6 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
     
     private func presentVisitable(visitable: Visitable) -> Bool {
         if let delegate = self.delegate {
-            visitable.activateWebView(webView)
             delegate.presentVisitable(visitable, forSession: self)
             return true
         } else {
