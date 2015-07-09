@@ -146,10 +146,8 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
     }
     
     private func loadRequest(request: NSURLRequest) {
-        if let sessionTask = activeSessionTask {
-            sessionTask.cancel()
-        }
-
+        activeSessionTask?.cancel()
+        
         let session = NSURLSession.sharedSession()
         activeSessionTask = session.dataTaskWithRequest(request) { (data, response, error) in
             if let httpResponse = response as? NSHTTPURLResponse
