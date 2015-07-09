@@ -5,13 +5,8 @@ class WebViewController: UIViewController, Visitable {
     weak var visitableDelegate: VisitableDelegate?
     var location: NSURL?
     var webView: WKWebView?
-    var viewController: UIViewController {
-        get { return self }
-    }
-
-    var hasScreenshot: Bool {
-        get { return false }
-    }
+    var viewController: UIViewController { return self }
+    var hasScreenshot: Bool { return false }
 
     lazy var loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
