@@ -2,7 +2,7 @@ import UIKit
 import WebKit
 
 class WebViewController: UIViewController, Visitable {
-    var visitableDelegate: VisitableDelegate?
+    weak var visitableDelegate: VisitableDelegate?
     var location: NSURL?
     var webView: WKWebView?
     var viewController: UIViewController {

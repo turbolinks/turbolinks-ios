@@ -1,7 +1,7 @@
 import UIKit
 import WebKit
 
-protocol VisitableDelegate {
+protocol VisitableDelegate: class {
     func visitableWebViewWillDisappear(visitable: Visitable)
     func visitableWebViewDidDisappear(visitable: Visitable)
     func visitableWebViewWillAppear(visitable: Visitable)
@@ -9,7 +9,7 @@ protocol VisitableDelegate {
 }
 
 protocol Visitable {
-    var visitableDelegate: VisitableDelegate? { get set }
+    weak var visitableDelegate: VisitableDelegate? { get set }
     var hasScreenshot: Bool { get }
     var location: NSURL? { get set }
     var viewController: UIViewController { get }
@@ -23,13 +23,13 @@ protocol Visitable {
     func hideScreenshot()
 }
 
-protocol SessionDelegate {
+protocol SessionDelegate: class {
     func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: Session)
     func visitableForSession(session: Session, location: NSURL) -> Visitable
 }
 
 class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, VisitableDelegate {
-    var delegate: SessionDelegate?
+    weak var delegate: SessionDelegate?
     var navigationController: UINavigationController?
     var location: NSURL?
     var activeSessionTask: NSURLSessionTask?
