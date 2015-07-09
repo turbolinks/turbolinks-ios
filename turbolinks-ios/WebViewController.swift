@@ -6,7 +6,6 @@ class WebViewController: UIViewController, Visitable {
     var location: NSURL?
     var webView: WKWebView?
     var viewController: UIViewController { return self }
-    var hasScreenshot: Bool { return false }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,12 +78,24 @@ class WebViewController: UIViewController, Visitable {
    
     // MARK: Screenshots
 
+    private lazy var screenshotView: UIView = {
+        let screenshotView = UIView(frame: CGRectZero)
+        screenshotView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        screenshotView.backgroundColor = UIColor.whiteColor()
+        return screenshotView
+    }()
+
     func updateScreenshot() {
+        self.screenshotView = view.snapshotViewAfterScreenUpdates(false)
     }
 
     func showScreenshot() {
+        view.addSubview(screenshotView)
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: nil, metrics: nil, views: [ "view": screenshotView ]))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: nil, metrics: nil, views: [ "view": screenshotView ]))
     }
 
     func hideScreenshot() {
+        screenshotView.removeFromSuperview()
     }
 }

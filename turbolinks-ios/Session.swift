@@ -10,7 +10,6 @@ protocol VisitableDelegate: class {
 
 protocol Visitable: class {
     weak var visitableDelegate: VisitableDelegate? { get set }
-    var hasScreenshot: Bool { get }
     var location: NSURL? { get set }
     var viewController: UIViewController { get }
 
@@ -65,6 +64,7 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
         self.initialized = true
         didNavigate()
         activeVisitable?.hideActivityIndicator()
+        activeVisitable?.hideScreenshot()
     }
    
     // MARK: WKScriptMessageHandler
@@ -135,6 +135,7 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
             }
         }
 
+        visitable.showScreenshot()
         visitable.showActivityIndicator()
     }
 
@@ -189,9 +190,14 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
 
     private func loadResponse(response: String) {
         let responseJSON = JSONStringify(response)
-        webView.evaluateJavaScript("Turbolinks.controller.loadResponse(\(responseJSON))", completionHandler: nil)
-        println("loaded response after successful navigation")
-        activeVisitable?.hideActivityIndicator()
+        webView.evaluateJavaScript("Turbolinks.controller.loadResponse(\(responseJSON))", completionHandler: { (result, error) -> () in
+            after(100) {
+                if let activeVisitable = self.activeVisitable {
+                    activeVisitable.hideScreenshot()
+                    activeVisitable.hideActivityIndicator()
+                }
+            }
+        })
     }
     
     // MARK: Navigation Lifecycle
@@ -246,4 +252,9 @@ func JSONStringify(object: AnyObject) -> String {
     } else {
         return "null"
     }
+}
+
+func after(msec: Int, callback: () -> ()) {
+    let time = dispatch_time(DISPATCH_TIME_NOW, (Int64)(100 * NSEC_PER_MSEC))
+    dispatch_after(time, dispatch_get_main_queue(), callback)
 }
