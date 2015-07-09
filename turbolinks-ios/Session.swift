@@ -152,8 +152,8 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
         activeSessionTask = session.dataTaskWithRequest(request) { (data, response, error) in
             if let httpResponse = response as? NSHTTPURLResponse
                 where httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 {
-                    dispatch_async(dispatch_get_main_queue()) {
-                        if let response = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
+                    if let response = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
+                        dispatch_async(dispatch_get_main_queue()) {
                             self.loadResponse(response)
                             self.visiting = false
                         }
