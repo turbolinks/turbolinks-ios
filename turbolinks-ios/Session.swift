@@ -8,7 +8,7 @@ protocol VisitableDelegate: class {
     func visitableWebViewDidAppear(visitable: Visitable)
 }
 
-protocol Visitable {
+protocol Visitable: class {
     weak var visitableDelegate: VisitableDelegate? { get set }
     var hasScreenshot: Bool { get }
     var location: NSURL? { get set }
@@ -30,12 +30,17 @@ protocol SessionDelegate: class {
 
 class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, VisitableDelegate {
     weak var delegate: SessionDelegate?
+
     var navigationController: UINavigationController?
-    var location: NSURL?
-    var activeSessionTask: NSURLSessionTask?
-    var visiting: Bool = false
+
     var initialized: Bool = false
+    var visiting: Bool = false
+    var location: NSURL?
+    
+    var activeSessionTask: NSURLSessionTask?
     var activeVisitable: Visitable?
+    
+    var navigationDispatchGroup: dispatch_group_t?
 
     lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
@@ -59,6 +64,7 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
     
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         self.initialized = true
+        didNavigate()
     }
    
     // MARK: WKScriptMessageHandler
@@ -87,14 +93,14 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
         self.location = location
 
         if let visitable = delegate?.visitableForSession(self, location: location) {
+            willNavigate()
             pushVisitable(visitable)
             issueRequestForURL(location)
         }
     }
 
     private func locationChanged(location: NSURL) {
-        // execute callbacks
-        println("locationChanged: \(location)")
+        didNavigate()
     }
     
     private func pushVisitable(visitable: Visitable) {
@@ -107,6 +113,7 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
     // MARK: VisitableDelegate
 
     func visitableWebViewWillDisappear(visitable: Visitable) {
+        willNavigate()
         visitable.updateScreenshot()
     }
 
@@ -115,8 +122,12 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
     }
 
     func visitableWebViewWillAppear(visitable: Visitable) {
-        if !visiting && activeVisitable != nil {
-            willNavigateBackwardToVisitable(visitable)
+        if let activeVisitable = self.activeVisitable {
+            if activeVisitable === visitable {
+                didCancelNavigation()
+            } else if !visiting {
+                willNavigateBackwardToVisitable(visitable)
+            }
         }
     }
 
@@ -160,10 +171,8 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
             if let httpResponse = response as? NSHTTPURLResponse
                 where httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 {
                     if let response = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
-                        dispatch_async(dispatch_get_main_queue()) {
-                            self.loadResponse(response)
-                            self.visiting = false
-                        }
+                        println("received response")
+                        self.afterSuccessfulNavigation() { self.loadResponse(response) }
                     }
             }
         }
@@ -174,6 +183,51 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
     private func loadResponse(response: String) {
         let responseJSON = JSONStringify(response)
         webView.evaluateJavaScript("Turbolinks.controller.loadResponse(\(responseJSON))", completionHandler: nil)
+        println("loaded response after successful navigation")
+    }
+    
+    // MARK: Navigation Lifecycle
+    
+    private func willNavigate() {
+        createNavigationDispatchGroup()
+    }
+    
+    private func didCancelNavigation() {
+        destroyNavigationDispatchGroup()
+    }
+   
+    private func didNavigate() {
+        self.visiting = false
+        leaveNavigationDispatchGroup()
+    }
+    
+    private func afterSuccessfulNavigation(completion: () -> ()) {
+        if let navigationDispatchGroup = self.navigationDispatchGroup {
+            dispatch_group_notify(navigationDispatchGroup, dispatch_get_main_queue(), completion)
+        } else if !visiting {
+            dispatch_async(dispatch_get_main_queue(), completion)
+        }
+    }
+   
+    private func createNavigationDispatchGroup() {
+        if navigationDispatchGroup == nil {
+            println("creating navigation dispatch group")
+            self.navigationDispatchGroup = dispatch_group_create()
+            dispatch_group_enter(navigationDispatchGroup!)
+        }
+    }
+    
+    private func leaveNavigationDispatchGroup() {
+        if let navigationDispatchGroup = self.navigationDispatchGroup {
+            println("leaving navigation dispatch group")
+            dispatch_group_leave(navigationDispatchGroup)
+            destroyNavigationDispatchGroup()
+        }
+    }
+    
+    private func destroyNavigationDispatchGroup() {
+        println("destroying navigation dispatch group")
+        self.navigationDispatchGroup = nil
     }
 }
 
