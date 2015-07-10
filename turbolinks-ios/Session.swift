@@ -157,7 +157,7 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
     func visitableWebViewWillAppear(visitable: Visitable) {
         if let activeVisitable = self.activeVisitable {
             if activeVisitable === visitable {
-                didCancelNavigation()
+                return didCancelNavigation()
             } else if !visiting {
                 willNavigateBackwardToVisitable(visitable)
             }
