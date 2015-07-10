@@ -28,6 +28,36 @@ protocol SessionDelegate: class {
     func visitableForLocation(location: NSURL, session: Session) -> Visitable
 }
 
+class Lock: NSObject {
+    var locked: Bool = true
+    var queue: dispatch_queue_t
+    
+    init(queue: dispatch_queue_t) {
+        self.queue = queue
+    }
+    
+    func afterUnlock(completion: () -> ()) {
+        if locked {
+            dispatch_group_notify(dispatchGroup, queue, completion)
+        } else {
+            dispatch_async(queue, completion)
+        }
+    }
+   
+    func unlock() {
+        if locked {
+            self.locked = false
+            dispatch_group_leave(dispatchGroup)
+        }
+    }
+
+    lazy private var dispatchGroup: dispatch_group_t = {
+        let dispatchGroup = dispatch_group_create()
+        dispatch_group_enter(dispatchGroup)
+        return dispatchGroup
+    }()
+}
+
 class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, VisitableDelegate {
     weak var delegate: SessionDelegate?
 
@@ -38,8 +68,6 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
     var activeSessionTask: NSURLSessionTask?
     var activeVisitable: Visitable?
     
-    var navigationDispatchGroup: dispatch_group_t?
-
     lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
@@ -202,46 +230,45 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
     
     // MARK: Navigation Lifecycle
     
+    private var navigating: Bool = false
+    private var navigationLock: Lock?
+
     private func willNavigate() {
-        createNavigationDispatchGroup()
+        if !navigating {
+            self.navigating = true
+            createNavigationLock()
+        }
     }
     
     private func didCancelNavigation() {
-        destroyNavigationDispatchGroup()
+        if navigating {
+            self.navigating = false
+            destroyNavigationLock()
+        }
     }
    
     private func didNavigate() {
-        self.visiting = false
-        leaveNavigationDispatchGroup()
+        if navigating {
+            self.visiting = false
+            self.navigating = false
+            unlockNavigationLock()
+        }
     }
     
+    private func createNavigationLock() {
+        self.navigationLock = Lock(queue: dispatch_get_main_queue())
+    }
+    
+    private func destroyNavigationLock() {
+        self.navigationLock = nil
+    }
+    
+    private func unlockNavigationLock() {
+        navigationLock?.unlock()
+    }
+
     private func afterSuccessfulNavigation(completion: () -> ()) {
-        if let navigationDispatchGroup = self.navigationDispatchGroup {
-            dispatch_group_notify(navigationDispatchGroup, dispatch_get_main_queue(), completion)
-        } else if !visiting {
-            dispatch_async(dispatch_get_main_queue(), completion)
-        }
-    }
-   
-    private func createNavigationDispatchGroup() {
-        if navigationDispatchGroup == nil {
-            println("creating navigation dispatch group")
-            self.navigationDispatchGroup = dispatch_group_create()
-            dispatch_group_enter(navigationDispatchGroup!)
-        }
-    }
-    
-    private func leaveNavigationDispatchGroup() {
-        if let navigationDispatchGroup = self.navigationDispatchGroup {
-            println("leaving navigation dispatch group")
-            dispatch_group_leave(navigationDispatchGroup)
-            destroyNavigationDispatchGroup()
-        }
-    }
-    
-    private func destroyNavigationDispatchGroup() {
-        println("destroying navigation dispatch group")
-        self.navigationDispatchGroup = nil
+        navigationLock?.afterUnlock(completion)
     }
 }
 
