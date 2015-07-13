@@ -3,21 +3,23 @@ import WebKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, SessionDelegate {
-
     var window: UIWindow?
-    var session: Session?
+    
     var navigationController: UINavigationController? {
         return window?.rootViewController as? UINavigationController
     }
 
+    lazy var session: Session = {
+        let session = Session()
+        session.delegate = self
+        return session
+    }()
+    
     // MARK: UIApplicationDelegate
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         NSUserDefaults.standardUserDefaults().registerDefaults(["UserAgent": "BC3 iOS"])
-        
-        self.session = Session()
-        session!.delegate = self
-        session!.visit(NSURL(string: "http://bc3.dev/195539477/")!)
+        session.visit(NSURL(string: "http://bc3.dev/195539477/")!)
         return true
     }
 
