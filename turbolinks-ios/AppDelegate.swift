@@ -5,6 +5,10 @@ import WebKit
 class AppDelegate: UIResponder, UIApplicationDelegate, SessionDelegate {
     var window: UIWindow?
     
+    var application: UIApplication {
+        return UIApplication.sharedApplication()
+    }
+    
     var navigationController: UINavigationController? {
         return window?.rootViewController as? UINavigationController
     }
@@ -63,10 +67,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SessionDelegate {
     }
     
     func sessionWillIssueRequest(session: Session) {
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        application.networkActivityIndicatorVisible = true
     }
     
     func sessionDidFinishRequest(session: Session) {
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+        application.networkActivityIndicatorVisible = false
     }
 }
