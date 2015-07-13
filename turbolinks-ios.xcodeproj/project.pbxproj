@@ -24,6 +24,8 @@
 		226C33531B541A9500496BE1 /* Visitable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226C33511B541A9500496BE1 /* Visitable.swift */; };
 		226C33551B541ABF00496BE1 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226C33541B541ABF00496BE1 /* Lock.swift */; };
 		226C33561B541ABF00496BE1 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226C33541B541ABF00496BE1 /* Lock.swift */; };
+		226C335B1B54824500496BE1 /* Visit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226C335A1B54824500496BE1 /* Visit.swift */; };
+		226C335C1B54824500496BE1 /* Visit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226C335A1B54824500496BE1 /* Visit.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -66,6 +68,7 @@
 		1FAAF26A1B3CA511004AF265 /* app.coffee */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = app.coffee; sourceTree = "<group>"; };
 		226C33511B541A9500496BE1 /* Visitable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Visitable.swift; sourceTree = "<group>"; };
 		226C33541B541ABF00496BE1 /* Lock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lock.swift; sourceTree = "<group>"; };
+		226C335A1B54824500496BE1 /* Visit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Visit.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +115,7 @@
 				226C33541B541ABF00496BE1 /* Lock.swift */,
 				1F088C371B4DB6850051E5F8 /* Session.swift */,
 				1FAAF21B1B3C673E004AF265 /* WebViewController.swift */,
+				226C335A1B54824500496BE1 /* Visit.swift */,
 				226C33511B541A9500496BE1 /* Visitable.swift */,
 				1FAAF21D1B3C673E004AF265 /* Main.storyboard */,
 				1FAAF2201B3C673E004AF265 /* Images.xcassets */,
@@ -256,6 +260,7 @@
 				226C33521B541A9500496BE1 /* Visitable.swift in Sources */,
 				1FAAF21C1B3C673E004AF265 /* WebViewController.swift in Sources */,
 				1FAAF21A1B3C673E004AF265 /* AppDelegate.swift in Sources */,
+				226C335B1B54824500496BE1 /* Visit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,6 +274,7 @@
 				1FAAF2301B3C673E004AF265 /* turbolinks_iosTests.swift in Sources */,
 				226C33561B541ABF00496BE1 /* Lock.swift in Sources */,
 				1FBD8F9D1B4AE9D1001C0417 /* WebViewController.swift in Sources */,
+				226C335C1B54824500496BE1 /* Visit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -3,6 +3,8 @@ import WebKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, SessionDelegate {
+    let userAgent = "BC3 iOS"
+   
     var window: UIWindow?
     
     var application: UIApplication {
@@ -22,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SessionDelegate {
     // MARK: UIApplicationDelegate
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        NSUserDefaults.standardUserDefaults().registerDefaults(["UserAgent": "BC3 iOS"])
+        NSUserDefaults.standardUserDefaults().registerDefaults(["UserAgent": userAgent])
         session.visit(NSURL(string: "http://bc3.dev/195539477/")!)
         return true
     }
@@ -66,6 +68,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SessionDelegate {
         return visitable
     }
     
+    func requestForLocation(location: NSURL) -> NSURLRequest {
+        let request = NSMutableURLRequest(URL: location)
+        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
+        return request
+    }
+   
     func sessionWillIssueRequest(session: Session) {
         application.networkActivityIndicatorVisible = true
     }

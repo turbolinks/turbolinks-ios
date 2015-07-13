@@ -5,20 +5,18 @@ protocol SessionDelegate: class {
     func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: Session)
     func presentVisitable(visitable: Visitable, forSession session: Session)
     func visitableForLocation(location: NSURL, session: Session) -> Visitable
+    func requestForLocation(location: NSURL) -> NSURLRequest
     func sessionWillIssueRequest(session: Session)
     func sessionDidFinishRequest(session: Session)
 }
 
-class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, VisitableDelegate {
+class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, VisitDelegate, VisitableDelegate {
     weak var delegate: SessionDelegate?
 
     var initialized: Bool = false
-    var visiting: Bool = false
     var location: NSURL?
-    
-    var activeSessionTask: NSURLSessionTask?
     var activeVisitable: Visitable?
-    
+
     lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
@@ -36,17 +34,58 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
 
         return webView
     }()
+    
+    // MARK: Visiting
 
+    private var visit: Visit?
+    
+    func visit(location: NSURL) {
+        if let visitable = delegate?.visitableForLocation(location, session: self) {
+            if presentVisitable(visitable) {
+                issueVisitForVisitable(visitable)
+            }
+        }
+    }
+    
+    private func presentVisitable(visitable: Visitable) -> Bool {
+        if let delegate = self.delegate {
+            delegate.presentVisitable(visitable, forSession: self)
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    private func issueVisitForVisitable(visitable: Visitable) {
+        if let location = visitable.location {
+            let visit: Visit
+            let request = requestForLocation(location)
+            
+            if initialized {
+                visit = TurbolinksVisit(visitable: visitable, request: request)
+            } else {
+                visit = WebViewVisit(visitable: visitable, request: request)
+            }
+            
+            self.visit = visit
+            visit.delegate = self
+            visit.startRequest()
+        }
+    }
+    
+    private func requestForLocation(location: NSURL) -> NSURLRequest {
+        return delegate?.requestForLocation(location) ?? NSURLRequest(URL: location)
+    }
+    
     // MARK: WKNavigationDelegate
     
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
-        self.initialized = true
-        didFinishRequest()
-        didNavigate()
-        activeVisitable?.hideActivityIndicator()
-        activeVisitable?.hideScreenshot()
+        if let visit = self.visit {
+            self.initialized = true
+            visit.finish()
+        }
     }
-   
+    
     // MARK: WKScriptMessageHandler
 
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
@@ -68,169 +107,93 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
         }
     }
 
-    func visit(location: NSURL) {
-        if let visitable = delegate?.visitableForLocation(location, session: self) {
-            self.visiting = true
-
-            if presentVisitable(visitable) {
-                self.location = location
-                willNavigate()
-                issueRequestForURL(location)
-            } else {
-                self.visiting = false
-            }
-        }
-    }
-
     private func locationChanged(location: NSURL) {
-        didNavigate()
+        if let visit = self.visit {
+            visit.completeNavigation()
+        }
     }
     
-    private func presentVisitable(visitable: Visitable) -> Bool {
-        if let delegate = self.delegate {
-            delegate.presentVisitable(visitable, forSession: self)
-            return true
-        } else {
-            return false
-        }
+    // MARK: VisitDelegate
+    
+    func visitWillIssueRequest(visit: Visit) {
+        delegate?.sessionWillIssueRequest(self)
+    }
+    
+    func visitDidFinishRequest(visit: Visit) {
+        delegate?.sessionDidFinishRequest(self)
     }
 
+    func issueExternalRequestForVisit(visit: Visit) {
+        webView.loadRequest(visit.request)
+    }
+    
+    func visit(visit: Visit, didCompleteWithResponse response: String) {
+        loadResponse(response)
+    }
+    
+    func visitDidStart(visit: Visit) {
+        let visitable = visit.visitable
+        visitable.showScreenshot()
+        visitable.showActivityIndicator()
+    }
+    
+    func visitDidFinish(visit: Visit) {
+        let visitable = visit.visitable
+        visitable.hideScreenshot()
+        visitable.hideActivityIndicator()
+        self.visit = nil
+    }
+   
     // MARK: VisitableDelegate
 
     func visitableViewWillDisappear(visitable: Visitable) {
-        willNavigate()
         visitable.updateScreenshot()
-    }
-
-    func visitableViewDidDisappear(visitable: Visitable) {
-        visitable.deactivateWebView()
     }
 
     func visitableViewWillAppear(visitable: Visitable) {
         if let activeVisitable = self.activeVisitable {
             if activeVisitable === visitable {
-                return didCancelNavigation()
-            } else if !visiting {
-                willNavigateBackwardToVisitable(visitable)
+                visit?.cancelNavigation()
+            } else if visit == nil {
+                issueVisitForVisitable(visitable)
             }
         }
-
-        visitable.showScreenshot()
-        visitable.showActivityIndicator()
+    }
+    
+    func visitableViewDidDisappear(visitable: Visitable) {
+        deactivateVisitable(visitable)
     }
 
     func visitableViewDidAppear(visitable: Visitable) {
-        self.activeVisitable = visitable
-        visitable.activateWebView(webView)
         if let location = visitable.location {
+            activateVisitable(visitable)
             pushLocation(location)
         }
     }
 
+    private func activateVisitable(visitable: Visitable) {
+        self.activeVisitable = visitable
+        visitable.activateWebView(webView)
+    }
+    
+    private func deactivateVisitable(visitable: Visitable) {
+        visitable.deactivateWebView()
+    }
+    
     private func pushLocation(location: NSURL) {
         let locationJSON = JSONStringify(location.absoluteString!)
         webView.evaluateJavaScript("Turbolinks.controller.history.push(\(locationJSON))", completionHandler: nil)
     }
 
-    private func willNavigateBackwardToVisitable(visitable: Visitable) {
-        if let URL = visitable.location {
-            let request = NSURLRequest(URL: URL)
-            loadRequest(request)
-        }
-    }
-
     // MARK: Request/Response Cycle
-
-    private func issueRequestForURL(location: NSURL) {
-        let request = NSURLRequest(URL: location)
-        willIssueRequest()
-        
-        if webView.URL == nil {
-            webView.loadRequest(request)
-        } else {
-            loadRequest(request)
-        }
-    }
-    
-    private func loadRequest(request: NSURLRequest) {
-        activeSessionTask?.cancel()
-        
-        let session = NSURLSession.sharedSession()
-        activeSessionTask = session.dataTaskWithRequest(request) { (data, response, error) in
-            if let httpResponse = response as? NSHTTPURLResponse
-                where httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 {
-                    if let response = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
-                        println("received response")
-                        self.afterSuccessfulNavigation() { self.loadResponse(response) }
-                    }
-            }
-            self.didFinishRequest()
-        }
-
-        activeSessionTask?.resume()
-    }
 
     private func loadResponse(response: String) {
         let responseJSON = JSONStringify(response)
         webView.evaluateJavaScript("Turbolinks.controller.loadResponse(\(responseJSON))", completionHandler: { (result, error) -> () in
             after(100) {
-                if let activeVisitable = self.activeVisitable {
-                    activeVisitable.hideScreenshot()
-                    activeVisitable.hideActivityIndicator()
-                }
+                visit?.finish()
             }
         })
-    }
-    
-    private func willIssueRequest() {
-        delegate?.sessionWillIssueRequest(self)
-    }
-
-    private func didFinishRequest() {
-        delegate?.sessionDidFinishRequest(self)
-    }
-    
-    // MARK: Navigation Lifecycle
-    
-    private var navigating: Bool = false
-    private var navigationLock: Lock?
-
-    private func willNavigate() {
-        if !navigating {
-            self.navigating = true
-            createNavigationLock()
-        }
-    }
-    
-    private func didCancelNavigation() {
-        if navigating {
-            self.navigating = false
-            destroyNavigationLock()
-        }
-    }
-   
-    private func didNavigate() {
-        if navigating {
-            self.visiting = false
-            self.navigating = false
-            unlockNavigationLock()
-        }
-    }
-    
-    private func createNavigationLock() {
-        self.navigationLock = Lock(queue: dispatch_get_main_queue())
-    }
-    
-    private func destroyNavigationLock() {
-        self.navigationLock = nil
-    }
-    
-    private func unlockNavigationLock() {
-        navigationLock?.unlock()
-    }
-
-    private func afterSuccessfulNavigation(completion: () -> ()) {
-        navigationLock?.afterUnlock(completion)
     }
 }
 
