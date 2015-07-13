@@ -1,61 +1,12 @@
 import UIKit
 import WebKit
 
-protocol VisitableDelegate: class {
-    func visitableWebViewWillDisappear(visitable: Visitable)
-    func visitableWebViewDidDisappear(visitable: Visitable)
-    func visitableWebViewWillAppear(visitable: Visitable)
-    func visitableWebViewDidAppear(visitable: Visitable)
-}
-
-protocol Visitable: class {
-    weak var visitableDelegate: VisitableDelegate? { get set }
-    var location: NSURL? { get set }
-    var viewController: UIViewController { get }
-
-    func activateWebView(webView: WKWebView)
-    func deactivateWebView()
-    func showActivityIndicator()
-    func hideActivityIndicator()
-    func updateScreenshot()
-    func showScreenshot()
-    func hideScreenshot()
-}
-
 protocol SessionDelegate: class {
     func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: Session)
     func presentVisitable(visitable: Visitable, forSession session: Session)
     func visitableForLocation(location: NSURL, session: Session) -> Visitable
-}
-
-class Lock: NSObject {
-    var locked: Bool = true
-    var queue: dispatch_queue_t
-    
-    init(queue: dispatch_queue_t) {
-        self.queue = queue
-    }
-    
-    func afterUnlock(completion: () -> ()) {
-        if locked {
-            dispatch_group_notify(dispatchGroup, queue, completion)
-        } else {
-            dispatch_async(queue, completion)
-        }
-    }
-   
-    func unlock() {
-        if locked {
-            self.locked = false
-            dispatch_group_leave(dispatchGroup)
-        }
-    }
-
-    lazy private var dispatchGroup: dispatch_group_t = {
-        let dispatchGroup = dispatch_group_create()
-        dispatch_group_enter(dispatchGroup)
-        return dispatchGroup
-    }()
+    func sessionWillIssueRequest(session: Session)
+    func sessionDidFinishRequest(session: Session)
 }
 
 class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, VisitableDelegate {
@@ -90,6 +41,7 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
     
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         self.initialized = true
+        didFinishRequest()
         didNavigate()
         activeVisitable?.hideActivityIndicator()
         activeVisitable?.hideScreenshot()
@@ -191,7 +143,8 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
 
     private func issueRequestForURL(location: NSURL) {
         let request = NSURLRequest(URL: location)
-
+        willIssueRequest()
+        
         if webView.URL == nil {
             webView.loadRequest(request)
         } else {
@@ -211,6 +164,7 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
                         self.afterSuccessfulNavigation() { self.loadResponse(response) }
                     }
             }
+            self.didFinishRequest()
         }
 
         activeSessionTask?.resume()
@@ -226,6 +180,14 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
                 }
             }
         })
+    }
+    
+    private func willIssueRequest() {
+        delegate?.sessionWillIssueRequest(self)
+    }
+
+    private func didFinishRequest() {
+        delegate?.sessionDidFinishRequest(self)
     }
     
     // MARK: Navigation Lifecycle

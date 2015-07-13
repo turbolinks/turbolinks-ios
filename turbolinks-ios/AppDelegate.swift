@@ -59,4 +59,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SessionDelegate {
         visitable.visitableDelegate = session
         return visitable
     }
+    
+    func sessionWillIssueRequest(session: Session) {
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+    }
+    
+    func sessionDidFinishRequest(session: Session) {
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+    }
 }
