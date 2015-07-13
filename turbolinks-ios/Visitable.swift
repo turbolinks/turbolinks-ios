@@ -2,10 +2,10 @@ import UIKit
 import WebKit
 
 protocol VisitableDelegate: class {
-    func visitableWebViewWillDisappear(visitable: Visitable)
-    func visitableWebViewDidDisappear(visitable: Visitable)
-    func visitableWebViewWillAppear(visitable: Visitable)
-    func visitableWebViewDidAppear(visitable: Visitable)
+    func visitableViewWillDisappear(visitable: Visitable)
+    func visitableViewDidDisappear(visitable: Visitable)
+    func visitableViewWillAppear(visitable: Visitable)
+    func visitableViewDidAppear(visitable: Visitable)
 }
 
 protocol Visitable: class {

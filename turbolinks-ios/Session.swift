@@ -97,16 +97,16 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
 
     // MARK: VisitableDelegate
 
-    func visitableWebViewWillDisappear(visitable: Visitable) {
+    func visitableViewWillDisappear(visitable: Visitable) {
         willNavigate()
         visitable.updateScreenshot()
     }
 
-    func visitableWebViewDidDisappear(visitable: Visitable) {
+    func visitableViewDidDisappear(visitable: Visitable) {
         visitable.deactivateWebView()
     }
 
-    func visitableWebViewWillAppear(visitable: Visitable) {
+    func visitableViewWillAppear(visitable: Visitable) {
         if let activeVisitable = self.activeVisitable {
             if activeVisitable === visitable {
                 return didCancelNavigation()
@@ -119,7 +119,7 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, Visitable
         visitable.showActivityIndicator()
     }
 
-    func visitableWebViewDidAppear(visitable: Visitable) {
+    func visitableViewDidAppear(visitable: Visitable) {
         self.activeVisitable = visitable
         visitable.activateWebView(webView)
         if let location = visitable.location {

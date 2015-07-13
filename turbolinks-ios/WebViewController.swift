@@ -20,22 +20,22 @@ class WebViewController: UIViewController, Visitable {
 
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        visitableDelegate?.visitableWebViewWillDisappear(self)
+        visitableDelegate?.visitableViewWillDisappear(self)
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        visitableDelegate?.visitableWebViewDidDisappear(self)
+        visitableDelegate?.visitableViewDidDisappear(self)
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        visitableDelegate?.visitableWebViewWillAppear(self)
+        visitableDelegate?.visitableViewWillAppear(self)
     }
 
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
-        visitableDelegate?.visitableWebViewDidAppear(self)
+        visitableDelegate?.visitableViewDidAppear(self)
     }
 
     // MARK: Web View
