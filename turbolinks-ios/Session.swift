@@ -81,19 +81,20 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
 
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         if let body = message.body as? [String: AnyObject],
-            name = body["name"] as? String,
-            data = body["data"] as? String {
+            name = body["name"] as? String {
                 switch name {
                 case "visit":
-                    if let location = NSURL(string: data) {
+                    if let data = body["data"] as? String, location = NSURL(string: data) {
                         visit(location)
                     }
                 case "locationChanged":
-                    if let location = NSURL(string: data) {
+                    if let data = body["data"] as? String, location = NSURL(string: data) {
                         locationChanged(location)
                     }
+                case "webViewRendered":
+                    webViewRendered()
                 default:
-                    println("Unhandled message: \(name): \(data)")
+                    println("Unhandled message: \(name)")
                 }
         }
     }
@@ -102,6 +103,10 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
         if let visit = self.visit {
             visit.completeNavigation()
         }
+    }
+    
+    private func webViewRendered() {
+        visit?.finish()
     }
     
     // MARK: VisitDelegate
@@ -138,9 +143,7 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
    
     private func loadResponse(response: String) {
         invokeJavaScriptMethod("Turbolinks.controller.loadResponse", withArguments: [response]) { (result, error) -> () in
-            after(100) {
-                visit?.finish()
-            }
+            self.invokeJavaScriptMethod("Turbolinks.controller.adapter.notifyOfNextRender")
         }
     }
 
@@ -186,7 +189,7 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
     
     // MARK: JavaScript Evaluation
 
-    private func invokeJavaScriptMethod(methodName: String, withArguments arguments: [AnyObject], completionHandler: ((AnyObject?, NSError?) -> ())? = { (_, _) -> () in }) {
+    private func invokeJavaScriptMethod(methodName: String, withArguments arguments: [AnyObject] = [], completionHandler: ((AnyObject?, NSError?) -> ())? = { (_, _) -> () in }) {
         let script = scriptForInvokingJavaScriptMethod(methodName, withArguments: arguments)
         webView.evaluateJavaScript(script, completionHandler: completionHandler)
     }

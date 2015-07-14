@@ -8,6 +8,10 @@ class Turbolinks.NativeAdapter
   locationChanged: (url) ->
     @postMessage("locationChanged", url)
 
+  notifyOfNextRender: ->
+    requestAnimationFrame =>
+      @postMessage("webViewRendered")
+
   # Private
 
   postMessage: (name, data) ->
