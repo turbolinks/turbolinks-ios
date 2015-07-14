@@ -67,7 +67,10 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
                 visit = WebViewVisit(visitable: visitable, request: request, webView: webView)
             }
             
+            self.visit?.cancelNavigation()
+            self.visit?.cancelRequest()
             self.visit = visit
+
             visit.delegate = self
             visit.startRequest()
         }
