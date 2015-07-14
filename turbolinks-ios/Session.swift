@@ -143,8 +143,12 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
     
     func visitDidFinish(visit: Visit) {
         let visitable = visit.visitable
-        visitable.hideScreenshot()
-        visitable.hideActivityIndicator()
+
+        if activeVisitCompleted {
+            visitable.hideScreenshot()
+            visitable.hideActivityIndicator()
+        }
+
         self.visit = nil
     }
    
