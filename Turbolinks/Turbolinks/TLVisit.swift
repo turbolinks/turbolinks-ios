@@ -133,7 +133,10 @@ class TLTurbolinksVisit: TLVisit {
                 if let httpResponse = response as? NSHTTPURLResponse {
                     self.handleResponse(httpResponse, data: data)
                 }
-                self.completeRequest()
+
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.completeRequest()
+                }
             }
             
             sessionTask?.resume()
