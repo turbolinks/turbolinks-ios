@@ -2,7 +2,7 @@ import UIKit
 import WebKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, SessionDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, SessionDelegate {
     let userAgent = "BC3 iOS"
    
     var window: UIWindow?
@@ -80,5 +80,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SessionDelegate {
     
     func sessionDidFinishRequest(session: Session) {
         application.networkActivityIndicatorVisible = false
+    }
+
+    func session(session: Session, didInitializeWebView webView: WKWebView) {
+        webView.navigationDelegate = self
+    }
+    
+    // MARK: WKNavigationDelegate
+    
+    func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> ()) {
+        decisionHandler(WKNavigationActionPolicy.Cancel)
     }
 }

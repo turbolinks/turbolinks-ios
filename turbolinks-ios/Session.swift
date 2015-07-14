@@ -8,6 +8,7 @@ protocol SessionDelegate: class {
     func requestForLocation(location: NSURL) -> NSURLRequest
     func sessionWillIssueRequest(session: Session)
     func sessionDidFinishRequest(session: Session)
+    func session(session: Session, didInitializeWebView webView: WKWebView)
 }
 
 class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegate {
@@ -119,6 +120,7 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
     
     func visitDidCompleteWebViewLoad(visit: Visit) {
         self.initialized = true
+        delegate?.session(self, didInitializeWebView: webView)
     }
    
     func visitDidStart(visit: Visit) {
