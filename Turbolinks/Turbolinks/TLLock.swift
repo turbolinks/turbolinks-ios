@@ -1,6 +1,6 @@
 import Foundation
 
-class Lock {
+class TLLock {
     var locked: Bool = true
     var queue: dispatch_queue_t
     

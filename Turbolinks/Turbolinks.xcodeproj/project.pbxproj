@@ -9,14 +9,14 @@
 /* Begin PBXBuildFile section */
 		1F8FC6B31B55A37400A781C8 /* NativeAdapter.js in Resources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AE1B55A37400A781C8 /* NativeAdapter.js */; };
 		1F8FC6B41B55A37400A781C8 /* NativeAdapter.js in Resources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AE1B55A37400A781C8 /* NativeAdapter.js */; };
-		1F8FC6B51B55A37400A781C8 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AF1B55A37400A781C8 /* Lock.swift */; };
-		1F8FC6B61B55A37400A781C8 /* Lock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AF1B55A37400A781C8 /* Lock.swift */; };
-		1F8FC6B71B55A37400A781C8 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B01B55A37400A781C8 /* Session.swift */; };
-		1F8FC6B81B55A37400A781C8 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B01B55A37400A781C8 /* Session.swift */; };
-		1F8FC6B91B55A37400A781C8 /* Visit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B11B55A37400A781C8 /* Visit.swift */; };
-		1F8FC6BA1B55A37400A781C8 /* Visit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B11B55A37400A781C8 /* Visit.swift */; };
-		1F8FC6BB1B55A37400A781C8 /* Visitable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B21B55A37400A781C8 /* Visitable.swift */; };
-		1F8FC6BC1B55A37400A781C8 /* Visitable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B21B55A37400A781C8 /* Visitable.swift */; };
+		1F8FC6B51B55A37400A781C8 /* TLLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AF1B55A37400A781C8 /* TLLock.swift */; };
+		1F8FC6B61B55A37400A781C8 /* TLLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AF1B55A37400A781C8 /* TLLock.swift */; };
+		1F8FC6B71B55A37400A781C8 /* TLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B01B55A37400A781C8 /* TLSession.swift */; };
+		1F8FC6B81B55A37400A781C8 /* TLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B01B55A37400A781C8 /* TLSession.swift */; };
+		1F8FC6B91B55A37400A781C8 /* TLVisit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B11B55A37400A781C8 /* TLVisit.swift */; };
+		1F8FC6BA1B55A37400A781C8 /* TLVisit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B11B55A37400A781C8 /* TLVisit.swift */; };
+		1F8FC6BB1B55A37400A781C8 /* TLVisitable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B21B55A37400A781C8 /* TLVisitable.swift */; };
+		1F8FC6BC1B55A37400A781C8 /* TLVisitable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B21B55A37400A781C8 /* TLVisitable.swift */; };
 		1FC167F51B55A14900AA6F43 /* Turbolinks.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FC167F41B55A14900AA6F43 /* Turbolinks.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1FC167FB1B55A14900AA6F43 /* Turbolinks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC167EF1B55A14900AA6F43 /* Turbolinks.framework */; };
 		1FC168021B55A14900AA6F43 /* TurbolinksTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC168011B55A14900AA6F43 /* TurbolinksTests.swift */; };
@@ -34,10 +34,10 @@
 
 /* Begin PBXFileReference section */
 		1F8FC6AE1B55A37400A781C8 /* NativeAdapter.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = NativeAdapter.js; sourceTree = "<group>"; };
-		1F8FC6AF1B55A37400A781C8 /* Lock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lock.swift; sourceTree = "<group>"; };
-		1F8FC6B01B55A37400A781C8 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
-		1F8FC6B11B55A37400A781C8 /* Visit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Visit.swift; sourceTree = "<group>"; };
-		1F8FC6B21B55A37400A781C8 /* Visitable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Visitable.swift; sourceTree = "<group>"; };
+		1F8FC6AF1B55A37400A781C8 /* TLLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLLock.swift; sourceTree = "<group>"; };
+		1F8FC6B01B55A37400A781C8 /* TLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLSession.swift; sourceTree = "<group>"; };
+		1F8FC6B11B55A37400A781C8 /* TLVisit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLVisit.swift; sourceTree = "<group>"; };
+		1F8FC6B21B55A37400A781C8 /* TLVisitable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLVisitable.swift; sourceTree = "<group>"; };
 		1FC167EF1B55A14900AA6F43 /* Turbolinks.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Turbolinks.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FC167F31B55A14900AA6F43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1FC167F41B55A14900AA6F43 /* Turbolinks.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Turbolinks.h; sourceTree = "<group>"; };
@@ -87,10 +87,10 @@
 			isa = PBXGroup;
 			children = (
 				1F8FC6AE1B55A37400A781C8 /* NativeAdapter.js */,
-				1F8FC6AF1B55A37400A781C8 /* Lock.swift */,
-				1F8FC6B01B55A37400A781C8 /* Session.swift */,
-				1F8FC6B11B55A37400A781C8 /* Visit.swift */,
-				1F8FC6B21B55A37400A781C8 /* Visitable.swift */,
+				1F8FC6AF1B55A37400A781C8 /* TLLock.swift */,
+				1F8FC6B01B55A37400A781C8 /* TLSession.swift */,
+				1F8FC6B11B55A37400A781C8 /* TLVisit.swift */,
+				1F8FC6B21B55A37400A781C8 /* TLVisitable.swift */,
 				1FC167F41B55A14900AA6F43 /* Turbolinks.h */,
 				1FC167F21B55A14900AA6F43 /* Supporting Files */,
 			);
@@ -231,10 +231,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F8FC6B71B55A37400A781C8 /* Session.swift in Sources */,
-				1F8FC6BB1B55A37400A781C8 /* Visitable.swift in Sources */,
-				1F8FC6B51B55A37400A781C8 /* Lock.swift in Sources */,
-				1F8FC6B91B55A37400A781C8 /* Visit.swift in Sources */,
+				1F8FC6B71B55A37400A781C8 /* TLSession.swift in Sources */,
+				1F8FC6BB1B55A37400A781C8 /* TLVisitable.swift in Sources */,
+				1F8FC6B51B55A37400A781C8 /* TLLock.swift in Sources */,
+				1F8FC6B91B55A37400A781C8 /* TLVisit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -242,11 +242,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F8FC6B61B55A37400A781C8 /* Lock.swift in Sources */,
-				1F8FC6BC1B55A37400A781C8 /* Visitable.swift in Sources */,
-				1F8FC6BA1B55A37400A781C8 /* Visit.swift in Sources */,
+				1F8FC6B61B55A37400A781C8 /* TLLock.swift in Sources */,
+				1F8FC6BC1B55A37400A781C8 /* TLVisitable.swift in Sources */,
+				1F8FC6BA1B55A37400A781C8 /* TLVisit.swift in Sources */,
 				1FC168021B55A14900AA6F43 /* TurbolinksTests.swift in Sources */,
-				1F8FC6B81B55A37400A781C8 /* Session.swift in Sources */,
+				1F8FC6B81B55A37400A781C8 /* TLSession.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

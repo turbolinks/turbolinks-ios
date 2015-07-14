@@ -1,23 +1,23 @@
 import UIKit
 import WebKit
 
-public protocol SessionDelegate: class {
-    func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: Session)
-    func presentVisitable(visitable: Visitable, forSession session: Session)
-    func visitableForLocation(location: NSURL, session: Session) -> Visitable
+public protocol TLSessionDelegate: class {
+    func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: TLSession)
+    func presentVisitable(visitable: TLVisitable, forSession session: TLSession)
+    func visitableForLocation(location: NSURL, session: TLSession) -> TLVisitable
     func requestForLocation(location: NSURL) -> NSURLRequest
-    func sessionWillIssueRequest(session: Session)
-    func sessionDidFinishRequest(session: Session)
-    func session(session: Session, didInitializeWebView webView: WKWebView)
+    func sessionWillIssueRequest(session: TLSession)
+    func sessionDidFinishRequest(session: TLSession)
+    func session(session: TLSession, didInitializeWebView webView: WKWebView)
 }
 
-public class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegate {
-    public weak var delegate: SessionDelegate?
+public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVisitableDelegate {
+    public weak var delegate: TLSessionDelegate?
 
     var initialized: Bool = false
     var location: NSURL?
 
-    var activeVisitable: Visitable?
+    var activeVisitable: TLVisitable?
     var activeVisitCompleted = false
 
     lazy var webView: WKWebView = {
@@ -41,7 +41,7 @@ public class Session: NSObject, WKScriptMessageHandler, VisitDelegate, Visitable
     
     // MARK: Visiting
 
-    private var visit: Visit?
+    private var visit: TLVisit?
     
     public func visit(location: NSURL) {
         if let visitable = delegate?.visitableForLocation(location, session: self) {
@@ -51,7 +51,7 @@ public class Session: NSObject, WKScriptMessageHandler, VisitDelegate, Visitable
         }
     }
     
-    private func presentVisitable(visitable: Visitable) -> Bool {
+    private func presentVisitable(visitable: TLVisitable) -> Bool {
         if let delegate = self.delegate {
             delegate.presentVisitable(visitable, forSession: self)
             return true
@@ -60,15 +60,15 @@ public class Session: NSObject, WKScriptMessageHandler, VisitDelegate, Visitable
         }
     }
     
-    private func issueVisitForVisitable(visitable: Visitable) {
+    private func issueVisitForVisitable(visitable: TLVisitable) {
         if let location = visitable.location {
-            let visit: Visit
+            let visit: TLVisit
             let request = requestForLocation(location)
             
             if initialized {
-                visit = TurbolinksVisit(visitable: visitable, request: request)
+                visit = TLTurbolinksVisit(visitable: visitable, request: request)
             } else {
-                visit = WebViewVisit(visitable: visitable, request: request, webView: webView)
+                visit = TLWebViewVisit(visitable: visitable, request: request, webView: webView)
             }
             
             self.visit?.cancelNavigation()
@@ -118,32 +118,32 @@ public class Session: NSObject, WKScriptMessageHandler, VisitDelegate, Visitable
     
     // MARK: VisitDelegate
     
-    func visitWillIssueRequest(visit: Visit) {
+    func visitWillIssueRequest(visit: TLVisit) {
         delegate?.sessionWillIssueRequest(self)
     }
     
-    func visitDidFinishRequest(visit: Visit) {
+    func visitDidFinishRequest(visit: TLVisit) {
         delegate?.sessionDidFinishRequest(self)
     }
 
-    func visit(visit: Visit, didCompleteWithResponse response: String) {
+    func visit(visit: TLVisit, didCompleteWithResponse response: String) {
         loadResponse(response)
         self.activeVisitCompleted = true
     }
     
-    func visitDidCompleteWebViewLoad(visit: Visit) {
+    func visitDidCompleteWebViewLoad(visit: TLVisit) {
         self.initialized = true
         delegate?.session(self, didInitializeWebView: webView)
         self.activeVisitCompleted = true
     }
    
-    func visitDidStart(visit: Visit) {
+    func visitDidStart(visit: TLVisit) {
         let visitable = visit.visitable
         visitable.showScreenshot()
         visitable.showActivityIndicator()
     }
     
-    func visitDidFinish(visit: Visit) {
+    func visitDidFinish(visit: TLVisit) {
         let visitable = visit.visitable
 
         if activeVisitCompleted {
@@ -162,11 +162,11 @@ public class Session: NSObject, WKScriptMessageHandler, VisitDelegate, Visitable
 
     // MARK: VisitableDelegate
 
-    public func visitableViewWillDisappear(visitable: Visitable) {
+    public func visitableViewWillDisappear(visitable: TLVisitable) {
         visitable.updateScreenshot()
     }
 
-    public func visitableViewWillAppear(visitable: Visitable) {
+    public func visitableViewWillAppear(visitable: TLVisitable) {
         if let activeVisitable = self.activeVisitable {
             if activeVisitable === visitable {
                 // Back swipe gesture canceled
@@ -184,24 +184,24 @@ public class Session: NSObject, WKScriptMessageHandler, VisitDelegate, Visitable
         }
     }
     
-    public func visitableViewDidDisappear(visitable: Visitable) {
+    public func visitableViewDidDisappear(visitable: TLVisitable) {
         deactivateVisitable(visitable)
     }
 
-    public func visitableViewDidAppear(visitable: Visitable) {
+    public func visitableViewDidAppear(visitable: TLVisitable) {
         if let location = visitable.location {
             activateVisitable(visitable)
             pushLocation(location)
         }
     }
 
-    private func activateVisitable(visitable: Visitable) {
+    private func activateVisitable(visitable: TLVisitable) {
         self.activeVisitable = visitable
         self.activeVisitCompleted = false
         visitable.activateWebView(webView)
     }
     
-    private func deactivateVisitable(visitable: Visitable) {
+    private func deactivateVisitable(visitable: TLVisitable) {
         visitable.deactivateWebView()
     }
     

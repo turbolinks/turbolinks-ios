@@ -3,7 +3,7 @@ import WebKit
 import Turbolinks
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, SessionDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLSessionDelegate {
     let userAgent = "BC3 iOS"
    
     var window: UIWindow?
@@ -16,8 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, Ses
         return window?.rootViewController as? UINavigationController
     }
 
-    lazy var session: Session = {
-        let session = Session()
+    lazy var session: TLSession = {
+        let session = TLSession()
         session.delegate = self
         return session
     }()
@@ -54,15 +54,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, Ses
 
     // MARK: SessionDelegate
 
-    func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: Session) {
+    func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: TLSession) {
         // ...
     }
 
-    func presentVisitable(visitable: Visitable, forSession session: Session) {
+    func presentVisitable(visitable: TLVisitable, forSession session: TLSession) {
         navigationController?.pushViewController(visitable.viewController, animated: true)
     }
     
-    func visitableForLocation(location: NSURL, session: Session) -> Visitable {
+    func visitableForLocation(location: NSURL, session: TLSession) -> TLVisitable {
         let visitable = WebViewController()
         visitable.location = location
         visitable.visitableDelegate = session
@@ -75,15 +75,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, Ses
         return request
     }
    
-    func sessionWillIssueRequest(session: Session) {
+    func sessionWillIssueRequest(session: TLSession) {
         application.networkActivityIndicatorVisible = true
     }
     
-    func sessionDidFinishRequest(session: Session) {
+    func sessionDidFinishRequest(session: TLSession) {
         application.networkActivityIndicatorVisible = false
     }
 
-    func session(session: Session, didInitializeWebView webView: WKWebView) {
+    func session(session: TLSession, didInitializeWebView webView: WKWebView) {
         webView.navigationDelegate = self
     }
     

@@ -1,18 +1,18 @@
 import WebKit
 
-protocol VisitDelegate: class {
-    func visitWillIssueRequest(visit: Visit)
-    func visitDidFinishRequest(visit: Visit)
-    func visit(visit: Visit, didCompleteWithResponse response: String)
-    func visitDidCompleteWebViewLoad(visit: Visit)
-    func visitDidStart(visit: Visit)
-    func visitDidFinish(visit: Visit)
+protocol TLVisitDelegate: class {
+    func visitWillIssueRequest(visit: TLVisit)
+    func visitDidFinishRequest(visit: TLVisit)
+    func visit(visit: TLVisit, didCompleteWithResponse response: String)
+    func visitDidCompleteWebViewLoad(visit: TLVisit)
+    func visitDidStart(visit: TLVisit)
+    func visitDidFinish(visit: TLVisit)
 }
 
-class Visit: NSObject {
-    var visitable: Visitable
+class TLVisit: NSObject {
+    var visitable: TLVisitable
     var request: NSURLRequest
-    weak var delegate: VisitDelegate?
+    weak var delegate: TLVisitDelegate?
     
     enum State: String {
         case Initialized = "Initialized"
@@ -25,7 +25,7 @@ class Visit: NSObject {
     var navigationState: State = .Started
     var finished: Bool = false
     
-    init(visitable: Visitable, request: NSURLRequest) {
+    init(visitable: TLVisitable, request: NSURLRequest) {
         self.visitable = visitable
         self.request = request
     }
@@ -88,8 +88,8 @@ class Visit: NSObject {
     private func issueRequest() {}
     private func abortRequest() {}
     
-    private lazy var navigationLock: Lock = {
-        return Lock(queue: dispatch_get_main_queue())
+    private lazy var navigationLock: TLLock = {
+        return TLLock(queue: dispatch_get_main_queue())
     }()
     
     private func afterNavigationCompletion(callback: () -> ()) {
@@ -97,10 +97,10 @@ class Visit: NSObject {
     }
 }
 
-class WebViewVisit: Visit, WKNavigationDelegate {
+class TLWebViewVisit: TLVisit, WKNavigationDelegate {
     var webView: WKWebView
     
-    init(visitable: Visitable, request: NSURLRequest, webView: WKWebView) {
+    init(visitable: TLVisitable, request: NSURLRequest, webView: WKWebView) {
         self.webView = webView
         super.init(visitable: visitable, request: request)
     }
@@ -117,7 +117,7 @@ class WebViewVisit: Visit, WKNavigationDelegate {
     }
 }
 
-class TurbolinksVisit: Visit {
+class TLTurbolinksVisit: TLVisit {
     private var sessionTask: NSURLSessionTask?
     
     override private func issueRequest() {
