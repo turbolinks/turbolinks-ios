@@ -1,7 +1,7 @@
 import UIKit
 import WebKit
 
-protocol SessionDelegate: class {
+public protocol SessionDelegate: class {
     func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: Session)
     func presentVisitable(visitable: Visitable, forSession session: Session)
     func visitableForLocation(location: NSURL, session: Session) -> Visitable
@@ -11,8 +11,8 @@ protocol SessionDelegate: class {
     func session(session: Session, didInitializeWebView webView: WKWebView)
 }
 
-class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegate {
-    weak var delegate: SessionDelegate?
+public class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegate {
+    public weak var delegate: SessionDelegate?
 
     var initialized: Bool = false
     var location: NSURL?
@@ -24,9 +24,11 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
 
-        let userScript = NSString(contentsOfURL: NSBundle.mainBundle().URLForResource("app", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
-        configuration.userContentController.addUserScript(WKUserScript(source: userScript as! String, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true))
-        configuration.userContentController.addScriptMessageHandler(self, name: "turbolinks")
+        if let bundle = NSBundle(identifier: "com.basecamp.Turbolinks") {
+            let userScript = NSString(contentsOfURL: bundle.URLForResource("NativeAdapter", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
+            configuration.userContentController.addUserScript(WKUserScript(source: userScript as! String, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true))
+            configuration.userContentController.addScriptMessageHandler(self, name: "turbolinks")
+        }
 
         self.delegate?.prepareWebViewConfiguration(configuration, forSession: self)
 
@@ -41,7 +43,7 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
 
     private var visit: Visit?
     
-    func visit(location: NSURL) {
+    public func visit(location: NSURL) {
         if let visitable = delegate?.visitableForLocation(location, session: self) {
             if presentVisitable(visitable) {
                 issueVisitForVisitable(visitable)
@@ -84,7 +86,7 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
     
     // MARK: WKScriptMessageHandler
 
-    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+    public func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         if let body = message.body as? [String: AnyObject],
             name = body["name"] as? String {
                 switch name {
@@ -160,11 +162,11 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
 
     // MARK: VisitableDelegate
 
-    func visitableViewWillDisappear(visitable: Visitable) {
+    public func visitableViewWillDisappear(visitable: Visitable) {
         visitable.updateScreenshot()
     }
 
-    func visitableViewWillAppear(visitable: Visitable) {
+    public func visitableViewWillAppear(visitable: Visitable) {
         if let activeVisitable = self.activeVisitable {
             if activeVisitable === visitable {
                 // Back swipe gesture canceled
@@ -182,11 +184,11 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
         }
     }
     
-    func visitableViewDidDisappear(visitable: Visitable) {
+    public func visitableViewDidDisappear(visitable: Visitable) {
         deactivateVisitable(visitable)
     }
 
-    func visitableViewDidAppear(visitable: Visitable) {
+    public func visitableViewDidAppear(visitable: Visitable) {
         if let location = visitable.location {
             activateVisitable(visitable)
             pushLocation(location)

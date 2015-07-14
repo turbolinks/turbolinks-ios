@@ -1,5 +1,6 @@
 import UIKit
 import WebKit
+import Turbolinks
 
 class WebViewController: UIViewController, Visitable {
     weak var visitableDelegate: VisitableDelegate?

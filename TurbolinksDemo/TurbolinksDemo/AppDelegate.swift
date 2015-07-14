@@ -1,5 +1,6 @@
 import UIKit
 import WebKit
+import Turbolinks
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, SessionDelegate {

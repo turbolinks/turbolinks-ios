@@ -1,14 +1,14 @@
 import UIKit
 import WebKit
 
-protocol VisitableDelegate: class {
+public protocol VisitableDelegate: class {
     func visitableViewWillDisappear(visitable: Visitable)
     func visitableViewDidDisappear(visitable: Visitable)
     func visitableViewWillAppear(visitable: Visitable)
     func visitableViewDidAppear(visitable: Visitable)
 }
 
-protocol Visitable: class {
+public protocol Visitable: class {
     weak var visitableDelegate: VisitableDelegate? { get set }
     var location: NSURL? { get set }
     var viewController: UIViewController { get }
