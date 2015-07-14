@@ -1,11 +1,3 @@
-//
-//  Turbolinks.h
-//  Turbolinks
-//
-//  Created by Jeffrey Hardy on 2015-07-14.
-//  Copyright (c) 2015 Basecamp. All rights reserved.
-//
-
 #import <UIKit/UIKit.h>
 
 //! Project version number for Turbolinks.
