@@ -84,18 +84,14 @@ class WebViewController: UIViewController, Visitable {
         screenshotView.backgroundColor = UIColor.whiteColor()
         return screenshotView
     }()
+    
+    private var screenshotVisible: Bool {
+        return self.screenshotView.superview == self.view
+    }
 
     func updateScreenshot() {
-        let screenshotVisible = self.screenshotView.superview === view
-
-        if screenshotVisible {
-            hideScreenshot()
-        }
-
-        self.screenshotView = view.snapshotViewAfterScreenUpdates(false)
-        
-        if screenshotVisible {
-            showScreenshot()
+        if !screenshotVisible {
+            self.screenshotView = view.snapshotViewAfterScreenUpdates(false)
         }
     }
 
