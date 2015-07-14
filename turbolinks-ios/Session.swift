@@ -16,7 +16,9 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
 
     var initialized: Bool = false
     var location: NSURL?
+
     var activeVisitable: Visitable?
+    var activeVisitCompleted = false
 
     lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
@@ -124,11 +126,13 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
 
     func visit(visit: Visit, didCompleteWithResponse response: String) {
         loadResponse(response)
+        self.activeVisitCompleted = true
     }
     
     func visitDidCompleteWebViewLoad(visit: Visit) {
         self.initialized = true
         delegate?.session(self, didInitializeWebView: webView)
+        self.activeVisitCompleted = true
     }
    
     func visitDidStart(visit: Visit) {
@@ -159,7 +163,11 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
     func visitableViewWillAppear(visitable: Visitable) {
         if let activeVisitable = self.activeVisitable {
             if activeVisitable === visitable {
-                visit?.cancelNavigation()
+                if activeVisitCompleted {
+                    visit?.cancelNavigation()
+                } else {
+                    issueVisitForVisitable(visitable)
+                }
             } else if visit?.visitable !== visitable {
                 issueVisitForVisitable(visitable)
             }
@@ -179,6 +187,7 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
 
     private func activateVisitable(visitable: Visitable) {
         self.activeVisitable = visitable
+        self.activeVisitCompleted = false
         visitable.activateWebView(webView)
     }
     
