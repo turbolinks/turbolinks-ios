@@ -160,7 +160,7 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
         if let activeVisitable = self.activeVisitable {
             if activeVisitable === visitable {
                 visit?.cancelNavigation()
-            } else if visit == nil {
+            } else if visit?.visitable !== visitable {
                 issueVisitForVisitable(visitable)
             }
         }
