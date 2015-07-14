@@ -24,11 +24,10 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
 
-        if let bundle = NSBundle(identifier: "com.basecamp.Turbolinks") {
-            let userScript = NSString(contentsOfURL: bundle.URLForResource("NativeAdapter", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
-            configuration.userContentController.addUserScript(WKUserScript(source: userScript as! String, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true))
-            configuration.userContentController.addScriptMessageHandler(self, name: "turbolinks")
-        }
+        let bundle = NSBundle(forClass: self.dynamicType)
+        let userScript = String(contentsOfURL: bundle.URLForResource("NativeAdapter", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
+        configuration.userContentController.addUserScript(WKUserScript(source: userScript, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true))
+        configuration.userContentController.addScriptMessageHandler(self, name: "turbolinks")
 
         self.delegate?.prepareWebViewConfiguration(configuration, forSession: self)
 
