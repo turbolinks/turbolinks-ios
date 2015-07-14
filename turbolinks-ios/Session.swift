@@ -136,6 +136,14 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
         self.visit = nil
     }
    
+    private func loadResponse(response: String) {
+        invokeJavaScriptMethod("Turbolinks.controller.loadResponse", withArguments: [response]) { (result, error) -> () in
+            after(100) {
+                visit?.finish()
+            }
+        }
+    }
+
     // MARK: VisitableDelegate
 
     func visitableViewWillDisappear(visitable: Visitable) {
@@ -173,19 +181,18 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
     }
     
     private func pushLocation(location: NSURL) {
-        let locationJSON = JSONStringify(location.absoluteString!)
-        webView.evaluateJavaScript("Turbolinks.controller.history.push(\(locationJSON))", completionHandler: nil)
+        invokeJavaScriptMethod("Turbolinks.controller.history.push", withArguments: [location.absoluteString!])
+    }
+    
+    // MARK: JavaScript Evaluation
+
+    private func invokeJavaScriptMethod(methodName: String, withArguments arguments: [AnyObject], completionHandler: ((AnyObject?, NSError?) -> ())? = { (_, _) -> () in }) {
+        let script = scriptForInvokingJavaScriptMethod(methodName, withArguments: arguments)
+        webView.evaluateJavaScript(script, completionHandler: completionHandler)
     }
 
-    // MARK: Request/Response Cycle
-
-    private func loadResponse(response: String) {
-        let responseJSON = JSONStringify(response)
-        webView.evaluateJavaScript("Turbolinks.controller.loadResponse(\(responseJSON))", completionHandler: { (result, error) -> () in
-            after(100) {
-                visit?.finish()
-            }
-        })
+    private func scriptForInvokingJavaScriptMethod(methodName: String, withArguments arguments: [AnyObject]) -> String {
+        return methodName + "(" + ", ".join(arguments.map(JSONStringify)) + ")"
     }
 }
 
