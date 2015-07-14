@@ -14,10 +14,6 @@ class Visit: NSObject {
     var request: NSURLRequest
     weak var delegate: VisitDelegate?
     
-    var location: NSURL? {
-        return self.visitable.location
-    }
-    
     enum State: String {
         case Initialized = "Initialized"
         case Started = "Started"
