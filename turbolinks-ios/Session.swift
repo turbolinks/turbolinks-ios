@@ -163,12 +163,16 @@ class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegat
     func visitableViewWillAppear(visitable: Visitable) {
         if let activeVisitable = self.activeVisitable {
             if activeVisitable === visitable {
+                // Back swipe gesture canceled
                 if activeVisitCompleted {
+                    // Top visitable was fully loaded before the gesture began
                     visit?.cancelNavigation()
                 } else {
+                    // Top visitable was *not* fully loaded before the gesture began
                     issueVisitForVisitable(visitable)
                 }
             } else if visit?.visitable !== visitable {
+                // Navigating backward
                 issueVisitForVisitable(visitable)
             }
         }
