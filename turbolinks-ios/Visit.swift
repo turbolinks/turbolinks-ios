@@ -1,15 +1,15 @@
-import Foundation
+import WebKit
 
 protocol VisitDelegate: class {
     func visitWillIssueRequest(visit: Visit)
     func visitDidFinishRequest(visit: Visit)
-    func issueExternalRequestForVisit(visit: Visit)
     func visit(visit: Visit, didCompleteWithResponse response: String)
+    func visitDidCompleteWebViewLoad(visit: Visit)
     func visitDidStart(visit: Visit)
     func visitDidFinish(visit: Visit)
 }
 
-class Visit {
+class Visit: NSObject {
     var visitable: Visitable
     var request: NSURLRequest
     weak var delegate: VisitDelegate?
@@ -101,9 +101,23 @@ class Visit {
     }
 }
 
-class WebViewVisit: Visit {
+class WebViewVisit: Visit, WKNavigationDelegate {
+    var webView: WKWebView
+    
+    init(visitable: Visitable, request: NSURLRequest, webView: WKWebView) {
+        self.webView = webView
+        super.init(visitable: visitable, request: request)
+    }
+    
     override private func issueRequest() {
-        delegate?.issueExternalRequestForVisit(self)
+        webView.navigationDelegate = self
+        webView.loadRequest(request)
+    }
+    
+    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+        webView.navigationDelegate = nil
+        delegate?.visitDidCompleteWebViewLoad(self)
+        finish()
     }
 }
 

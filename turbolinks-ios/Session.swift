@@ -10,7 +10,7 @@ protocol SessionDelegate: class {
     func sessionDidFinishRequest(session: Session)
 }
 
-class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, VisitDelegate, VisitableDelegate {
+class Session: NSObject, WKScriptMessageHandler, VisitDelegate, VisitableDelegate {
     weak var delegate: SessionDelegate?
 
     var initialized: Bool = false
@@ -30,7 +30,6 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, VisitDele
         let webView = WKWebView(frame: CGRectZero, configuration: configuration)
         webView.setTranslatesAutoresizingMaskIntoConstraints(false)
         webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
-        webView.navigationDelegate = self
 
         return webView
     }()
@@ -64,7 +63,7 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, VisitDele
             if initialized {
                 visit = TurbolinksVisit(visitable: visitable, request: request)
             } else {
-                visit = WebViewVisit(visitable: visitable, request: request)
+                visit = WebViewVisit(visitable: visitable, request: request, webView: webView)
             }
             
             self.visit = visit
@@ -75,15 +74,6 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, VisitDele
     
     private func requestForLocation(location: NSURL) -> NSURLRequest {
         return delegate?.requestForLocation(location) ?? NSURLRequest(URL: location)
-    }
-    
-    // MARK: WKNavigationDelegate
-    
-    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
-        if let visit = self.visit {
-            self.initialized = true
-            visit.finish()
-        }
     }
     
     // MARK: WKScriptMessageHandler
@@ -123,14 +113,14 @@ class Session: NSObject, WKNavigationDelegate, WKScriptMessageHandler, VisitDele
         delegate?.sessionDidFinishRequest(self)
     }
 
-    func issueExternalRequestForVisit(visit: Visit) {
-        webView.loadRequest(visit.request)
-    }
-    
     func visit(visit: Visit, didCompleteWithResponse response: String) {
         loadResponse(response)
     }
     
+    func visitDidCompleteWebViewLoad(visit: Visit) {
+        self.initialized = true
+    }
+   
     func visitDidStart(visit: Visit) {
         let visitable = visit.visitable
         visitable.showScreenshot()
