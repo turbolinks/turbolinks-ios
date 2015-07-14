@@ -86,7 +86,17 @@ class WebViewController: UIViewController, Visitable {
     }()
 
     func updateScreenshot() {
+        let screenshotVisible = self.screenshotView.superview === view
+
+        if screenshotVisible {
+            hideScreenshot()
+        }
+
         self.screenshotView = view.snapshotViewAfterScreenUpdates(false)
+        
+        if screenshotVisible {
+            showScreenshot()
+        }
     }
 
     func showScreenshot() {
