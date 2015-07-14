@@ -30,6 +30,12 @@ class TLVisit: NSObject {
         self.request = request
     }
     
+    func cancel() {
+        cancelRequest()
+        cancelNavigation()
+        finish()
+    }
+
     func finish() {
         if !finished {
             println("\(self) finish()")

@@ -71,8 +71,7 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
                 visit = TLWebViewVisit(visitable: visitable, request: request, webView: webView)
             }
             
-            self.visit?.cancelNavigation()
-            self.visit?.cancelRequest()
+            self.visit?.cancel()
             self.visit = visit
 
             visit.delegate = self
@@ -172,7 +171,7 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
                 // Back swipe gesture canceled
                 if activeVisitCompleted {
                     // Top visitable was fully loaded before the gesture began
-                    visit?.cancelNavigation()
+                    visit?.cancel()
                 } else {
                     // Top visitable was *not* fully loaded before the gesture began
                     issueVisitForVisitable(visitable)
