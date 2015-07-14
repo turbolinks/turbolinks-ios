@@ -15,6 +15,7 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     public weak var delegate: TLSessionDelegate?
 
     var initialized: Bool = false
+    var refreshing: Bool = false
     var location: NSURL?
 
     var activeVisitable: TLVisitable?
@@ -133,6 +134,11 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
         self.initialized = true
         delegate?.session(self, didInitializeWebView: webView)
         self.activeVisitCompleted = true
+
+        if refreshing {
+            self.refreshing = false
+            activeVisitable?.didRefresh()
+        }
     }
    
     func visitDidStart(visit: TLVisit) {
@@ -203,6 +209,13 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
         visitable.deactivateWebView()
     }
     
+    public func visitableDidRequestRefresh(visitable: TLVisitable) {
+        self.initialized = false
+        self.refreshing = true
+        visitable.willRefresh()
+        issueVisitForVisitable(visitable)
+    }
+
     private func pushLocation(location: NSURL) {
         invokeJavaScriptMethod("Turbolinks.controller.history.push", withArguments: [location.absoluteString!])
     }

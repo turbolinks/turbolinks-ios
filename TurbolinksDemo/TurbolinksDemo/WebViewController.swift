@@ -43,13 +43,17 @@ class WebViewController: UIViewController, TLVisitable {
 
     func activateWebView(webView: WKWebView) {
         self.webView = webView
+
         view.addSubview(webView)
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
         view.sendSubviewToBack(webView)
+
+        installRefreshControl()
     }
 
     func deactivateWebView() {
+        removeRefreshControl()
         webView = nil
     }
 
@@ -63,8 +67,10 @@ class WebViewController: UIViewController, TLVisitable {
     }()
     
     func showActivityIndicator() {
-        activityIndicator.startAnimating()
-        view.bringSubviewToFront(activityIndicator)
+        if !refreshing {
+            activityIndicator.startAnimating()
+            view.bringSubviewToFront(activityIndicator)
+        }
     }
 
     func hideActivityIndicator() {
@@ -97,7 +103,7 @@ class WebViewController: UIViewController, TLVisitable {
     }
 
     func showScreenshot() {
-        if !screenshotVisible {
+        if !screenshotVisible && !refreshing {
             let borderView = UIView(frame: CGRectMake(0, 0, view.frame.width, 5))
             borderView.backgroundColor = UIColor.greenColor()
             screenshotView.addSubview(borderView)
@@ -110,5 +116,42 @@ class WebViewController: UIViewController, TLVisitable {
 
     func hideScreenshot() {
         screenshotView.removeFromSuperview()
+    }
+
+    // MARK: Pull to Refresh
+
+    lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: "pullToRefresh", forControlEvents: .ValueChanged)
+        refreshControl.setTranslatesAutoresizingMaskIntoConstraints(false)
+        return refreshControl
+    }()
+
+    var refreshableScrollView: UIScrollView? {
+        return webView?.scrollView
+    }
+
+    var refreshing: Bool {
+        return refreshControl.refreshing
+    }
+
+    func installRefreshControl() {
+        refreshableScrollView?.addSubview(refreshControl)
+    }
+
+    func removeRefreshControl() {
+        refreshControl.removeFromSuperview()
+    }
+
+    func pullToRefresh() {
+        visitableDelegate?.visitableDidRequestRefresh(self)
+    }
+
+    func willRefresh() {
+        refreshControl.beginRefreshing()
+    }
+
+    func didRefresh() {
+        refreshControl.endRefreshing()
     }
 }

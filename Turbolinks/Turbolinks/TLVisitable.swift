@@ -6,6 +6,7 @@ public protocol TLVisitableDelegate: class {
     func visitableViewDidDisappear(visitable: TLVisitable)
     func visitableViewWillAppear(visitable: TLVisitable)
     func visitableViewDidAppear(visitable: TLVisitable)
+    func visitableDidRequestRefresh(visitable: TLVisitable)
 }
 
 public protocol TLVisitable: class {
@@ -20,4 +21,6 @@ public protocol TLVisitable: class {
     func updateScreenshot()
     func showScreenshot()
     func hideScreenshot()
+    func willRefresh()
+    func didRefresh()
 }
