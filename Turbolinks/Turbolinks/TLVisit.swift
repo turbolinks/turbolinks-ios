@@ -23,8 +23,18 @@ class TLVisit: NSObject {
     
     var requestState: State = .Initialized
     var navigationState: State = .Started
+
     var finished: Bool = false
     
+    var completed: Bool {
+        return finished && !canceled
+    }
+    
+    var canceled: Bool {
+        return finished && (requestState == .Canceled || navigationState == .Canceled)
+    }
+    
+   
     init(visitable: TLVisitable, request: NSURLRequest) {
         self.visitable = visitable
         self.request = request

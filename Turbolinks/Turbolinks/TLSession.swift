@@ -18,9 +18,10 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     var refreshing: Bool = false
     var location: NSURL?
 
-    var activeVisitable: TLVisitable?
-    var activeVisitCompleted = false
-
+    var currentVisitable: TLVisitable?
+    var currentVisit: TLVisit?
+    var lastVisit: TLVisit?
+    
     lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
@@ -127,21 +128,20 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
 
     func visit(visit: TLVisit, didCompleteWithResponse response: String) {
         loadResponse(response)
-        self.activeVisitCompleted = true
     }
     
     func visitDidCompleteWebViewLoad(visit: TLVisit) {
         self.initialized = true
         delegate?.session(self, didInitializeWebView: webView)
-        self.activeVisitCompleted = true
 
         if refreshing {
             self.refreshing = false
-            activeVisitable?.didRefresh()
+            currentVisitable?.didRefresh()
         }
     }
    
     func visitDidStart(visit: TLVisit) {
+        self.lastVisit = visit
         let visitable = visit.visitable
         visitable.showScreenshot()
         visitable.showActivityIndicator()
@@ -150,7 +150,7 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     func visitDidFinish(visit: TLVisit) {
         let visitable = visit.visitable
 
-        if activeVisitCompleted {
+        if visit.completed {
             visitable.hideScreenshot()
             visitable.hideActivityIndicator()
         }
@@ -163,7 +163,7 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
             self.invokeJavaScriptMethod("Turbolinks.controller.adapter.notifyOfNextRender")
         }
     }
-
+    
     // MARK: VisitableDelegate
 
     public func visitableViewWillDisappear(visitable: TLVisitable) {
@@ -171,10 +171,10 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     }
 
     public func visitableViewWillAppear(visitable: TLVisitable) {
-        if let activeVisitable = self.activeVisitable {
-            if activeVisitable === visitable {
+        if let currentVisitable = self.currentVisitable, currentVisit = self.currentVisit {
+            if currentVisitable === visitable {
                 // Back swipe gesture canceled
-                if activeVisitCompleted {
+                if currentVisit.completed {
                     // Top visitable was fully loaded before the gesture began
                     visit?.cancel()
                 } else {
@@ -200,9 +200,12 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     }
 
     private func activateVisitable(visitable: TLVisitable) {
-        self.activeVisitable = visitable
-        self.activeVisitCompleted = false
+        self.currentVisitable = visitable
         visitable.activateWebView(webView)
+        
+        if let lastVisit = self.lastVisit where !lastVisit.canceled {
+            self.currentVisit = lastVisit
+        }
     }
     
     private func deactivateVisitable(visitable: TLVisitable) {
