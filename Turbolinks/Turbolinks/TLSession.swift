@@ -142,6 +142,10 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
    
     func visitDidStart(visit: TLVisit) {
         self.lastVisit = visit
+        if currentVisit == nil {
+            self.currentVisit = lastVisit
+        }
+
         let visitable = visit.visitable
         visitable.showScreenshot()
         visitable.showActivityIndicator()
@@ -215,6 +219,8 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     public func visitableDidRequestRefresh(visitable: TLVisitable) {
         self.initialized = false
         self.refreshing = true
+        self.currentVisit = nil
+
         visitable.willRefresh()
         issueVisitForVisitable(visitable)
     }
