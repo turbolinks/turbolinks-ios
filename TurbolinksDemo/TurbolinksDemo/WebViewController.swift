@@ -116,7 +116,9 @@ class WebViewController: UIViewController, TLVisitable {
     }
 
     func hideScreenshot() {
-        screenshotView.removeFromSuperview()
+        after(50) {
+            self.screenshotView.removeFromSuperview()
+        }
     }
 
     // MARK: Pull to Refresh
