@@ -16,7 +16,6 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
 
     var initialized: Bool = false
     var refreshing: Bool = false
-    var location: NSURL?
 
     var currentVisitable: TLVisitable?
     var currentVisit: TLVisit?
