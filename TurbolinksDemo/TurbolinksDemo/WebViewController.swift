@@ -141,6 +141,7 @@ class WebViewController: UIViewController, TLVisitable {
     }
 
     func removeRefreshControl() {
+        refreshControl.endRefreshing()
         refreshControl.removeFromSuperview()
     }
 
