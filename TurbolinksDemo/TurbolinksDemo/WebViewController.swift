@@ -16,7 +16,7 @@ class WebViewController: UIViewController, TLVisitable {
 
         view.backgroundColor = UIColor.whiteColor()
         
-        insertActivityIndicator()
+        installActivityIndicator()
     }
 
     override func viewWillDisappear(animated: Bool) {
@@ -77,7 +77,7 @@ class WebViewController: UIViewController, TLVisitable {
         activityIndicator.stopAnimating()
     }
 
-    private func insertActivityIndicator() {
+    private func installActivityIndicator() {
         view.addSubview(activityIndicator)
         view.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterX, relatedBy: .Equal, toItem: view, attribute: .CenterX, multiplier: 1, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterY, relatedBy: .Equal, toItem: view, attribute: .CenterY, multiplier: 1, constant: 0))
