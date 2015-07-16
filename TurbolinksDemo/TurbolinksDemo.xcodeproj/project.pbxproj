@@ -16,6 +16,8 @@
 		1FC168211B55A16C00AA6F43 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FC168201B55A16C00AA6F43 /* Images.xcassets */; };
 		1FC168241B55A16C00AA6F43 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FC168221B55A16C00AA6F43 /* LaunchScreen.xib */; };
 		1FC168301B55A16C00AA6F43 /* TurbolinksDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC1682F1B55A16C00AA6F43 /* TurbolinksDemoTests.swift */; };
+		224BE7DF1B58447200909D74 /* Turbolinks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 224BE7DA1B5842FB00909D74 /* Turbolinks.framework */; };
+		224BE7E01B58447200909D74 /* Turbolinks.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 224BE7DA1B5842FB00909D74 /* Turbolinks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,13 @@
 			remoteGlobalIDString = 1FC167EE1B55A14900AA6F43;
 			remoteInfo = Turbolinks;
 		};
+		224BE7E11B58447200909D74 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 224BE7D41B5842FB00909D74 /* Turbolinks.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 1FC167EE1B55A14900AA6F43;
+			remoteInfo = Turbolinks;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -56,6 +65,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				224BE7E01B58447200909D74 /* Turbolinks.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -82,6 +92,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				224BE7DF1B58447200909D74 /* Turbolinks.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -178,6 +189,7 @@
 			);
 			dependencies = (
 				224BE7DE1B58432D00909D74 /* PBXTargetDependency */,
+				224BE7E21B58447200909D74 /* PBXTargetDependency */,
 			);
 			name = TurbolinksDemo;
 			productName = TurbolinksDemo;
@@ -315,6 +327,11 @@
 			isa = PBXTargetDependency;
 			name = Turbolinks;
 			targetProxy = 224BE7DD1B58432D00909D74 /* PBXContainerItemProxy */;
+		};
+		224BE7E21B58447200909D74 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Turbolinks;
+			targetProxy = 224BE7E11B58447200909D74 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
