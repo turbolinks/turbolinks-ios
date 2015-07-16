@@ -249,8 +249,3 @@ func JSONStringify(object: AnyObject) -> String {
         return "null"
     }
 }
-
-func after(msec: Int, callback: () -> ()) {
-    let time = dispatch_time(DISPATCH_TIME_NOW, (Int64)(100 * NSEC_PER_MSEC))
-    dispatch_after(time, dispatch_get_main_queue(), callback)
-}
