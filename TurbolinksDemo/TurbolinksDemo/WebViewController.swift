@@ -4,6 +4,7 @@ import Turbolinks
 
 class WebViewController: UIViewController, TLVisitable {
     weak var visitableDelegate: TLVisitableDelegate?
+
     var location: NSURL?
     var webView: WKWebView?
     var viewController: UIViewController { return self }

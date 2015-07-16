@@ -153,14 +153,13 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     }
     
     func visitDidFinish(visit: TLVisit) {
-        let visitable = visit.visitable
+        self.visit = nil
 
         if visit.completed {
+            let visitable = visit.visitable
             visitable.hideScreenshot()
             visitable.hideActivityIndicator()
         }
-
-        self.visit = nil
     }
    
     private func loadResponse(response: String) {
