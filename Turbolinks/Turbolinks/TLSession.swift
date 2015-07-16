@@ -18,9 +18,7 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     var refreshing: Bool = false
 
     var currentVisitable: TLVisitable?
-    var currentVisit: TLVisit?
-    var lastVisit: TLVisit?
-    
+
     lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
@@ -41,8 +39,9 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     
     // MARK: Visiting
 
-    private var visit: TLVisit?
-    
+    private var currentVisit: TLVisit? { didSet { println("currentVisit = \(currentVisit)") } }
+    private var lastIssuedVisit: TLVisit? { didSet { println("lastIssuedVisit = \(lastIssuedVisit)") } }
+
     public func visit(location: NSURL) {
         if let visitable = delegate?.visitableForLocation(location, session: self) {
             if presentVisitable(visitable) {
@@ -71,8 +70,8 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
                 visit = TLWebViewVisit(visitable: visitable, request: request, webView: webView)
             }
             
-            self.visit?.cancel()
-            self.visit = visit
+            self.lastIssuedVisit?.cancel()
+            self.lastIssuedVisit = visit
 
             visit.delegate = self
             visit.startRequest()
@@ -106,13 +105,13 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     }
 
     private func locationChanged(location: NSURL) {
-        if let visit = self.visit where visit === currentVisit {
+        if let visit = self.lastIssuedVisit where visit === currentVisit {
             visit.completeNavigation()
         }
     }
     
     private func webViewRendered() {
-        if let visit = self.visit where visit === currentVisit {
+        if let visit = self.lastIssuedVisit where visit === currentVisit {
             visit.finish()
         }
     }
@@ -142,9 +141,8 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     }
    
     func visitDidStart(visit: TLVisit) {
-        self.lastVisit = visit
         if currentVisit == nil {
-            self.currentVisit = lastVisit
+            self.currentVisit = lastIssuedVisit
         }
 
         let visitable = visit.visitable
@@ -153,8 +151,6 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     }
     
     func visitDidFinish(visit: TLVisit) {
-        self.visit = nil
-
         if visit.completed {
             let visitable = visit.visitable
             visitable.hideScreenshot()
@@ -180,12 +176,12 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
                 // Back swipe gesture canceled
                 if currentVisit.completed {
                     // Top visitable was fully loaded before the gesture began
-                    visit?.cancel()
+                    lastIssuedVisit?.cancel()
                 } else {
                     // Top visitable was *not* fully loaded before the gesture began
                     issueVisitForVisitable(visitable)
                 }
-            } else if visit?.visitable !== visitable {
+            } else if lastIssuedVisit?.visitable !== visitable {
                 // Navigating backward
                 issueVisitForVisitable(visitable)
             }
@@ -207,8 +203,8 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
         self.currentVisitable = visitable
         visitable.activateWebView(webView)
         
-        if let lastVisit = self.lastVisit where !lastVisit.canceled {
-            self.currentVisit = lastVisit
+        if let visit = self.lastIssuedVisit where !visit.canceled {
+            self.currentVisit = visit
         }
     }
     
