@@ -1,12 +1,18 @@
 import WebKit
 
+let TLVisitErrorDomain = "com.basecamp.Turbolinks"
+
 protocol TLVisitDelegate: class {
-    func visitWillIssueRequest(visit: TLVisit)
-    func visitDidFinishRequest(visit: TLVisit)
-    func visit(visit: TLVisit, didCompleteWithResponse response: String)
-    func visitDidCompleteWebViewLoad(visit: TLVisit)
     func visitDidStart(visit: TLVisit)
+    func visitDidFail(visit: TLVisit)
     func visitDidFinish(visit: TLVisit)
+
+    func visitWillIssueRequest(visit: TLVisit)
+    func visit(visit: TLVisit, didFailRequestWithError error: NSError)
+    func visit(visit: TLVisit, didFailRequestWithStatusCode statusCode: Int)
+    func visit(visit: TLVisit, didCompleteRequestWithResponse response: String)
+    func visitDidCompleteWebViewLoad(visit: TLVisit)
+    func visitDidFinishRequest(visit: TLVisit)
 }
 
 class TLVisit: NSObject {
@@ -25,6 +31,7 @@ class TLVisit: NSObject {
     var navigationState: State = .Started
 
     var finished: Bool = false
+    var failed: Bool = false
     
     var completed: Bool {
         return finished && !canceled
@@ -44,6 +51,14 @@ class TLVisit: NSObject {
         cancelRequest()
         cancelNavigation()
         finish()
+    }
+
+    func fail() {
+        if !finished && !failed {
+            self.failed = true
+            delegate?.visitDidFail(self)
+            finish()
+        }
     }
 
     func finish() {
@@ -131,6 +146,32 @@ class TLWebViewVisit: TLVisit, WKNavigationDelegate {
         delegate?.visitDidCompleteWebViewLoad(self)
         finish()
     }
+
+    func webView(webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void) {
+        if let httpResponse = navigationResponse.response as? NSHTTPURLResponse {
+            if httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 {
+                decisionHandler(.Allow)
+            } else {
+                decisionHandler(.Cancel)
+                delegate?.visit(self, didFailRequestWithStatusCode: httpResponse.statusCode)
+                fail()
+            }
+        }
+    }
+
+    func webView(webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: NSError) {
+        if !failed {
+            delegate?.visit(self, didFailRequestWithError: error)
+            fail()
+        }
+    }
+
+    func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
+        if !failed {
+            delegate?.visit(self, didFailRequestWithError: error)
+            fail()
+        }
+    }
 }
 
 class TLTurbolinksVisit: TLVisit {
@@ -140,11 +181,9 @@ class TLTurbolinksVisit: TLVisit {
         if sessionTask == nil {
             let session = NSURLSession.sharedSession()
             self.sessionTask = session.dataTaskWithRequest(request) { (data, response, error) in
-                if let httpResponse = response as? NSHTTPURLResponse {
-                    self.handleResponse(httpResponse, data: data)
-                }
-
+                let body = NSString(data: data, encoding: NSUTF8StringEncoding) as? String
                 dispatch_async(dispatch_get_main_queue()) {
+                    self.handleResponse(response, body: body, error: error)
                     self.completeRequest()
                 }
             }
@@ -157,14 +196,30 @@ class TLTurbolinksVisit: TLVisit {
         sessionTask?.cancel()
         self.sessionTask = nil
     }
-    
-    private func handleResponse(httpResponse: NSHTTPURLResponse, data: NSData) {
-        if httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 {
-            if let response = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
-                self.afterNavigationCompletion() {
-                    self.delegate?.visit(self, didCompleteWithResponse: response)
-                }
+
+    private func handleResponse(response: NSURLResponse, body: String?, error: NSError!) {
+        if body == nil {
+            handleError(NSError(domain: TLVisitErrorDomain, code: 0, userInfo: nil))
+        } else if error != nil {
+            handleError(error)
+        } else if let httpResponse = response as? NSHTTPURLResponse {
+            handleHTTPResponse(httpResponse, body: body!)
+        }
+    }
+
+    private func handleHTTPResponse(httpResponse: NSHTTPURLResponse, body: String) {
+        afterNavigationCompletion() {
+            if httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 {
+                self.delegate?.visit(self, didCompleteRequestWithResponse: body)
+            } else {
+                self.delegate?.visit(self, didFailRequestWithStatusCode: httpResponse.statusCode)
+                self.fail()
             }
         }
+    }
+
+    private func handleError(error: NSError) {
+        delegate?.visit(self, didFailRequestWithError: error)
+        fail()
     }
 }

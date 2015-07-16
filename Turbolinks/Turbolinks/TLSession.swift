@@ -118,28 +118,6 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     
     // MARK: VisitDelegate
     
-    func visitWillIssueRequest(visit: TLVisit) {
-        delegate?.sessionWillIssueRequest(self)
-    }
-    
-    func visitDidFinishRequest(visit: TLVisit) {
-        delegate?.sessionDidFinishRequest(self)
-    }
-
-    func visit(visit: TLVisit, didCompleteWithResponse response: String) {
-        loadResponse(response)
-    }
-    
-    func visitDidCompleteWebViewLoad(visit: TLVisit) {
-        self.initialized = true
-        delegate?.session(self, didInitializeWebView: webView)
-
-        if refreshing {
-            self.refreshing = false
-            currentVisitable?.didRefresh()
-        }
-    }
-   
     func visitDidStart(visit: TLVisit) {
         if currentVisit == nil {
             self.currentVisit = lastIssuedVisit
@@ -149,15 +127,49 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
         visitable.showScreenshot()
         visitable.showActivityIndicator()
     }
-    
+
+    func visitDidFail(visit: TLVisit) {
+        println("visitDidFail \(visit)")
+    }
+
     func visitDidFinish(visit: TLVisit) {
         if visit.completed {
             let visitable = visit.visitable
             visitable.hideScreenshot()
             visitable.hideActivityIndicator()
         }
+
+        if refreshing {
+            self.refreshing = false
+            currentVisitable?.didRefresh()
+        }
+   }
+    
+    func visitWillIssueRequest(visit: TLVisit) {
+        delegate?.sessionWillIssueRequest(self)
+    }
+    
+    func visit(visit: TLVisit, didFailRequestWithError error: NSError) {
+        println("visit \(visit) didFailWithError \(error)")
+    }
+
+    func visit(visit: TLVisit, didFailRequestWithStatusCode statusCode: Int) {
+        println("visit \(visit) didFailWithHTTPStatusCode \(statusCode)")
+    }
+
+    func visit(visit: TLVisit, didCompleteRequestWithResponse response: String) {
+        loadResponse(response)
+    }
+    
+    func visitDidCompleteWebViewLoad(visit: TLVisit) {
+        self.initialized = true
+        delegate?.session(self, didInitializeWebView: webView)
     }
    
+    func visitDidFinishRequest(visit: TLVisit) {
+        delegate?.sessionDidFinishRequest(self)
+    }
+
     private func loadResponse(response: String) {
         invokeJavaScriptMethod("Turbolinks.controller.loadResponse", withArguments: [response]) { (result, error) -> () in
             self.invokeJavaScriptMethod("Turbolinks.controller.adapter.notifyOfNextRender")
