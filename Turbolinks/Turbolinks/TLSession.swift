@@ -105,13 +105,13 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     }
 
     private func locationChanged(location: NSURL) {
-        if let visit = self.lastIssuedVisit where visit === currentVisit {
+        if let visit = self.currentVisit where visit === lastIssuedVisit {
             visit.completeNavigation()
         }
     }
     
     private func webViewRendered() {
-        if let visit = self.lastIssuedVisit where visit === currentVisit {
+        if let visit = self.currentVisit where visit === lastIssuedVisit {
             visit.finish()
         }
     }
@@ -171,17 +171,17 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     }
 
     public func visitableViewWillAppear(visitable: TLVisitable) {
-        if let currentVisitable = self.currentVisitable, currentVisit = self.currentVisit {
+        if let currentVisitable = self.currentVisitable, currentVisit = self.currentVisit, lastIssuedVisit = self.lastIssuedVisit {
             if currentVisitable === visitable {
                 // Back swipe gesture canceled
                 if currentVisit.completed {
                     // Top visitable was fully loaded before the gesture began
-                    lastIssuedVisit?.cancel()
+                    lastIssuedVisit.cancel()
                 } else {
                     // Top visitable was *not* fully loaded before the gesture began
                     issueVisitForVisitable(visitable)
                 }
-            } else if lastIssuedVisit?.visitable !== visitable {
+            } else if lastIssuedVisit.visitable !== visitable || lastIssuedVisit.canceled {
                 // Navigating backward
                 issueVisitForVisitable(visitable)
             }
