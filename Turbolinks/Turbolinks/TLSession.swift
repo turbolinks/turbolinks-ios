@@ -107,13 +107,15 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     }
 
     private func locationChanged(location: NSURL) {
-        if let visit = self.visit {
+        if let visit = self.visit where visit === currentVisit {
             visit.completeNavigation()
         }
     }
     
     private func webViewRendered() {
-        visit?.finish()
+        if let visit = self.visit where visit === currentVisit {
+            visit.finish()
+        }
     }
     
     // MARK: VisitDelegate
