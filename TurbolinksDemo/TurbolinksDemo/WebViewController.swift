@@ -71,6 +71,12 @@ class WebViewController: UIViewController, TLVisitable {
         return activityIndicator
     }()
     
+    private func installActivityIndicator() {
+        view.addSubview(activityIndicator)
+        view.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterX, relatedBy: .Equal, toItem: view, attribute: .CenterX, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterY, relatedBy: .Equal, toItem: view, attribute: .CenterY, multiplier: 1, constant: 0))
+    }
+
     func showActivityIndicator() {
         if !refreshing {
             activityIndicator.startAnimating()
@@ -82,12 +88,6 @@ class WebViewController: UIViewController, TLVisitable {
         activityIndicator.stopAnimating()
     }
 
-    private func installActivityIndicator() {
-        view.addSubview(activityIndicator)
-        view.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterX, relatedBy: .Equal, toItem: view, attribute: .CenterX, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterY, relatedBy: .Equal, toItem: view, attribute: .CenterY, multiplier: 1, constant: 0))
-    }
-   
     // MARK: Screenshots
 
     private lazy var screenshotView: UIView = {
@@ -138,7 +138,7 @@ class WebViewController: UIViewController, TLVisitable {
         return refreshControl.refreshing
     }
 
-    func installRefreshControl() {
+    private func installRefreshControl() {
         webView?.scrollView.addSubview(refreshControl)
     }
 
