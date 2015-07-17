@@ -98,7 +98,7 @@ class ViewController: UIViewController, TLVisitable {
     }()
     
     private var screenshotVisible: Bool {
-        return self.screenshotView.superview == self.view
+        return screenshotView.superview == view
     }
 
     func updateScreenshot() {
