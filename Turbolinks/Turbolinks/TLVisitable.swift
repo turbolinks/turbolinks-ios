@@ -16,11 +16,14 @@ public protocol TLVisitable: class {
     
     func activateWebView(webView: WKWebView)
     func deactivateWebView()
+
     func showActivityIndicator()
     func hideActivityIndicator()
+
     func updateScreenshot()
     func showScreenshot()
     func hideScreenshot()
+
     func willRefresh()
     func didRefresh()
 }

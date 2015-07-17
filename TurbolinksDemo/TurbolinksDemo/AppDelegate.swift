@@ -78,7 +78,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
     func sessionWillIssueRequest(session: TLSession) {
         application.networkActivityIndicatorVisible = true
     }
-    
+
+    func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withError error: NSError) {
+        println("REQUEST ERROR: \(error)")
+    }
+
+    func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withStatusCode statusCode: Int) {
+        println("RECEIVED ERROR RESPONSE: \(statusCode)")
+    }
+
     func sessionDidFinishRequest(session: TLSession) {
         application.networkActivityIndicatorVisible = false
     }

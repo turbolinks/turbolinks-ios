@@ -7,6 +7,8 @@ public protocol TLSessionDelegate: class {
     func visitableForLocation(location: NSURL, session: TLSession) -> TLVisitable
     func requestForLocation(location: NSURL) -> NSURLRequest
     func sessionWillIssueRequest(session: TLSession)
+    func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withError error: NSError)
+    func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withStatusCode statusCode: Int)
     func sessionDidFinishRequest(session: TLSession)
     func session(session: TLSession, didInitializeWebView webView: WKWebView)
 }
@@ -129,7 +131,8 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     }
 
     func visitDidFail(visit: TLVisit) {
-        println("visitDidFail \(visit)")
+        let visitable = visit.visitable
+        visitable.deactivateWebView()
     }
 
     func visitDidFinish(visit: TLVisit) {
@@ -150,11 +153,11 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     }
     
     func visit(visit: TLVisit, didFailRequestWithError error: NSError) {
-        println("visit \(visit) didFailWithError \(error)")
+        delegate?.session(self, didFailRequestForVisitable: visit.visitable, withError: error)
     }
 
     func visit(visit: TLVisit, didFailRequestWithStatusCode statusCode: Int) {
-        println("visit \(visit) didFailWithHTTPStatusCode \(statusCode)")
+        delegate?.session(self, didFailRequestForVisitable: visit.visitable, withStatusCode: statusCode)
     }
 
     func visit(visit: TLVisit, didCompleteRequestWithResponse response: String) {
@@ -186,7 +189,7 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
         if let currentVisitable = self.currentVisitable, currentVisit = self.currentVisit, lastIssuedVisit = self.lastIssuedVisit {
             if currentVisitable === visitable {
                 // Back swipe gesture canceled
-                if currentVisit.completed {
+                if currentVisit.succeeded {
                     // Top visitable was fully loaded before the gesture began
                     lastIssuedVisit.cancel()
                 } else {
@@ -214,7 +217,7 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     private func activateVisitable(visitable: TLVisitable) {
         self.currentVisitable = visitable
         visitable.activateWebView(webView)
-        
+
         if let visit = self.lastIssuedVisit where !visit.canceled {
             self.currentVisit = visit
         }
