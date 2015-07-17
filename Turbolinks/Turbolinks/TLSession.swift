@@ -4,8 +4,10 @@ import WebKit
 public protocol TLSessionDelegate: class {
     func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: TLSession)
     func presentVisitable(visitable: TLVisitable, forSession session: TLSession)
+
     func visitableForLocation(location: NSURL, session: TLSession) -> TLVisitable
     func requestForLocation(location: NSURL) -> NSURLRequest
+
     func sessionWillIssueRequest(session: TLSession)
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withError error: NSError)
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withStatusCode statusCode: Int)
