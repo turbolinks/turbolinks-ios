@@ -6,8 +6,9 @@ class WebViewController: UIViewController, TLVisitable {
     weak var visitableDelegate: TLVisitableDelegate?
 
     var location: NSURL?
-    var webView: WKWebView?
     var viewController: UIViewController { return self }
+
+    // MARK: View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +42,8 @@ class WebViewController: UIViewController, TLVisitable {
     }
 
     // MARK: Web View
+
+    var webView: WKWebView?
 
     func activateWebView(webView: WKWebView) {
         self.webView = webView
@@ -131,16 +134,12 @@ class WebViewController: UIViewController, TLVisitable {
         return refreshControl
     }()
 
-    var refreshableScrollView: UIScrollView? {
-        return webView?.scrollView
-    }
-
     var refreshing: Bool {
         return refreshControl.refreshing
     }
 
     func installRefreshControl() {
-        refreshableScrollView?.addSubview(refreshControl)
+        webView?.scrollView.addSubview(refreshControl)
     }
 
     func removeRefreshControl() {
