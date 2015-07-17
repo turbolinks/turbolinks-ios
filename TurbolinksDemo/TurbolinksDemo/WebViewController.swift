@@ -129,7 +129,7 @@ class WebViewController: UIViewController, TLVisitable {
 
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: "pullToRefresh", forControlEvents: .ValueChanged)
+        refreshControl.addTarget(self, action: "requestRefresh", forControlEvents: .ValueChanged)
         refreshControl.setTranslatesAutoresizingMaskIntoConstraints(false)
         return refreshControl
     }()
@@ -147,7 +147,7 @@ class WebViewController: UIViewController, TLVisitable {
         refreshControl.removeFromSuperview()
     }
 
-    func pullToRefresh() {
+    func requestRefresh() {
         visitableDelegate?.visitableDidRequestRefresh(self)
     }
 
