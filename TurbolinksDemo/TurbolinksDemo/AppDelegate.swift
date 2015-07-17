@@ -62,14 +62,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
         navigationController?.pushViewController(visitable.viewController, animated: true)
     }
     
-    func visitableForLocation(location: NSURL, session: TLSession) -> TLVisitable {
+    func visitableForSession(session: TLSession, atLocation location: NSURL) -> TLVisitable {
         let visitable = ViewController()
         visitable.location = location
         visitable.visitableDelegate = session
         return visitable
     }
     
-    func requestForLocation(location: NSURL) -> NSURLRequest {
+    func requestForSession(session: TLSession, atLocation location: NSURL) -> NSURLRequest {
         let request = NSMutableURLRequest(URL: location)
         request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
         return request

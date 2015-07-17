@@ -5,8 +5,8 @@ public protocol TLSessionDelegate: class {
     func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: TLSession)
     func presentVisitable(visitable: TLVisitable, forSession session: TLSession)
 
-    func visitableForLocation(location: NSURL, session: TLSession) -> TLVisitable
-    func requestForLocation(location: NSURL) -> NSURLRequest
+    func visitableForSession(session: TLSession, atLocation location: NSURL) -> TLVisitable
+    func requestForSession(session: TLSession, atLocation location: NSURL) -> NSURLRequest
 
     func sessionWillIssueRequest(session: TLSession)
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withError error: NSError)
@@ -47,7 +47,7 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     private var lastIssuedVisit: TLVisit? { didSet { println("lastIssuedVisit = \(lastIssuedVisit)") } }
 
     public func visit(location: NSURL) {
-        if let visitable = delegate?.visitableForLocation(location, session: self) {
+        if let visitable = delegate?.visitableForSession(self, atLocation: location) {
             if presentVisitable(visitable) {
                 issueVisitForVisitable(visitable)
             }
@@ -83,7 +83,7 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     }
     
     private func requestForLocation(location: NSURL) -> NSURLRequest {
-        return delegate?.requestForLocation(location) ?? NSURLRequest(URL: location)
+        return delegate?.requestForSession(self, atLocation: location) ?? NSURLRequest(URL: location)
     }
     
     // MARK: WKScriptMessageHandler
