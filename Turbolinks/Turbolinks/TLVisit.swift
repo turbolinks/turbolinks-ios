@@ -197,7 +197,7 @@ class TLTurbolinksVisit: TLVisit {
         self.sessionTask = nil
     }
 
-    private func handleResponse(response: NSURLResponse, body: String?, error: NSError!) {
+    private func handleResponse(response: NSURLResponse?, body: String?, error: NSError!) {
         if body == nil {
             handleError(NSError(domain: TLVisitErrorDomain, code: 0, userInfo: nil))
         } else if error != nil {
