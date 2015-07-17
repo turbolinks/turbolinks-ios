@@ -55,6 +55,7 @@ class WebViewController: UIViewController, TLVisitable {
 
     func deactivateWebView() {
         removeRefreshControl()
+        webView?.removeFromSuperview()
         webView = nil
     }
 
