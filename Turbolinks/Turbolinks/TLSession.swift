@@ -23,7 +23,7 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
 
     var currentVisitable: TLVisitable?
 
-    lazy var webView: WKWebView = {
+    lazy var webView: TLWebView = {
         let configuration = WKWebViewConfiguration()
         configuration.userContentController = WKUserContentController()
 
@@ -34,7 +34,7 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
 
         self.delegate?.prepareWebViewConfiguration(configuration, forSession: self)
 
-        let webView = WKWebView(frame: CGRectZero, configuration: configuration)
+        let webView = TLWebView(frame: CGRectZero, configuration: configuration)
         webView.setTranslatesAutoresizingMaskIntoConstraints(false)
         webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
 
@@ -176,8 +176,8 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     }
 
     private func loadResponse(response: String) {
-        invokeJavaScriptMethod("Turbolinks.controller.loadResponse", withArguments: [response]) { (result, error) -> () in
-            self.invokeJavaScriptMethod("Turbolinks.controller.adapter.notifyOfNextRender")
+        webView.callJavaScriptFunction("Turbolinks.controller.loadResponse", withArguments: [response]) { (result, error) -> () in
+            self.webView.callJavaScriptFunction("Turbolinks.controller.adapter.notifyOfNextRender")
         }
     }
     
@@ -239,26 +239,6 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     }
 
     private func pushLocation(location: NSURL) {
-        invokeJavaScriptMethod("Turbolinks.controller.history.push", withArguments: [location.absoluteString!])
-    }
-    
-    // MARK: JavaScript Evaluation
-
-    private func invokeJavaScriptMethod(methodName: String, withArguments arguments: [AnyObject] = [], completionHandler: ((AnyObject?, NSError?) -> ())? = { (_, _) -> () in }) {
-        let script = scriptForInvokingJavaScriptMethod(methodName, withArguments: arguments)
-        webView.evaluateJavaScript(script, completionHandler: completionHandler)
-    }
-
-    private func scriptForInvokingJavaScriptMethod(methodName: String, withArguments arguments: [AnyObject]) -> String {
-        return methodName + "(" + ", ".join(arguments.map(JSONStringify)) + ")"
-    }
-}
-
-func JSONStringify(object: AnyObject) -> String {
-    if let data = NSJSONSerialization.dataWithJSONObject([object], options: nil, error: nil),
-        string = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
-            return string[Range(start: string.startIndex.successor(), end: string.endIndex.predecessor())]
-    } else {
-        return "null"
+        webView.callJavaScriptFunction("Turbolinks.controller.history.push", withArguments: [location.absoluteString!])
     }
 }

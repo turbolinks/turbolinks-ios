@@ -21,6 +21,8 @@
 		1FC167FB1B55A14900AA6F43 /* Turbolinks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC167EF1B55A14900AA6F43 /* Turbolinks.framework */; };
 		1FC168021B55A14900AA6F43 /* TurbolinksTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC168011B55A14900AA6F43 /* TurbolinksTests.swift */; };
 		224BE7D31B581DE600909D74 /* Turbolinks.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1FC167EF1B55A14900AA6F43 /* Turbolinks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		22C197DE1B59835300749B4E /* TLWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C197DD1B59835300749B4E /* TLWebView.swift */; };
+		22C197DF1B59835300749B4E /* TLWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C197DD1B59835300749B4E /* TLWebView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +60,7 @@
 		1FC167FA1B55A14900AA6F43 /* TurbolinksTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TurbolinksTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FC168001B55A14900AA6F43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1FC168011B55A14900AA6F43 /* TurbolinksTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurbolinksTests.swift; sourceTree = "<group>"; };
+		22C197DD1B59835300749B4E /* TLWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLWebView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +108,7 @@
 				1F8FC6B01B55A37400A781C8 /* TLSession.swift */,
 				1F8FC6B11B55A37400A781C8 /* TLVisit.swift */,
 				1F8FC6B21B55A37400A781C8 /* TLVisitable.swift */,
+				22C197DD1B59835300749B4E /* TLWebView.swift */,
 				1FC167F41B55A14900AA6F43 /* Turbolinks.h */,
 				1FC167F21B55A14900AA6F43 /* Supporting Files */,
 			);
@@ -249,6 +253,7 @@
 				1F8FC6B71B55A37400A781C8 /* TLSession.swift in Sources */,
 				1F8FC6BB1B55A37400A781C8 /* TLVisitable.swift in Sources */,
 				1F8FC6B51B55A37400A781C8 /* TLLock.swift in Sources */,
+				22C197DE1B59835300749B4E /* TLWebView.swift in Sources */,
 				1F8FC6B91B55A37400A781C8 /* TLVisit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -260,6 +265,7 @@
 				1F8FC6B61B55A37400A781C8 /* TLLock.swift in Sources */,
 				1F8FC6BC1B55A37400A781C8 /* TLVisitable.swift in Sources */,
 				1F8FC6BA1B55A37400A781C8 /* TLVisit.swift in Sources */,
+				22C197DF1B59835300749B4E /* TLWebView.swift in Sources */,
 				1FC168021B55A14900AA6F43 /* TurbolinksTests.swift in Sources */,
 				1F8FC6B81B55A37400A781C8 /* TLSession.swift in Sources */,
 			);
