@@ -31,8 +31,7 @@ class TLVisit: NSObject {
     var navigationState: State = .Started
 
     var finished: Bool = false
-    var failed: Bool = false
-    
+
     var completed: Bool {
         return finished && !canceled
     }
@@ -41,7 +40,12 @@ class TLVisit: NSObject {
         return finished && (requestState == .Canceled || navigationState == .Canceled)
     }
     
-   
+    var failed: Bool = false
+
+    var succeeded: Bool {
+        return completed && !failed
+    }
+
     init(visitable: TLVisitable, request: NSURLRequest) {
         self.visitable = visitable
         self.request = request
