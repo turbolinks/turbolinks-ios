@@ -2,7 +2,7 @@ import UIKit
 import WebKit
 import Turbolinks
 
-class WebViewController: UIViewController, TLVisitable {
+class ViewController: UIViewController, TLVisitable {
     weak var visitableDelegate: TLVisitableDelegate?
 
     var location: NSURL?
@@ -25,12 +25,12 @@ class WebViewController: UIViewController, TLVisitable {
         super.viewWillDisappear(animated)
         visitableDelegate?.visitableViewWillDisappear(self)
     }
-    
+
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         visitableDelegate?.visitableViewDidDisappear(self)
     }
-    
+
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         visitableDelegate?.visitableViewWillAppear(self)
@@ -70,7 +70,7 @@ class WebViewController: UIViewController, TLVisitable {
         activityIndicator.color = UIColor.grayColor()
         return activityIndicator
     }()
-    
+
     private func installActivityIndicator() {
         view.addSubview(activityIndicator)
         view.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterX, relatedBy: .Equal, toItem: view, attribute: .CenterX, multiplier: 1, constant: 0))

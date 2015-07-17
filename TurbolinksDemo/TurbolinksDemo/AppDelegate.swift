@@ -63,7 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
     }
     
     func visitableForLocation(location: NSURL, session: TLSession) -> TLVisitable {
-        let visitable = WebViewController()
+        let visitable = ViewController()
         visitable.location = location
         visitable.visitableDelegate = session
         return visitable
