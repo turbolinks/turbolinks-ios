@@ -15,7 +15,7 @@ public protocol TLSessionDelegate: class {
     func session(session: TLSession, didInitializeWebView webView: WKWebView)
 }
 
-public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVisitableDelegate {
+public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitableDelegate {
     public weak var delegate: TLSessionDelegate?
 
     var initialized: Bool = false
@@ -24,20 +24,9 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     var currentVisitable: TLVisitable?
 
     lazy var webView: TLWebView = {
-        let configuration = WKWebViewConfiguration()
-        configuration.userContentController = WKUserContentController()
-
-        let bundle = NSBundle(forClass: self.dynamicType)
-        let userScript = String(contentsOfURL: bundle.URLForResource("NativeAdapter", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
-        configuration.userContentController.addUserScript(WKUserScript(source: userScript, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true))
-        configuration.userContentController.addScriptMessageHandler(self, name: "turbolinks")
-
-        self.delegate?.prepareWebViewConfiguration(configuration, forSession: self)
-
-        let webView = TLWebView(frame: CGRectZero, configuration: configuration)
-        webView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        webView.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
-
+        let webView = TLWebView()
+        webView.delegate = self
+        self.delegate?.prepareWebViewConfiguration(webView.configuration, forSession: self)
         return webView
     }()
     
@@ -85,42 +74,26 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
     private func requestForLocation(location: NSURL) -> NSURLRequest {
         return delegate?.requestForSession(self, atLocation: location) ?? NSURLRequest(URL: location)
     }
-    
-    // MARK: WKScriptMessageHandler
 
-    public func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
-        if let body = message.body as? [String: AnyObject],
-            name = body["name"] as? String {
-                switch name {
-                case "visit":
-                    if let data = body["data"] as? String, location = NSURL(string: data) {
-                        visit(location)
-                    }
-                case "locationChanged":
-                    if let data = body["data"] as? String, location = NSURL(string: data) {
-                        locationChanged(location)
-                    }
-                case "webViewRendered":
-                    webViewRendered()
-                default:
-                    println("Unhandled message: \(name)")
-                }
-        }
+    // MARK: TLWebViewDelegate
+
+    func webView(webView: TLWebView, didRequestVisitToLocation location: NSURL) {
+        visit(location)
     }
 
-    private func locationChanged(location: NSURL) {
+    func webView(webView: TLWebView, didNavigateToLocation location: NSURL) {
         if let visit = self.currentVisit where visit === lastIssuedVisit {
             visit.completeNavigation()
         }
     }
-    
-    private func webViewRendered() {
+
+    func webViewDidRender(webView: TLWebView) {
         if let visit = self.currentVisit where visit === lastIssuedVisit {
             visit.finish()
         }
     }
     
-    // MARK: VisitDelegate
+    // MARK: TLVisitDelegate
     
     func visitDidStart(visit: TLVisit) {
         if currentVisit == nil {
@@ -181,7 +154,7 @@ public class TLSession: NSObject, WKScriptMessageHandler, TLVisitDelegate, TLVis
         }
     }
     
-    // MARK: VisitableDelegate
+    // MARK: TLVisitableDelegate
 
     public func visitableViewWillDisappear(visitable: TLVisitable) {
         visitable.updateScreenshot()

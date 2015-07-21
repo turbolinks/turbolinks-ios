@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1F8FC6B31B55A37400A781C8 /* NativeAdapter.js in Resources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AE1B55A37400A781C8 /* NativeAdapter.js */; };
-		1F8FC6B41B55A37400A781C8 /* NativeAdapter.js in Resources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AE1B55A37400A781C8 /* NativeAdapter.js */; };
+		1F8FC6B31B55A37400A781C8 /* TLWebView.js in Resources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AE1B55A37400A781C8 /* TLWebView.js */; };
+		1F8FC6B41B55A37400A781C8 /* TLWebView.js in Resources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AE1B55A37400A781C8 /* TLWebView.js */; };
 		1F8FC6B51B55A37400A781C8 /* TLLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AF1B55A37400A781C8 /* TLLock.swift */; };
 		1F8FC6B61B55A37400A781C8 /* TLLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AF1B55A37400A781C8 /* TLLock.swift */; };
 		1F8FC6B71B55A37400A781C8 /* TLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B01B55A37400A781C8 /* TLSession.swift */; };
@@ -49,7 +49,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1F8FC6AE1B55A37400A781C8 /* NativeAdapter.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = NativeAdapter.js; sourceTree = "<group>"; };
+		1F8FC6AE1B55A37400A781C8 /* TLWebView.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = TLWebView.js; sourceTree = "<group>"; };
 		1F8FC6AF1B55A37400A781C8 /* TLLock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLLock.swift; sourceTree = "<group>"; };
 		1F8FC6B01B55A37400A781C8 /* TLSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLSession.swift; sourceTree = "<group>"; };
 		1F8FC6B11B55A37400A781C8 /* TLVisit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLVisit.swift; sourceTree = "<group>"; };
@@ -103,12 +103,12 @@
 		1FC167F11B55A14900AA6F43 /* Turbolinks */ = {
 			isa = PBXGroup;
 			children = (
-				1F8FC6AE1B55A37400A781C8 /* NativeAdapter.js */,
 				1F8FC6AF1B55A37400A781C8 /* TLLock.swift */,
 				1F8FC6B01B55A37400A781C8 /* TLSession.swift */,
 				1F8FC6B11B55A37400A781C8 /* TLVisit.swift */,
 				1F8FC6B21B55A37400A781C8 /* TLVisitable.swift */,
 				22C197DD1B59835300749B4E /* TLWebView.swift */,
+				1F8FC6AE1B55A37400A781C8 /* TLWebView.js */,
 				1FC167F41B55A14900AA6F43 /* Turbolinks.h */,
 				1FC167F21B55A14900AA6F43 /* Supporting Files */,
 			);
@@ -231,7 +231,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F8FC6B31B55A37400A781C8 /* NativeAdapter.js in Resources */,
+				1F8FC6B31B55A37400A781C8 /* TLWebView.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,7 +239,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F8FC6B41B55A37400A781C8 /* NativeAdapter.js in Resources */,
+				1F8FC6B41B55A37400A781C8 /* TLWebView.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
