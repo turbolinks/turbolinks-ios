@@ -87,6 +87,13 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
+    func webViewDidRestoreSnapshot(webView: TLWebView) {
+        if let visitable = self.currentVisitable {
+            visitable.hideScreenshot()
+            visitable.hideActivityIndicator()
+        }
+    }
+
     func webViewDidLoadResponse(webView: TLWebView) {
         if let visit = self.currentVisit where visit === lastIssuedVisit {
             visit.finish()

@@ -5,15 +5,19 @@ window.TLWebView = {
         this.messageHandler.postMessage({ name: name, data: data })
     },
 
+    postMessageAfterNextRepaint: function(name, data) {
+        requestAnimationFrame(function() {
+            this.postMessage(name, data)
+        }.bind(this))
+    },
+
     pushLocation: function(location) {
         Turbolinks.controller.history.push(location)
     },
 
     loadResponse: function(response) {
         Turbolinks.controller.loadResponse(response)
-        requestAnimationFrame(function() {
-            this.postMessage("responseLoaded")
-        }.bind(this))
+        this.postMessageAfterNextRepaint("responseLoaded")
     }
 }
 
@@ -28,6 +32,10 @@ Turbolinks.NativeAdapter.prototype = {
 
     locationChanged: function(url) {
         TLWebView.postMessage("locationChanged", url)
+    },
+
+    snapshotRestored: function(url) {
+        TLWebView.postMessageAfterNextRepaint("snapshotRestored")
     }
 }
 

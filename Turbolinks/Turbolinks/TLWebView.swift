@@ -3,12 +3,14 @@ import WebKit
 enum TLScriptMessageName: String {
     case VisitRequested = "visitRequested"
     case LocationChanged = "locationChanged"
+    case SnapshotRestored = "snapshotRestored"
     case ResponseLoaded = "responseLoaded"
 }
 
 protocol TLWebViewDelegate: class {
     func webView(webView: TLWebView, didRequestVisitToLocation location: NSURL)
     func webView(webView: TLWebView, didNavigateToLocation location: NSURL)
+    func webViewDidRestoreSnapshot(webView: TLWebView)
     func webViewDidLoadResponse(webView: TLWebView)
 }
 
@@ -52,6 +54,8 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
                     if let data = body["data"] as? String, location = NSURL(string: data) {
                         delegate?.webView(self, didNavigateToLocation: location)
                     }
+                case .SnapshotRestored:
+                    delegate?.webViewDidRestoreSnapshot(self)
                 case .ResponseLoaded:
                     delegate?.webViewDidLoadResponse(self)
                 }
