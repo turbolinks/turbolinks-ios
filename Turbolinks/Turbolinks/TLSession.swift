@@ -35,7 +35,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     private var currentVisit: TLVisit? { didSet { println("currentVisit = \(currentVisit)") } }
     private var lastIssuedVisit: TLVisit? { didSet { println("lastIssuedVisit = \(lastIssuedVisit)") } }
 
-    public func visit(location: NSURL) {
+    public func visitLocation(location: NSURL) {
         if let visitable = delegate?.visitableForSession(self, atLocation: location) {
             if presentVisitable(visitable) {
                 issueVisitForVisitable(visitable)
@@ -78,7 +78,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     // MARK: TLWebViewDelegate
 
     func webView(webView: TLWebView, didRequestVisitToLocation location: NSURL) {
-        visit(location)
+        visitLocation(location)
     }
 
     func webView(webView: TLWebView, didNavigateToLocation location: NSURL) {

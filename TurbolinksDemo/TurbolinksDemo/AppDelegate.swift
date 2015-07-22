@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         NSUserDefaults.standardUserDefaults().registerDefaults(["UserAgent": userAgent])
-        session.visit(NSURL(string: "http://bc3.dev/195539477/")!)
+        session.visitLocation(NSURL(string: "http://bc3.dev/195539477/")!)
         return true
     }
 
