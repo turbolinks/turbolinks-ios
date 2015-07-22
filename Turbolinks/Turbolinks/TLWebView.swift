@@ -25,8 +25,8 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         configuration.userContentController.addUserScript(WKUserScript(source: userScript, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true))
         configuration.userContentController.addScriptMessageHandler(self, name: "turbolinks")
 
-        self.setTranslatesAutoresizingMaskIntoConstraints(false)
-        self.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
+        setTranslatesAutoresizingMaskIntoConstraints(false)
+        scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
     }
 
     func pushLocation(location: NSURL) {

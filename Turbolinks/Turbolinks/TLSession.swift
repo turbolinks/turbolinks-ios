@@ -63,7 +63,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
                 visit = TLWebViewVisit(visitable: visitable, request: request, webView: webView)
             }
             
-            self.lastIssuedVisit?.cancel()
+            lastIssuedVisit?.cancel()
             self.lastIssuedVisit = visit
 
             visit.delegate = self
