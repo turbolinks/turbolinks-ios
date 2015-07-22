@@ -32,15 +32,15 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
     }
 
     func pushLocation(location: NSURL) {
-        callJavaScriptFunction("TLWebView.pushLocation", withArguments: [location.absoluteString!])
+        callJavaScriptFunction("webView.pushLocation", withArguments: [location.absoluteString!])
     }
 
     func restoreSnapshot() {
-        callJavaScriptFunction("TLWebView.restoreSnapshot")
+        callJavaScriptFunction("webView.restoreSnapshot")
     }
    
     func loadResponse(response: String) {
-        callJavaScriptFunction("TLWebView.loadResponse", withArguments: [response])
+        callJavaScriptFunction("webView.loadResponse", withArguments: [response])
     }
 
     // MARK: WKScriptMessageHandler

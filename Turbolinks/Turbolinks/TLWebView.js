@@ -1,10 +1,10 @@
-function TLWebViewAdapter(controller, messageHandler) {
+function TLWebView(controller, messageHandler) {
     this.controller = controller
     this.messageHandler = messageHandler
     controller.adapter = this
 }
 
-TLWebViewAdapter.prototype = {
+TLWebView.prototype = {
     pushLocation: function(location) {
         this.controller.pushHistory(location)
     },
@@ -43,5 +43,5 @@ TLWebViewAdapter.prototype = {
     }
 }
 
-window.TLWebView = new TLWebViewAdapter(Turbolinks.controller, webkit.messageHandlers.turbolinks)
+window.webView = new TLWebView(Turbolinks.controller, webkit.messageHandlers.turbolinks)
 document.documentElement.setAttribute("data-bridge-configuration", "ios")
