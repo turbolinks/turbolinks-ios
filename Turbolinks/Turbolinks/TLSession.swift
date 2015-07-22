@@ -87,7 +87,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
-    func webViewDidRender(webView: TLWebView) {
+    func webViewDidLoadResponse(webView: TLWebView) {
         if let visit = self.currentVisit where visit === lastIssuedVisit {
             visit.finish()
         }
@@ -136,7 +136,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func visit(visit: TLVisit, didCompleteRequestWithResponse response: String) {
-        loadResponse(response)
+        webView.loadResponse(response)
     }
     
     func visitDidCompleteWebViewLoad(visit: TLVisit) {
@@ -148,12 +148,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         delegate?.sessionDidFinishRequest(self)
     }
 
-    private func loadResponse(response: String) {
-        webView.callJavaScriptFunction("Turbolinks.controller.loadResponse", withArguments: [response]) { (result, error) -> () in
-            self.webView.callJavaScriptFunction("Turbolinks.controller.adapter.notifyOfNextRender")
-        }
-    }
-    
     // MARK: TLVisitableDelegate
 
     public func visitableViewWillDisappear(visitable: TLVisitable) {
@@ -185,7 +179,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     public func visitableViewDidAppear(visitable: TLVisitable) {
         if let location = visitable.location {
             activateVisitable(visitable)
-            pushLocation(location)
+            webView.pushLocation(location)
         }
     }
 
@@ -209,9 +203,5 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
         visitable.willRefresh()
         issueVisitForVisitable(visitable)
-    }
-
-    private func pushLocation(location: NSURL) {
-        webView.callJavaScriptFunction("Turbolinks.controller.history.push", withArguments: [location.absoluteString!])
     }
 }

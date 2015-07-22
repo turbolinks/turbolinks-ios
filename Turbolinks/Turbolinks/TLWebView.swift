@@ -1,15 +1,15 @@
 import WebKit
 
 enum TLScriptMessageName: String {
-    case VisitRequested = "visit"
+    case VisitRequested = "visitRequested"
     case LocationChanged = "locationChanged"
-    case WebViewRendered = "webViewRendered"
+    case ResponseLoaded = "responseLoaded"
 }
 
 protocol TLWebViewDelegate: class {
     func webView(webView: TLWebView, didRequestVisitToLocation location: NSURL)
     func webView(webView: TLWebView, didNavigateToLocation location: NSURL)
-    func webViewDidRender(webView: TLWebView)
+    func webViewDidLoadResponse(webView: TLWebView)
 }
 
 class TLWebView: WKWebView, WKScriptMessageHandler {
@@ -29,6 +29,14 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         self.scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
     }
 
+    func pushLocation(location: NSURL) {
+        callJavaScriptFunction("TLWebView.pushLocation", withArguments: [location.absoluteString!])
+    }
+
+    func loadResponse(response: String) {
+        callJavaScriptFunction("TLWebView.loadResponse", withArguments: [response])
+    }
+
     // MARK: WKScriptMessageHandler
 
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
@@ -44,15 +52,15 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
                     if let data = body["data"] as? String, location = NSURL(string: data) {
                         delegate?.webView(self, didNavigateToLocation: location)
                     }
-                case .WebViewRendered:
-                    delegate?.webViewDidRender(self)
+                case .ResponseLoaded:
+                    delegate?.webViewDidLoadResponse(self)
                 }
         }
     }
 
     // MARK: JavaScript Evaluation
 
-    func callJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject] = [], completionHandler: ((AnyObject?, NSError?) -> ())? = { (_, _) -> () in }) {
+    private func callJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject] = [], completionHandler: ((AnyObject?, NSError?) -> ())? = { (_, _) -> () in }) {
         let script = scriptForCallingJavaScriptFunction(functionExpression, withArguments: arguments)
         evaluateJavaScript(script, completionHandler: completionHandler)
     }

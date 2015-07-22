@@ -1,28 +1,33 @@
+window.TLWebView = {
+    messageHandler: webkit.messageHandlers.turbolinks,
+
+    postMessage: function(name, data) {
+        this.messageHandler.postMessage({ name: name, data: data })
+    },
+
+    pushLocation: function(location) {
+        Turbolinks.controller.history.push(location)
+    },
+
+    loadResponse: function(response) {
+        Turbolinks.controller.loadResponse(response)
+        requestAnimationFrame(function() {
+            this.postMessage("responseLoaded")
+        }.bind(this))
+    }
+}
+
 Turbolinks.NativeAdapter = function(delegate) {
     this.delegate = delegate
-    this.messageHandler = webkit.messageHandlers.turbolinks
 }
 
 Turbolinks.NativeAdapter.prototype = {
     visitLocation: function(url) {
-        this.postMessage("visit", url)
+        TLWebView.postMessage("visitRequested", url)
     },
 
     locationChanged: function(url) {
-        this.postMessage("locationChanged", url)
-    },
-
-    notifyOfNextRender: function() {
-        var _this = this
-        requestAnimationFrame(function() {
-            _this.postMessage("webViewRendered")
-        })
-    },
-
-    // Private
-
-    postMessage: function(name, data) {
-        this.messageHandler.postMessage({ name: name, data: data })
+        TLWebView.postMessage("locationChanged", url)
     }
 }
 
