@@ -84,6 +84,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     func webView(webView: TLWebView, didNavigateToLocation location: NSURL) {
         if let visit = self.currentVisit where visit === lastIssuedVisit {
             visit.completeNavigation()
+            webView.restoreSnapshot()
         }
     }
 
