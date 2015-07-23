@@ -79,20 +79,11 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
     }
 
     private func scriptForCallingJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject]) -> String {
-        func join(joiner: String, elements: [String]) -> String {
-            var result = ""
-            for i in 0..<elements.count {
-                if i > 0 { result += joiner }
-                result += elements[i]
-            }
-            return result
-        }
-
-        return functionExpression + "(" + join(", ", arguments.map(encodeObjectAsJSON)) + ")"
+        return functionExpression + "(" + encodeJavaScriptArguments(arguments) + ")"
     }
 
-    private func encodeObjectAsJSON(object: AnyObject) -> String {
-        if let data = NSJSONSerialization.dataWithJSONObject([object], options: nil, error: nil),
+    private func encodeJavaScriptArguments(arguments: [AnyObject]) -> String {
+        if let data = NSJSONSerialization.dataWithJSONObject(arguments, options: nil, error: nil),
             string = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
                 return string[Range(start: string.startIndex.successor(), end: string.endIndex.predecessor())]
         } else {
