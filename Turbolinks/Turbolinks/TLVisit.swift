@@ -15,8 +15,14 @@ protocol TLVisitDelegate: class {
     func visitDidFinishRequest(visit: TLVisit)
 }
 
+enum TLVisitDirection: String {
+    case Forward = "Forward"
+    case Backward = "Backward"
+}
+
 class TLVisit: NSObject {
     var visitable: TLVisitable
+    var direction: TLVisitDirection
     var request: NSURLRequest
     weak var delegate: TLVisitDelegate?
     
@@ -46,8 +52,9 @@ class TLVisit: NSObject {
         return completed && !failed
     }
 
-    init(visitable: TLVisitable, request: NSURLRequest) {
+    init(visitable: TLVisitable, direction: TLVisitDirection, request: NSURLRequest) {
         self.visitable = visitable
+        self.direction = direction
         self.request = request
     }
     
@@ -135,9 +142,9 @@ class TLVisit: NSObject {
 class TLWebViewVisit: TLVisit, WKNavigationDelegate {
     var webView: WKWebView
     
-    init(visitable: TLVisitable, request: NSURLRequest, webView: WKWebView) {
+    init(visitable: TLVisitable, direction: TLVisitDirection, request: NSURLRequest, webView: WKWebView) {
         self.webView = webView
-        super.init(visitable: visitable, request: request)
+        super.init(visitable: visitable, direction: direction, request: request)
     }
     
     override private func issueRequest() {

@@ -38,7 +38,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     public func visitLocation(location: NSURL) {
         if let visitable = delegate?.visitableForSession(self, atLocation: location) {
             if presentVisitable(visitable) {
-                issueVisitForVisitable(visitable)
+                issueVisitForVisitable(visitable, direction: .Forward)
             }
         }
     }
@@ -52,15 +52,15 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
     
-    private func issueVisitForVisitable(visitable: TLVisitable) {
+    private func issueVisitForVisitable(visitable: TLVisitable, direction: TLVisitDirection) {
         if let location = visitable.location {
             let visit: TLVisit
             let request = requestForLocation(location)
             
             if initialized {
-                visit = TLTurbolinksVisit(visitable: visitable, request: request)
+                visit = TLTurbolinksVisit(visitable: visitable, direction: direction, request: request)
             } else {
-                visit = TLWebViewVisit(visitable: visitable, request: request, webView: webView)
+                visit = TLWebViewVisit(visitable: visitable, direction: direction, request: request, webView: webView)
             }
             
             lastIssuedVisit?.cancel()
@@ -171,11 +171,11 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
                     lastIssuedVisit.cancel()
                 } else {
                     // Top visitable was *not* fully loaded before the gesture began
-                    issueVisitForVisitable(visitable)
+                    issueVisitForVisitable(visitable, direction: .Forward)
                 }
             } else if lastIssuedVisit.visitable !== visitable || lastIssuedVisit.canceled {
                 // Navigating backward
-                issueVisitForVisitable(visitable)
+                issueVisitForVisitable(visitable, direction: .Backward)
             }
         }
     }
@@ -210,6 +210,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         self.currentVisit = nil
 
         visitable.willRefresh()
-        issueVisitForVisitable(visitable)
+        issueVisitForVisitable(visitable, direction: .Forward)
     }
 }
