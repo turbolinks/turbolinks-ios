@@ -117,10 +117,6 @@ class ViewController: UIViewController, TLVisitable {
 
     func showScreenshot() {
         if !screenshotVisible && !refreshing {
-            let borderView = UIView(frame: CGRectMake(0, 0, view.frame.width, 5))
-            borderView.backgroundColor = UIColor.greenColor()
-            screenshotView.addSubview(borderView)
-
             view.addSubview(screenshotView)
             view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: nil, metrics: nil, views: [ "view": screenshotView ]))
             view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: nil, metrics: nil, views: [ "view": screenshotView ]))
