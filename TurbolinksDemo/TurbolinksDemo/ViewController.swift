@@ -12,12 +12,8 @@ class ViewController: UIViewController, TLVisitable {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        edgesForExtendedLayout = .None
-        automaticallyAdjustsScrollViewInsets = false
-
-        view.backgroundColor = UIColor.whiteColor()
         
+        view.backgroundColor = UIColor.whiteColor()
         installActivityIndicator()
     }
 
@@ -53,6 +49,7 @@ class ViewController: UIViewController, TLVisitable {
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
         view.sendSubviewToBack(webView)
 
+        updateWebViewScrollViewInsets()
         installRefreshControl()
     }
 
@@ -61,7 +58,18 @@ class ViewController: UIViewController, TLVisitable {
         webView?.removeFromSuperview()
         webView = nil
     }
+    
+    override func traitCollectionDidChange(previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        updateWebViewScrollViewInsets()
+    }
 
+    private func updateWebViewScrollViewInsets() {
+        let insets = UIEdgeInsets(top: topLayoutGuide.length, left: 0, bottom: bottomLayoutGuide.length, right: 0)
+        webView?.scrollView.scrollIndicatorInsets = insets
+        webView?.scrollView.contentInset = insets
+    }
+    
     // MARK: Activity Indicator
 
     lazy var activityIndicator: UIActivityIndicatorView = {
