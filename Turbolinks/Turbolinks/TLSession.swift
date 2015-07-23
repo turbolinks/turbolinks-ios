@@ -84,12 +84,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     func webView(webView: TLWebView, didNavigateToLocation location: NSURL) {
         if let visit = self.currentVisit where visit === lastIssuedVisit {
             visit.completeNavigation()
-
-            if visit.direction == .Forward {
-                webView.restoreSnapshotWithScrollPosition(.Anchored)
-            } else {
-                webView.restoreSnapshotWithScrollPosition(.Restored)
-            }
+            webView.restoreSnapshotByScrollingToSavedPosition(visit.direction == .Backward)
         }
     }
 

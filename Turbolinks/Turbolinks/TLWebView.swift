@@ -7,11 +7,6 @@ enum TLScriptMessageName: String {
     case ResponseLoaded = "responseLoaded"
 }
 
-enum TLSnapshotScrollPosition: String {
-    case Anchored = "anchored"
-    case Restored = "restored"
-}
-
 protocol TLWebViewDelegate: class {
     func webView(webView: TLWebView, didRequestVisitToLocation location: NSURL)
     func webView(webView: TLWebView, didNavigateToLocation location: NSURL)
@@ -40,8 +35,8 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         callJavaScriptFunction("webView.pushLocation", withArguments: [location.absoluteString!])
     }
 
-    func restoreSnapshotWithScrollPosition(scrollPosition: TLSnapshotScrollPosition) {
-        callJavaScriptFunction("webView.restoreSnapshotWithScrollPosition", withArguments: [scrollPosition.rawValue])
+    func restoreSnapshotByScrollingToSavedPosition(scrollToSavedPosition: Bool) {
+        callJavaScriptFunction("webView.restoreSnapshotByScrollingToSavedPosition", withArguments: [scrollToSavedPosition])
     }
    
     func loadResponse(response: String) {
