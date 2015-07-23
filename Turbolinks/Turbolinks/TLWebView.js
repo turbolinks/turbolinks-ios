@@ -9,6 +9,10 @@ TLWebView.prototype = {
         this.controller.pushHistory(location)
     },
 
+    hasSnapshotForLocation: function(location) {
+        return this.controller.hasSnapshotForLocation(location)
+    },
+
     restoreSnapshotByScrollingToSavedPosition: function(scrollToSavedPosition) {
         if (this.controller.restoreSnapshotByScrollingToSavedPosition(scrollToSavedPosition)) {
             this.postMessageAfterNextRepaint("snapshotRestored")

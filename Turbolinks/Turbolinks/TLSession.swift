@@ -111,6 +111,12 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         let visitable = visit.visitable
         visitable.showScreenshot()
         visitable.showActivityIndicator()
+
+        if let location = visitable.location where visit.direction == .Backward {
+            webView.ifSnapshotExistsForLocation(location) {
+                visitable.hideActivityIndicator()
+            }
+        }
     }
 
     func visitDidFail(visit: TLVisit) {

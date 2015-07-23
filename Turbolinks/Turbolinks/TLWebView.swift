@@ -35,6 +35,14 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         callJavaScriptFunction("webView.pushLocation", withArguments: [location.absoluteString!])
     }
 
+    func ifSnapshotExistsForLocation(location: NSURL, completion: () -> ()) {
+        callJavaScriptFunction("webView.hasSnapshotForLocation", withArguments: [location.absoluteString!]) { (result, error) -> () in
+            if let hasSnapshot = result as? Bool where hasSnapshot {
+                dispatch_async(dispatch_get_main_queue(), completion)
+            }
+        }
+    }
+
     func restoreSnapshotByScrollingToSavedPosition(scrollToSavedPosition: Bool) {
         callJavaScriptFunction("webView.restoreSnapshotByScrollingToSavedPosition", withArguments: [scrollToSavedPosition])
     }
