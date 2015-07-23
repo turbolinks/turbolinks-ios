@@ -74,20 +74,25 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
     // MARK: JavaScript Evaluation
 
     private func callJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject] = [], completionHandler: ((AnyObject?, NSError?) -> ())? = { (_, _) -> () in }) {
-        let script = scriptForCallingJavaScriptFunction(functionExpression, withArguments: arguments)
-        evaluateJavaScript(script, completionHandler: completionHandler)
+        if let script = scriptForCallingJavaScriptFunction(functionExpression, withArguments: arguments) {
+            evaluateJavaScript(script, completionHandler: completionHandler)
+        } else {
+            println("Error encoding arguments for JavaScript function `\(functionExpression)'")
+        }
     }
 
-    private func scriptForCallingJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject]) -> String {
-        return functionExpression + "(" + encodeJavaScriptArguments(arguments) + ")"
+    private func scriptForCallingJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject]) -> String? {
+        if let encodedArguments = encodeJavaScriptArguments(arguments) {
+            return functionExpression + "(" + encodedArguments + ")"
+        }
+        return nil
     }
 
-    private func encodeJavaScriptArguments(arguments: [AnyObject]) -> String {
+    private func encodeJavaScriptArguments(arguments: [AnyObject]) -> String? {
         if let data = NSJSONSerialization.dataWithJSONObject(arguments, options: nil, error: nil),
             string = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
                 return string[Range(start: string.startIndex.successor(), end: string.endIndex.predecessor())]
-        } else {
-            return "null"
         }
+        return nil
     }
 }
