@@ -74,7 +74,16 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
     }
 
     private func scriptForCallingJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject]) -> String {
-        return functionExpression + "(" + ", ".join(arguments.map(encodeObjectAsJSON)) + ")"
+        func join(joiner: String, elements: [String]) -> String {
+            var result = ""
+            for i in 0..<elements.count {
+                if i > 0 { result += joiner }
+                result += elements[i]
+            }
+            return result
+        }
+
+        return functionExpression + "(" + join(", ", arguments.map(encodeObjectAsJSON)) + ")"
     }
 
     private func encodeObjectAsJSON(object: AnyObject) -> String {
