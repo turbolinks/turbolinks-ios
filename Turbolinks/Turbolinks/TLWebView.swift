@@ -24,7 +24,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
 
         let bundle = NSBundle(forClass: self.dynamicType)
         let source = String(contentsOfURL: bundle.URLForResource("TLWebView", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
-        let userScript = WKUserScript(source: userScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
+        let userScript = WKUserScript(source: source, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
         configuration.userContentController.addUserScript(userScript)
         configuration.userContentController.addScriptMessageHandler(self, name: "turbolinks")
 
