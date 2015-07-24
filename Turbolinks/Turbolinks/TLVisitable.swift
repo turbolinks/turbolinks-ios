@@ -26,4 +26,6 @@ public protocol TLVisitable: class {
 
     func willRefresh()
     func didRefresh()
+
+    func didBecomeInteractive()
 }

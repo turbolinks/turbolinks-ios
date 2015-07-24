@@ -92,6 +92,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         if let visitable = self.currentVisitable {
             visitable.hideScreenshot()
             visitable.hideActivityIndicator()
+            visitable.didBecomeInteractive()
         }
     }
 
@@ -125,15 +126,17 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func visitDidFinish(visit: TLVisit) {
+        let visitable = visit.visitable
+
         if visit.completed {
-            let visitable = visit.visitable
             visitable.hideScreenshot()
             visitable.hideActivityIndicator()
+            visitable.didBecomeInteractive()
         }
 
         if refreshing {
-            self.refreshing = false
-            currentVisitable?.didRefresh()
+            refreshing = false
+            visitable.didRefresh()
         }
    }
     

@@ -14,6 +14,7 @@ class ViewController: UIViewController, TLVisitable {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.whiteColor()
+
         installActivityIndicator()
     }
 
@@ -35,6 +36,12 @@ class ViewController: UIViewController, TLVisitable {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         visitableDelegate?.visitableViewDidAppear(self)
+    }
+
+    // MARK: Visitable Lifecycle
+
+    func didBecomeInteractive() {
+        title = webView?.title
     }
 
     // MARK: Web View
