@@ -14,7 +14,6 @@ class ViewController: UIViewController, TLVisitable {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.whiteColor()
-
         installActivityIndicator()
     }
 
