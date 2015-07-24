@@ -23,8 +23,9 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         super.init(frame: CGRectZero, configuration: configuration)
 
         let bundle = NSBundle(forClass: self.dynamicType)
-        let userScript = String(contentsOfURL: bundle.URLForResource("TLWebView", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
-        configuration.userContentController.addUserScript(WKUserScript(source: userScript, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true))
+        let source = String(contentsOfURL: bundle.URLForResource("TLWebView", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
+        let userScript = WKUserScript(source: userScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
+        configuration.userContentController.addUserScript(userScript)
         configuration.userContentController.addScriptMessageHandler(self, name: "turbolinks")
 
         setTranslatesAutoresizingMaskIntoConstraints(false)

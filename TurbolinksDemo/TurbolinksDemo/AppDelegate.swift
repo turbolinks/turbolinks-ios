@@ -11,6 +11,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
     var application: UIApplication {
         return UIApplication.sharedApplication()
     }
+
+    var bundle: NSBundle {
+        return NSBundle.mainBundle()
+    }
     
     var navigationController: UINavigationController? {
         return window?.rootViewController as? UINavigationController
@@ -55,7 +59,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
     // MARK: SessionDelegate
 
     func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: TLSession) {
-        // ...
+        let source = String(contentsOfURL: bundle.URLForResource("TurbolinksDemo", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
+        let userScript = WKUserScript(source: source, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
+        configuration.userContentController.addUserScript(userScript)
     }
 
     func presentVisitable(visitable: TLVisitable, forSession session: TLSession) {

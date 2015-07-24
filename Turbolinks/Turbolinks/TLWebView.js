@@ -48,4 +48,3 @@ TLWebView.prototype = {
 }
 
 window.webView = new TLWebView(Turbolinks.controller, webkit.messageHandlers.turbolinks)
-document.documentElement.setAttribute("data-bridge-configuration", "ios")

@@ -16,6 +16,7 @@
 		1FC168211B55A16C00AA6F43 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FC168201B55A16C00AA6F43 /* Images.xcassets */; };
 		1FC168241B55A16C00AA6F43 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FC168221B55A16C00AA6F43 /* LaunchScreen.xib */; };
 		1FC168301B55A16C00AA6F43 /* TurbolinksDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC1682F1B55A16C00AA6F43 /* TurbolinksDemoTests.swift */; };
+		224605D51B62D1E200973B90 /* TurbolinksDemo.js in Resources */ = {isa = PBXBuildFile; fileRef = 224605D41B62D1E200973B90 /* TurbolinksDemo.js */; };
 		224BE7DF1B58447200909D74 /* Turbolinks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 224BE7DA1B5842FB00909D74 /* Turbolinks.framework */; };
 		224BE7E01B58447200909D74 /* Turbolinks.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 224BE7DA1B5842FB00909D74 /* Turbolinks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -84,6 +85,7 @@
 		1FC168291B55A16C00AA6F43 /* TurbolinksDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TurbolinksDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FC1682E1B55A16C00AA6F43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1FC1682F1B55A16C00AA6F43 /* TurbolinksDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurbolinksDemoTests.swift; sourceTree = "<group>"; };
+		224605D41B62D1E200973B90 /* TurbolinksDemo.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = TurbolinksDemo.js; sourceTree = "<group>"; };
 		224BE7D41B5842FB00909D74 /* Turbolinks.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Turbolinks.xcodeproj; path = ../Turbolinks/Turbolinks.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -130,6 +132,7 @@
 			children = (
 				1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */,
 				1F8FC6A71B55A33700A781C8 /* ViewController.swift */,
+				224605D41B62D1E200973B90 /* TurbolinksDemo.js */,
 				1FC168201B55A16C00AA6F43 /* Images.xcassets */,
 				1F8FC6AA1B55A34500A781C8 /* Main.storyboard */,
 				1FC168221B55A16C00AA6F43 /* LaunchScreen.xib */,
@@ -281,6 +284,7 @@
 			files = (
 				1F8FC6AC1B55A34500A781C8 /* Main.storyboard in Resources */,
 				1FC168241B55A16C00AA6F43 /* LaunchScreen.xib in Resources */,
+				224605D51B62D1E200973B90 /* TurbolinksDemo.js in Resources */,
 				1FC168211B55A16C00AA6F43 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
