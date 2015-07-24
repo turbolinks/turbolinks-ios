@@ -27,11 +27,11 @@ TLWebView.prototype = {
     // Adapter interface
    
     visitLocation: function(location) {
-        this.postMessage("visitRequested", location)
+        this.postMessage("visitRequested", location.absoluteURL)
     },
 
     locationChangedByActor: function(location, actor) {
-        this.postMessage("locationChanged", location)
+        this.postMessage("locationChanged", location.absoluteURL)
     },
 
     // Private
