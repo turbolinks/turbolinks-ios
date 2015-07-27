@@ -23,9 +23,13 @@ enum TLVisitDirection: String {
 class TLVisit: NSObject {
     var visitable: TLVisitable
     var direction: TLVisitDirection
-    var request: NSURLRequest
+    var webView: TLWebView
     weak var delegate: TLVisitDelegate?
     
+    var location: NSURL? {
+        return visitable.location
+    }
+   
     enum State: String {
         case Initialized = "Initialized"
         case Started = "Started"
@@ -52,10 +56,10 @@ class TLVisit: NSObject {
         return completed && !failed
     }
 
-    init(visitable: TLVisitable, direction: TLVisitDirection, request: NSURLRequest) {
+    init(visitable: TLVisitable, direction: TLVisitDirection, webView: TLWebView) {
         self.visitable = visitable
         self.direction = direction
-        self.request = request
+        self.webView = webView
     }
     
     func cancel() {
@@ -140,16 +144,19 @@ class TLVisit: NSObject {
 }
 
 class TLWebViewVisit: TLVisit, WKNavigationDelegate {
-    var webView: WKWebView
-    
-    init(visitable: TLVisitable, direction: TLVisitDirection, request: NSURLRequest, webView: WKWebView) {
-        self.webView = webView
-        super.init(visitable: visitable, direction: direction, request: request)
-    }
-    
+    lazy var request: NSURLRequest? = {
+        if let location = self.location {
+            return NSURLRequest(URL: location)
+        } else {
+            return nil
+        }
+    }()
+
     override private func issueRequest() {
-        webView.navigationDelegate = self
-        webView.loadRequest(request)
+        if let request = self.request {
+            webView.navigationDelegate = self
+            webView.loadRequest(request)
+        }
     }
     
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
@@ -185,52 +192,34 @@ class TLWebViewVisit: TLVisit, WKNavigationDelegate {
     }
 }
 
-class TLTurbolinksVisit: TLVisit {
-    private var sessionTask: NSURLSessionTask?
-    
+class TLTurbolinksVisit: TLVisit, TLRequestDelegate {
     override private func issueRequest() {
-        if sessionTask == nil {
-            let session = NSURLSession.sharedSession()
-            self.sessionTask = session.dataTaskWithRequest(request) { (data, response, error) in
-                let body = NSString(data: data, encoding: NSUTF8StringEncoding) as? String
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.handleResponse(response, body: body, error: error)
-                    self.completeRequest()
-                }
-            }
-            
-            sessionTask?.resume()
+        if let location = self.location {
+            webView.requestDelegate = self
+            webView.issueRequestForLocation(location)
         }
     }
     
     override private func abortRequest() {
-        sessionTask?.cancel()
-        self.sessionTask = nil
+        webView.abortCurrentRequest()
     }
 
-    private func handleResponse(response: NSURLResponse?, body: String?, error: NSError!) {
-        if body == nil {
-            handleError(NSError(domain: TLVisitErrorDomain, code: 0, userInfo: nil))
-        } else if error != nil {
-            handleError(error)
-        } else if let httpResponse = response as? NSHTTPURLResponse {
-            handleHTTPResponse(httpResponse, body: body!)
-        }
-    }
+    // TLRequestDelegate
 
-    private func handleHTTPResponse(httpResponse: NSHTTPURLResponse, body: String) {
+    func webView(webView: TLWebView, didReceiveResponse response: String) {
         afterNavigationCompletion() {
-            if httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 {
-                self.delegate?.visit(self, didCompleteRequestWithResponse: body)
-            } else {
-                self.delegate?.visit(self, didFailRequestWithStatusCode: httpResponse.statusCode)
-                self.fail()
-            }
+            self.delegate?.visit(self, didCompleteRequestWithResponse: response)
         }
+        completeRequest()
     }
 
-    private func handleError(error: NSError) {
-        delegate?.visit(self, didFailRequestWithError: error)
+    func webView(webView: TLWebView, requestDidFailWithStatusCode statusCode: Int?) {
+        if statusCode == nil {
+            let error = NSError(domain: TLVisitErrorDomain, code: 0, userInfo: nil)
+            delegate?.visit(self, didFailRequestWithError: error)
+        } else {
+            delegate?.visit(self, didFailRequestWithStatusCode: statusCode!)
+        }
         fail()
     }
 }

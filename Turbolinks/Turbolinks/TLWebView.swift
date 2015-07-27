@@ -4,6 +4,8 @@ enum TLScriptMessageName: String {
     case VisitRequested = "visitRequested"
     case LocationChanged = "locationChanged"
     case SnapshotRestored = "snapshotRestored"
+    case RequestCompleted = "requestCompleted"
+    case RequestFailed = "requestFailed"
     case ResponseLoaded = "responseLoaded"
 }
 
@@ -14,8 +16,14 @@ protocol TLWebViewDelegate: class {
     func webViewDidLoadResponse(webView: TLWebView)
 }
 
+protocol TLRequestDelegate: class {
+    func webView(webView: TLWebView, didReceiveResponse response: String)
+    func webView(webView: TLWebView, requestDidFailWithStatusCode statusCode: Int?)
+}
+
 class TLWebView: WKWebView, WKScriptMessageHandler {
     weak var delegate: TLWebViewDelegate?
+    weak var requestDelegate: TLRequestDelegate?
 
     init() {
         let configuration = WKWebViewConfiguration()
@@ -47,7 +55,15 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
     func restoreSnapshotByScrollingToSavedPosition(scrollToSavedPosition: Bool) {
         callJavaScriptFunction("webView.restoreSnapshotByScrollingToSavedPosition", withArguments: [scrollToSavedPosition])
     }
-   
+
+    func issueRequestForLocation(location: NSURL) {
+        callJavaScriptFunction("webView.issueRequestForLocation", withArguments: [location.absoluteString!])
+    }
+
+    func abortCurrentRequest() {
+        callJavaScriptFunction("webView.abortCurrentRequest")
+    }
+
     func loadResponse(response: String) {
         callJavaScriptFunction("webView.loadResponse", withArguments: [response])
     }
@@ -69,6 +85,13 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
                     }
                 case .SnapshotRestored:
                     delegate?.webViewDidRestoreSnapshot(self)
+                case .RequestCompleted:
+                    if let response = body["data"] as? String {
+                        requestDelegate?.webView(self, didReceiveResponse: response)
+                    }
+                case .RequestFailed:
+                    let statusCode = body["data"] as? Int
+                    requestDelegate?.webView(self, requestDidFailWithStatusCode: statusCode)
                 case .ResponseLoaded:
                     delegate?.webViewDidLoadResponse(self)
                 }

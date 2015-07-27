@@ -19,6 +19,14 @@ TLWebView.prototype = {
         }
     },
 
+    issueRequestForLocation: function(location) {
+        this.controller.issueRequestForLocation(location)
+    },
+
+    abortCurrentRequest: function() {
+        this.controller.abortCurrentRequest()
+    },
+
     loadResponse: function(response) {
         this.controller.loadResponse(response)
         this.postMessageAfterNextRepaint("responseLoaded")
@@ -32,6 +40,14 @@ TLWebView.prototype = {
 
     locationChangedByActor: function(location, actor) {
         this.postMessage("locationChanged", location.absoluteURL)
+    },
+
+    requestCompletedWithResponse: function(response) {
+        this.postMessage("requestCompleted", response)
+    },
+
+    requestFailedWithStatusCode: function(statusCode, response) {
+        this.postMessage("requestFailed", statusCode)
     },
 
     // Private

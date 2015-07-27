@@ -6,7 +6,6 @@ public protocol TLSessionDelegate: class {
     func presentVisitable(visitable: TLVisitable, forSession session: TLSession)
 
     func visitableForSession(session: TLSession, atLocation location: NSURL) -> TLVisitable
-    func requestForSession(session: TLSession, atLocation location: NSURL) -> NSURLRequest
 
     func sessionWillIssueRequest(session: TLSession)
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withError error: NSError)
@@ -55,12 +54,11 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     private func issueVisitForVisitable(visitable: TLVisitable, direction: TLVisitDirection) {
         if let location = visitable.location {
             let visit: TLVisit
-            let request = requestForLocation(location)
-            
+
             if initialized {
-                visit = TLTurbolinksVisit(visitable: visitable, direction: direction, request: request)
+                visit = TLTurbolinksVisit(visitable: visitable, direction: direction, webView: webView)
             } else {
-                visit = TLWebViewVisit(visitable: visitable, direction: direction, request: request, webView: webView)
+                visit = TLWebViewVisit(visitable: visitable, direction: direction, webView: webView)
             }
             
             lastIssuedVisit?.cancel()
@@ -71,10 +69,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
     
-    private func requestForLocation(location: NSURL) -> NSURLRequest {
-        return delegate?.requestForSession(self, atLocation: location) ?? NSURLRequest(URL: location)
-    }
-
     // MARK: TLWebViewDelegate
 
     func webView(webView: TLWebView, didRequestVisitToLocation location: NSURL) {

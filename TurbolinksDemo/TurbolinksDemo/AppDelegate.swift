@@ -75,12 +75,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
         return visitable
     }
     
-    func requestForSession(session: TLSession, atLocation location: NSURL) -> NSURLRequest {
-        let request = NSMutableURLRequest(URL: location)
-        request.setValue(userAgent, forHTTPHeaderField: "User-Agent")
-        return request
-    }
-   
     func sessionWillIssueRequest(session: TLSession) {
         application.networkActivityIndicatorVisible = true
     }
