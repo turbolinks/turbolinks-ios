@@ -51,7 +51,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
     
-    private func issueVisitForVisitable(visitable: TLVisitable, direction: TLVisitDirection) {
+    func issueVisitForVisitable(visitable: TLVisitable, direction: TLVisitDirection) {
         if let location = visitable.location {
             let visit: TLVisit
 
