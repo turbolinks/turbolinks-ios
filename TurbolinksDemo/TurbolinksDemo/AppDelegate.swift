@@ -89,18 +89,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
 
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withStatusCode statusCode: Int) {
         println("RECEIVED ERROR RESPONSE: \(statusCode)")
-    }
 
-    func session(session: TLSession, didReceiveUnauthorizedResponseForVisitable visitable: TLVisitable) {
-        println("didReceiveUnauthorizedResponseForVisitable")
-        if let navigationController = self.navigationController {
-            let authenticationController = AuthenticationController()
-            authenticationController.delegate = self
-            authenticationController.accountLocation = accountLocation
+        if statusCode == 401 {
+            if let navigationController = self.navigationController {
+                let authenticationController = AuthenticationController()
+                authenticationController.delegate = self
+                authenticationController.accountLocation = accountLocation
 
-            navigationController.presentViewController(authenticationController, animated: true) {
-                // TODO: recreate the navigation controller instead
-                navigationController.viewControllers = []
+                navigationController.presentViewController(authenticationController, animated: true) {
+                    // TODO: recreate the navigation controller instead
+                    navigationController.viewControllers = []
+                }
             }
         }
     }
