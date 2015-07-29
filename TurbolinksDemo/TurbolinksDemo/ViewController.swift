@@ -107,7 +107,7 @@ class ViewController: UIViewController, TLVisitable {
     private lazy var screenshotView: UIView = {
         let screenshotView = UIView(frame: CGRectZero)
         screenshotView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        screenshotView.backgroundColor = UIColor.whiteColor()
+        screenshotView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.90, alpha: 1)
         return screenshotView
     }()
     
