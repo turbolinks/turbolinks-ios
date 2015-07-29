@@ -8,6 +8,7 @@ public protocol TLSessionDelegate: class {
     func visitableForSession(session: TLSession, atLocation location: NSURL) -> TLVisitable
 
     func sessionWillIssueRequest(session: TLSession)
+    func session(session: TLSession, didReceiveUnauthorizedResponseForVisitable visitable: TLVisitable)
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withError error: NSError)
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withStatusCode statusCode: Int)
     func sessionDidFinishRequest(session: TLSession)
@@ -148,7 +149,11 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func visit(visit: TLVisit, didFailRequestWithStatusCode statusCode: Int) {
-        delegate?.session(self, didFailRequestForVisitable: visit.visitable, withStatusCode: statusCode)
+        if statusCode == 401 {
+            delegate?.session(self, didReceiveUnauthorizedResponseForVisitable: visit.visitable)
+        } else {
+            delegate?.session(self, didFailRequestForVisitable: visit.visitable, withStatusCode: statusCode)
+        }
     }
 
     func visit(visit: TLVisit, didCompleteRequestWithResponse response: String) {

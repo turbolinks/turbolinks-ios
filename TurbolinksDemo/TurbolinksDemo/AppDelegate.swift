@@ -3,9 +3,11 @@ import WebKit
 import Turbolinks
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLSessionDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLSessionDelegate, AuthenticationControllerDelegate {
     let userAgent = "BC3 iOS"
-   
+    let accountLocation = NSURL(string: "http://bc3.dev/195539477/")!
+    let webViewProcessPool = WKProcessPool()
+
     var window: UIWindow?
     
     var application: UIApplication {
@@ -20,17 +22,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
         return window?.rootViewController as? UINavigationController
     }
 
-    lazy var session: TLSession = {
-        let session = TLSession()
-        session.delegate = self
-        return session
+    lazy var authenticationController: AuthenticationController = {
+        let authenticationController = AuthenticationController()
+        authenticationController.accountLocation = self.accountLocation
+        authenticationController.delegate = self
+        return authenticationController
     }()
-    
+
+    var session: TLSession?
+
+    func startTurbolinksSession() {
+        session = TLSession()
+        session!.delegate = self
+        session!.visitLocation(accountLocation)
+    }
+
     // MARK: UIApplicationDelegate
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         NSUserDefaults.standardUserDefaults().registerDefaults(["UserAgent": userAgent])
-        session.visitLocation(NSURL(string: "http://bc3.dev/195539477/")!)
+        startTurbolinksSession()
         return true
     }
 
@@ -62,6 +73,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
         let source = String(contentsOfURL: bundle.URLForResource("TurbolinksDemo", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
         let userScript = WKUserScript(source: source, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
         configuration.userContentController.addUserScript(userScript)
+        configuration.processPool = webViewProcessPool
     }
 
     func presentVisitable(visitable: TLVisitable, forSession session: TLSession) {
@@ -69,7 +81,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
     }
     
     func visitableForSession(session: TLSession, atLocation location: NSURL) -> TLVisitable {
-        let visitable = ViewController()
+        let visitable = WebViewController()
         visitable.location = location
         visitable.visitableDelegate = session
         return visitable
@@ -87,6 +99,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
         println("RECEIVED ERROR RESPONSE: \(statusCode)")
     }
 
+    func session(session: TLSession, didReceiveUnauthorizedResponseForVisitable visitable: TLVisitable) {
+        if let navigationController = self.navigationController {
+            navigationController.presentViewController(authenticationController, animated: true) {
+                navigationController.viewControllers = []
+            }
+        }
+    }
+
     func sessionDidFinishRequest(session: TLSession) {
         application.networkActivityIndicatorVisible = false
     }
@@ -95,6 +115,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
         webView.navigationDelegate = self
     }
     
+    // MARK: AuthenticationControllerDelegate
+
+    func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forAuthenticationController authenticationController: AuthenticationController) {
+        configuration.processPool = webViewProcessPool
+    }
+
+    func authenticationControllerDidAuthenticate(authenticationController: AuthenticationController) {
+        if let navigationController = self.navigationController {
+            startTurbolinksSession()
+            navigationController.dismissViewControllerAnimated(true, completion: nil)
+        }
+    }
+
     // MARK: WKNavigationDelegate
     
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> ()) {
