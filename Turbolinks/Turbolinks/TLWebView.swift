@@ -25,9 +25,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
     weak var delegate: TLWebViewDelegate?
     weak var requestDelegate: TLRequestDelegate?
 
-    init() {
-        let configuration = WKWebViewConfiguration()
-        configuration.userContentController = WKUserContentController()
+    init(configuration: WKWebViewConfiguration) {
         super.init(frame: CGRectZero, configuration: configuration)
 
         let bundle = NSBundle(forClass: self.dynamicType)

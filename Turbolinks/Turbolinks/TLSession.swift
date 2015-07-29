@@ -23,9 +23,10 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     var currentVisitable: TLVisitable?
 
     lazy var webView: TLWebView = {
-        let webView = TLWebView()
+        let configuration = WKWebViewConfiguration()
+        self.delegate?.prepareWebViewConfiguration(configuration, forSession: self)
+        let webView = TLWebView(configuration: configuration)
         webView.delegate = self
-        self.delegate?.prepareWebViewConfiguration(webView.configuration, forSession: self)
         return webView
     }()
     
