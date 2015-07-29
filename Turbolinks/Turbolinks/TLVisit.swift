@@ -209,17 +209,20 @@ class TLTurbolinksVisit: TLVisit, TLRequestDelegate {
     func webView(webView: TLWebView, didReceiveResponse response: String) {
         afterNavigationCompletion() {
             self.delegate?.visit(self, didCompleteRequestWithResponse: response)
+            self.completeRequest()
         }
-        completeRequest()
     }
 
     func webView(webView: TLWebView, requestDidFailWithStatusCode statusCode: Int?) {
-        if statusCode == nil {
-            let error = NSError(domain: TLVisitErrorDomain, code: 0, userInfo: nil)
-            delegate?.visit(self, didFailRequestWithError: error)
-        } else {
-            delegate?.visit(self, didFailRequestWithStatusCode: statusCode!)
+        afterNavigationCompletion() {
+            if statusCode == nil {
+                let error = NSError(domain: TLVisitErrorDomain, code: 0, userInfo: nil)
+                self.delegate?.visit(self, didFailRequestWithError: error)
+            } else {
+                self.delegate?.visit(self, didFailRequestWithStatusCode: statusCode!)
+            }
+
+            self.fail()
         }
-        fail()
     }
 }
