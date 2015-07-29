@@ -22,26 +22,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
         return window?.rootViewController as? UINavigationController
     }
 
-    lazy var authenticationController: AuthenticationController = {
-        let authenticationController = AuthenticationController()
-        authenticationController.accountLocation = self.accountLocation
-        authenticationController.delegate = self
-        return authenticationController
-    }()
-
     var session: TLSession?
-
-    func startTurbolinksSession() {
-        session = TLSession()
-        session!.delegate = self
-        session!.visitLocation(accountLocation)
-    }
 
     // MARK: UIApplicationDelegate
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         NSUserDefaults.standardUserDefaults().registerDefaults(["UserAgent": userAgent])
-        startTurbolinksSession()
+
+        let session = TLSession()
+        session.delegate = self
+        session.visitLocation(accountLocation)
+        self.session = session
+
         return true
     }
 
@@ -100,8 +92,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
     }
 
     func session(session: TLSession, didReceiveUnauthorizedResponseForVisitable visitable: TLVisitable) {
+        println("didReceiveUnauthorizedResponseForVisitable")
         if let navigationController = self.navigationController {
+            let authenticationController = AuthenticationController()
+            authenticationController.delegate = self
+            authenticationController.accountLocation = accountLocation
+
             navigationController.presentViewController(authenticationController, animated: true) {
+                // TODO: recreate the navigation controller instead
                 navigationController.viewControllers = []
             }
         }
@@ -123,7 +121,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
 
     func authenticationControllerDidAuthenticate(authenticationController: AuthenticationController) {
         if let navigationController = self.navigationController {
-            startTurbolinksSession()
+            let session = TLSession()
+            session.delegate = self
+            session.visitLocation(accountLocation)
+            self.session = session
+
             navigationController.dismissViewControllerAnimated(true, completion: nil)
         }
     }
