@@ -3,10 +3,8 @@ import WebKit
 
 public protocol TLSessionDelegate: class {
     func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: TLSession)
-    func presentVisitable(visitable: TLVisitable, forSession session: TLSession)
-
-    func visitableForSession(session: TLSession, atLocation location: NSURL) -> TLVisitable
-
+    func session(session: TLSession, didRequestVisitForLocation location: NSURL)
+    
     func sessionWillIssueRequest(session: TLSession)
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withError error: NSError)
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withStatusCode statusCode: Int)
@@ -35,25 +33,12 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     private var currentVisit: TLVisit? { didSet { println("currentVisit = \(currentVisit)") } }
     private var lastIssuedVisit: TLVisit? { didSet { println("lastIssuedVisit = \(lastIssuedVisit)") } }
 
-    public func visitLocation(location: NSURL) {
-        if let visitable = delegate?.visitableForSession(self, atLocation: location) {
-            if presentVisitable(visitable) {
-                visitVisitable(visitable)
-            }
-        }
+    private func visitLocation(location: NSURL) {
+        delegate?.session(self, didRequestVisitForLocation: location)
     }
 
     public func visitVisitable(visitable: TLVisitable) {
         issueVisitForVisitable(visitable, direction: .Forward)
-    }
-    
-    private func presentVisitable(visitable: TLVisitable) -> Bool {
-        if let delegate = self.delegate {
-            delegate.presentVisitable(visitable, forSession: self)
-            return true
-        } else {
-            return false
-        }
     }
     
     private func issueVisitForVisitable(visitable: TLVisitable, direction: TLVisitDirection) {
