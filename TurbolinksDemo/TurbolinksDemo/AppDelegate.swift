@@ -31,9 +31,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
 
         let session = TLSession()
         session.delegate = self
-        session.visitLocation(accountLocation)
+        presentVisitableForSession(session, atLocation: accountLocation)
         self.session = session
-
+        
         return true
     }
 
@@ -59,7 +59,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-    // MARK: SessionDelegate
+    // MARK: Turbolinks
+    
+    private func presentVisitableForSession(session: TLSession, atLocation location: NSURL) {
+        let visitable = visitableForSession(session, atLocation: location)
+        navigationController?.pushViewController(visitable.viewController, animated: true)
+        session.visitVisitable(visitable)
+    }
+    
+    private func visitableForSession(session: TLSession, atLocation location: NSURL) -> TLVisitable {
+        let visitable = WebViewController()
+        visitable.location = location
+        visitable.visitableDelegate = session
+        return visitable
+    }
+    
+    // MARK: TLSessionDelegate
 
     func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: TLSession) {
         let source = String(contentsOfURL: bundle.URLForResource("TurbolinksDemo", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
@@ -67,16 +82,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
         configuration.userContentController.addUserScript(userScript)
         configuration.processPool = webViewProcessPool
     }
-
-    func presentVisitable(visitable: TLVisitable, forSession session: TLSession) {
-        navigationController?.pushViewController(visitable.viewController, animated: true)
-    }
     
-    func visitableForSession(session: TLSession, atLocation location: NSURL) -> TLVisitable {
-        let visitable = WebViewController()
-        visitable.location = location
-        visitable.visitableDelegate = session
-        return visitable
+    func session(session: TLSession, didRequestVisitForLocation location: NSURL) {
+        presentVisitableForSession(session, atLocation: location)
     }
     
     func sessionWillIssueRequest(session: TLSession) {
@@ -122,7 +130,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
         if let navigationController = self.navigationController {
             let session = TLSession()
             session.delegate = self
-            session.visitLocation(accountLocation)
+            presentVisitableForSession(session, atLocation: accountLocation)
             self.session = session
 
             navigationController.dismissViewControllerAnimated(true, completion: nil)
