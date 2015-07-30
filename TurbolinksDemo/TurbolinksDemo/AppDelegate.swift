@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
 
         let session = TLSession()
         session.delegate = self
-        presentVisitableForLocation(accountLocation, session: session)
+        presentVisitableForSession(session, atLocation: accountLocation)
         self.session = session
         
         return true
@@ -61,7 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
 
     // MARK: Turbolinks
     
-    private func presentVisitableForLocation(location: NSURL, session: TLSession) {
+    private func presentVisitableForSession(session: TLSession, atLocation location: NSURL) {
         let visitable = visitableForSession(session, atLocation: location)
         navigationController?.pushViewController(visitable.viewController, animated: true)
         session.visitVisitable(visitable)
@@ -84,7 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
     }
     
     func session(session: TLSession, didRequestVisitForLocation location: NSURL) {
-        presentVisitableForLocation(location, session: session)
+        presentVisitableForSession(session, atLocation: location)
     }
     
     func sessionWillIssueRequest(session: TLSession) {
@@ -130,7 +130,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WKNavigationDelegate, TLS
         if let navigationController = self.navigationController {
             let session = TLSession()
             session.delegate = self
-            presentVisitableForLocation(accountLocation, session: session)
+            presentVisitableForSession(session, atLocation: accountLocation)
             self.session = session
 
             navigationController.dismissViewControllerAnimated(true, completion: nil)
