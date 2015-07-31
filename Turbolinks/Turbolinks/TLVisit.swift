@@ -63,8 +63,8 @@ class TLVisit: NSObject {
     }
     
     func cancel() {
-        cancelRequest()
         cancelNavigation()
+        cancelRequest()
         finish()
     }
 
