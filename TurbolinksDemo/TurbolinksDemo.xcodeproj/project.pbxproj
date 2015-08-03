@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F35399F1B6FB21A00AA7462 /* ApplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */; };
+		1F3539A11B6FB6ED00AA7462 /* ApplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */; };
 		1F5A34FA1B67FF900029FDF3 /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5A34F91B67FF900029FDF3 /* AuthenticationController.swift */; };
 		1F5A34FB1B67FF900029FDF3 /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5A34F91B67FF900029FDF3 /* AuthenticationController.swift */; };
 		1F8FC6A51B55A32000A781C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */; };
@@ -76,6 +78,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationController.swift; sourceTree = "<group>"; };
 		1F5A34F91B67FF900029FDF3 /* AuthenticationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationController.swift; sourceTree = "<group>"; };
 		1F8FC6A31B55A31F00A781C8 /* TurbolinksDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TurbolinksDemo-Bridging-Header.h"; sourceTree = "<group>"; };
 		1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -134,6 +137,7 @@
 			isa = PBXGroup;
 			children = (
 				1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */,
+				1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */,
 				1F5A34F91B67FF900029FDF3 /* AuthenticationController.swift */,
 				1F8FC6A71B55A33700A781C8 /* WebViewController.swift */,
 				224605D41B62D1E200973B90 /* TurbolinksDemo.js */,
@@ -310,6 +314,7 @@
 			files = (
 				1F5A34FA1B67FF900029FDF3 /* AuthenticationController.swift in Sources */,
 				1F8FC6A51B55A32000A781C8 /* AppDelegate.swift in Sources */,
+				1F35399F1B6FB21A00AA7462 /* ApplicationController.swift in Sources */,
 				1F8FC6A81B55A33700A781C8 /* WebViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -322,6 +327,7 @@
 				1F5A34FB1B67FF900029FDF3 /* AuthenticationController.swift in Sources */,
 				1F8FC6A91B55A33700A781C8 /* WebViewController.swift in Sources */,
 				1FC168301B55A16C00AA6F43 /* TurbolinksDemoTests.swift in Sources */,
+				1F3539A11B6FB6ED00AA7462 /* ApplicationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

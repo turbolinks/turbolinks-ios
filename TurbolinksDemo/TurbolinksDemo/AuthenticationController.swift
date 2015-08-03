@@ -23,13 +23,14 @@ class AuthenticationController: UIViewController, WKNavigationDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        webView.opaque = false
+        webView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.90, alpha: 1)
+
         view.addSubview(webView)
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
-    }
 
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
         if let newSessionLocation = accountLocation?.URLByAppendingPathComponent("session/new") {
             webView.loadRequest(NSURLRequest(URL: newSessionLocation))
         }
