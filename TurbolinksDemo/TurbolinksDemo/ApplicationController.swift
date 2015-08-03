@@ -20,11 +20,22 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
     }
 
     func installMainNavigationController() {
+        uninstallMainNavigationController()
+
         let mainNavigationController = UINavigationController()
-        self.mainNavigationController = mainNavigationController
         addChildViewController(mainNavigationController)
         view.addSubview(mainNavigationController.view)
         mainNavigationController.didMoveToParentViewController(self)
+
+        self.mainNavigationController = mainNavigationController
+    }
+
+    func uninstallMainNavigationController() {
+        if let mainNavigationController = self.mainNavigationController {
+            mainNavigationController.willMoveToParentViewController(nil)
+            mainNavigationController.removeFromParentViewController()
+            self.mainNavigationController = nil
+        }
     }
 
     func startSession() {
@@ -102,6 +113,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
     }
 
     func authenticationControllerDidAuthenticate(authenticationController: AuthenticationController) {
+        installMainNavigationController()
         startSession()
         dismissViewControllerAnimated(true, completion: nil)
     }
