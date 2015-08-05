@@ -112,8 +112,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func visitDidFail(visit: TLVisit) {
-        let visitable = visit.visitable
-        visitable.deactivateWebView()
+        deactivateVisitable(visit.visitable)
     }
 
     func visitDidFinish(visit: TLVisit) {
@@ -181,7 +180,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
     
     public func visitableViewDidDisappear(visitable: TLVisitable) {
-        deactivateVisitable(visitable)
+        //...
     }
 
     public func visitableViewDidAppear(visitable: TLVisitable) {
@@ -191,29 +190,32 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
-    private func activateVisitable(visitable: TLVisitable) {
-        self.currentVisitable = visitable
+    public func visitableDidRequestRefresh(visitable: TLVisitable) {
+        if visitable === currentVisitable {
+            initialized = false
+            refreshing = true
+            currentVisit = nil
+            visitable.willRefresh()
+            revisitCurrentVisitable()
+        }
+    }
 
-        if !webView.isDescendantOfView(visitable.viewController.view) {
+    private func activateVisitable(visitable: TLVisitable) {
+        if let currentVisitable = self.currentVisitable where currentVisitable !== visitable {
+            deactivateVisitable(currentVisitable)
+        }
+
+        if visitable.webView !== webView {
             visitable.activateWebView(webView)
         }
 
+        currentVisitable = visitable
         if let visit = self.lastIssuedVisit where !visit.canceled {
             self.currentVisit = visit
         }
     }
-    
+
     private func deactivateVisitable(visitable: TLVisitable) {
         visitable.deactivateWebView()
-    }
-    
-    public func visitableDidRequestRefresh(visitable: TLVisitable) {
-        if visitable === currentVisitable {
-            self.initialized = false
-            self.refreshing = true
-            self.currentVisit = nil
-            visitable.willRefresh()
-            revisitCurrentVisitable()
-        }
     }
 }

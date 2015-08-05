@@ -11,9 +11,11 @@ public protocol TLVisitableDelegate: class {
 
 public protocol TLVisitable: class {
     weak var visitableDelegate: TLVisitableDelegate? { get set }
+
+    var webView: WKWebView? { get }
     var location: NSURL? { get set }
     var viewController: UIViewController { get }
-    
+
     func activateWebView(webView: WKWebView)
     func deactivateWebView()
 
