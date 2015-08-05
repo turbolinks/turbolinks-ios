@@ -12,7 +12,7 @@ class WebViewController: UIViewController, TLVisitable {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        automaticallyAdjustsScrollViewInsets = false
         view.backgroundColor = UIColor.whiteColor()
         installActivityIndicator()
     }

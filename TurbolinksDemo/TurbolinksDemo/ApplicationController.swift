@@ -5,44 +5,30 @@ import Turbolinks
 class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDelegate, AuthenticationControllerDelegate {
     let accountLocation = NSURL(string: "http://bc3.dev/195539477/")!
     let webViewProcessPool = WKProcessPool()
+    var mainNavigationController: UINavigationController?
 
     var application: UIApplication {
         return UIApplication.sharedApplication()
     }
 
-    var session: TLSession?
-    var mainNavigationController: UINavigationController?
+    lazy var session: TLSession = {
+        let session = TLSession()
+        session.delegate = self
+        return session
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         installMainNavigationController()
-        startSession()
+        presentVisitableForSession(session, atLocation: accountLocation)
     }
 
     func installMainNavigationController() {
-        uninstallMainNavigationController()
-
         let mainNavigationController = UINavigationController()
+        self.mainNavigationController = mainNavigationController
         addChildViewController(mainNavigationController)
         view.addSubview(mainNavigationController.view)
         mainNavigationController.didMoveToParentViewController(self)
-
-        self.mainNavigationController = mainNavigationController
-    }
-
-    func uninstallMainNavigationController() {
-        if let mainNavigationController = self.mainNavigationController {
-            mainNavigationController.willMoveToParentViewController(nil)
-            mainNavigationController.removeFromParentViewController()
-            self.mainNavigationController = nil
-        }
-    }
-
-    func startSession() {
-        let session = TLSession()
-        self.session = session
-        session.delegate = self
-        presentVisitableForSession(session, atLocation: accountLocation)
     }
 
     private func presentVisitableForSession(session: TLSession, atLocation location: NSURL) {
@@ -113,8 +99,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
     }
 
     func authenticationControllerDidAuthenticate(authenticationController: AuthenticationController) {
-        installMainNavigationController()
-        startSession()
+        session.revisitCurrentVisitable()
         dismissViewControllerAnimated(true, completion: nil)
     }
 
