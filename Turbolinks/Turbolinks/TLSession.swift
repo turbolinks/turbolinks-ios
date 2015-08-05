@@ -41,6 +41,13 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         issueVisitForVisitable(visitable, direction: .Forward)
     }
     
+    public func revisitCurrentVisitable() {
+        if let visitable = self.currentVisitable {
+            visitVisitable(visitable)
+            activateVisitable(visitable)
+        }
+    }
+
     private func issueVisitForVisitable(visitable: TLVisitable, direction: TLVisitDirection) {
         if let location = visitable.location {
             let visit: TLVisit
@@ -186,7 +193,10 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     private func activateVisitable(visitable: TLVisitable) {
         self.currentVisitable = visitable
-        visitable.activateWebView(webView)
+
+        if !webView.isDescendantOfView(visitable.viewController.view) {
+            visitable.activateWebView(webView)
+        }
 
         if let visit = self.lastIssuedVisit where !visit.canceled {
             self.currentVisit = visit
@@ -198,11 +208,12 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
     
     public func visitableDidRequestRefresh(visitable: TLVisitable) {
-        self.initialized = false
-        self.refreshing = true
-        self.currentVisit = nil
-
-        visitable.willRefresh()
-        issueVisitForVisitable(visitable, direction: .Forward)
+        if visitable === currentVisitable {
+            self.initialized = false
+            self.refreshing = true
+            self.currentVisit = nil
+            visitable.willRefresh()
+            revisitCurrentVisitable()
+        }
     }
 }
