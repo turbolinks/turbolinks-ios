@@ -164,7 +164,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     public func visitableViewWillAppear(visitable: TLVisitable) {
         if let currentVisitable = self.currentVisitable, currentVisit = self.currentVisit, lastIssuedVisit = self.lastIssuedVisit {
-            if currentVisitable === visitable {
+            if visitable === currentVisitable && visitable.viewController.isMovingToParentViewController() {
                 // Back swipe gesture canceled
                 if currentVisit.succeeded {
                     // Top visitable was fully loaded before the gesture began
