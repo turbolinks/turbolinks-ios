@@ -180,7 +180,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
     
     public func visitableViewDidDisappear(visitable: TLVisitable) {
-        //...
+        deactivateVisitable(visitable)
     }
 
     public func visitableViewDidAppear(visitable: TLVisitable) {
@@ -201,17 +201,14 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     private func activateVisitable(visitable: TLVisitable) {
-        if let currentVisitable = self.currentVisitable where currentVisitable !== visitable {
-            deactivateVisitable(currentVisitable)
-        }
-
-        if visitable.webView !== webView {
-            visitable.activateWebView(webView)
-        }
-
         currentVisitable = visitable
-        if let visit = self.lastIssuedVisit where !visit.canceled {
-            self.currentVisit = visit
+
+        if let visit = lastIssuedVisit where !visit.canceled {
+            currentVisit = visit
+        }
+
+        if visitable.webView == nil {
+            visitable.activateWebView(webView)
         }
     }
 
