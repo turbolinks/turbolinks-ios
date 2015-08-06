@@ -39,11 +39,24 @@ class AuthenticationController: UIViewController, WKNavigationDelegate {
     // MARK: WKNavigationDelegate
 
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
-        if let URL = navigationAction.request.URL where URL == accountLocation {
-            decisionHandler(.Cancel)
-            delegate?.authenticationControllerDidAuthenticate(self)
-        } else {
-            decisionHandler(.Allow)
+        if let URL = navigationAction.request.URL, accountLocation = self.accountLocation {
+            // Comparing only the last two host components to accommodate beta subdomains
+            if tld(URL) == tld(accountLocation) && URL.path == accountLocation.path {
+                decisionHandler(.Cancel)
+                delegate?.authenticationControllerDidAuthenticate(self)
+                return
+            }
         }
+
+        decisionHandler(.Allow)
+    }
+}
+
+func tld(URL: NSURL, length: Int = 2) -> String? {
+    if let host = URL.host {
+        let hostComponents = split(host) { $0 == "." }
+        return ".".join(suffix(hostComponents, length))
+    } else {
+        return nil
     }
 }
