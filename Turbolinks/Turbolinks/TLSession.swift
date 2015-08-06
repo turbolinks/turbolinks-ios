@@ -42,7 +42,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
     
     public func revisitCurrentVisitable() {
-        if let visitable = self.currentVisitable {
+        if let visitable = currentVisitable {
             visitVisitable(visitable)
             activateVisitable(visitable)
         }
@@ -59,7 +59,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
             }
             
             lastIssuedVisit?.cancel()
-            self.lastIssuedVisit = visit
+            lastIssuedVisit = visit
 
             visit.delegate = self
             visit.startRequest()
@@ -73,14 +73,14 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func webView(webView: TLWebView, didNavigateToLocation location: NSURL) {
-        if let visit = self.currentVisit where visit === lastIssuedVisit {
+        if let visit = currentVisit where visit === lastIssuedVisit {
             visit.completeNavigation()
             webView.restoreSnapshotByScrollingToSavedPosition(visit.direction == .Backward)
         }
     }
 
     func webViewDidRestoreSnapshot(webView: TLWebView) {
-        if let visitable = self.currentVisitable {
+        if let visitable = currentVisitable {
             visitable.hideScreenshot()
             visitable.hideActivityIndicator()
             visitable.didBecomeInteractive()
@@ -88,7 +88,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func webViewDidLoadResponse(webView: TLWebView) {
-        if let visit = self.currentVisit where visit === lastIssuedVisit {
+        if let visit = currentVisit where visit === lastIssuedVisit {
             visit.finish()
         }
     }
@@ -97,7 +97,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     
     func visitDidStart(visit: TLVisit) {
         if currentVisit == nil {
-            self.currentVisit = lastIssuedVisit
+            currentVisit = lastIssuedVisit
         }
 
         let visitable = visit.visitable
@@ -147,7 +147,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
     
     func visitDidCompleteWebViewLoad(visit: TLVisit) {
-        self.initialized = true
+        initialized = true
         delegate?.session(self, didInitializeWebView: webView)
     }
    
