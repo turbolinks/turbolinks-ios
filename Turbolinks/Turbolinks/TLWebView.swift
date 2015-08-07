@@ -12,8 +12,8 @@ enum TLScriptMessageName: String {
 protocol TLWebViewDelegate: class {
     func webView(webView: TLWebView, didRequestVisitToLocation location: NSURL)
     func webView(webView: TLWebView, didNavigateToLocation location: NSURL)
-    func webViewDidRestoreSnapshot(webView: TLWebView)
-    func webViewDidLoadResponse(webView: TLWebView)
+    func webView(webView: TLWebView, didRestoreSnapshotForLocation location: NSURL)
+    func webView(webView: TLWebView, didLoadResponseForLocation location: NSURL)
 }
 
 protocol TLRequestDelegate: class {
@@ -82,7 +82,9 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
                         delegate?.webView(self, didNavigateToLocation: location)
                     }
                 case .SnapshotRestored:
-                    delegate?.webViewDidRestoreSnapshot(self)
+                    if let data = body["data"] as? String, location = NSURL(string: data) {
+                        delegate?.webView(self, didRestoreSnapshotForLocation: location)
+                    }
                 case .RequestCompleted:
                     if let response = body["data"] as? String {
                         requestDelegate?.webView(self, didReceiveResponse: response)
@@ -91,7 +93,9 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
                     let statusCode = body["data"] as? Int
                     requestDelegate?.webView(self, requestDidFailWithStatusCode: statusCode)
                 case .ResponseLoaded:
-                    delegate?.webViewDidLoadResponse(self)
+                    if let data = body["data"] as? String, location = NSURL(string: data) {
+                        delegate?.webView(self, didLoadResponseForLocation: location)
+                    }
                 }
         }
     }

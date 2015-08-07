@@ -73,22 +73,22 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func webView(webView: TLWebView, didNavigateToLocation location: NSURL) {
-        if let visit = currentVisit where visit === lastIssuedVisit {
+        if let visit = currentVisit where visit.location == location {
             visit.completeNavigation()
             webView.restoreSnapshotByScrollingToSavedPosition(visit.direction == .Backward)
         }
     }
 
-    func webViewDidRestoreSnapshot(webView: TLWebView) {
-        if let visitable = currentVisitable {
+    func webView(webView: TLWebView, didRestoreSnapshotForLocation location: NSURL) {
+        if let visitable = currentVisitable where visitable.location == location {
             visitable.hideScreenshot()
             visitable.hideActivityIndicator()
             visitable.didBecomeInteractive()
         }
     }
 
-    func webViewDidLoadResponse(webView: TLWebView) {
-        if let visit = currentVisit where visit === lastIssuedVisit {
+    func webView(webView: TLWebView, didLoadResponseForLocation location: NSURL) {
+        if let visit = currentVisit where visit.location == location {
             visit.finish()
         }
     }

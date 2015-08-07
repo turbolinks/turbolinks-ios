@@ -15,7 +15,7 @@ TLWebView.prototype = {
 
     restoreSnapshotByScrollingToSavedPosition: function(scrollToSavedPosition) {
         if (this.controller.restoreSnapshotByScrollingToSavedPosition(scrollToSavedPosition)) {
-            this.postMessageAfterNextRepaint("snapshotRestored")
+            this.postMessageAfterNextRepaint("snapshotRestored", this.controller.location.absoluteURL)
         }
     },
 
@@ -29,7 +29,7 @@ TLWebView.prototype = {
 
     loadResponse: function(response) {
         this.controller.loadResponse(response)
-        this.postMessageAfterNextRepaint("responseLoaded")
+        this.postMessageAfterNextRepaint("responseLoaded", this.controller.location.absoluteURL)
     },
 
     // Adapter interface
