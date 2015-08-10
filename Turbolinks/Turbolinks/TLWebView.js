@@ -57,9 +57,10 @@ TLWebView.prototype = {
     },
 
     postMessageAfterNextRepaint: function(name, data) {
+        var postMessage = this.postMessage.bind(this, name, data)
         requestAnimationFrame(function() {
-            this.postMessage(name, data)
-        }.bind(this))
+            requestAnimationFrame(postMessage)
+        })
     }
 }
 
