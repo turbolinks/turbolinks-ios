@@ -128,7 +128,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
             refreshing = false
             visitable.didRefresh()
         }
-   }
+    }
     
     func visitWillIssueRequest(visit: TLVisit) {
         delegate?.sessionWillIssueRequest(self)
