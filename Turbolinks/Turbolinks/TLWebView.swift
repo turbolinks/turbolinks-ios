@@ -69,35 +69,44 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
     // MARK: WKScriptMessageHandler
 
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
-        if let body = message.body as? [String: AnyObject],
-            rawName = body["name"] as? String,
-            name = TLScriptMessageName(rawValue: rawName) {
-                switch name {
-                case .VisitRequested:
-                    if let data = body["data"] as? String, location = NSURL(string: data) {
-                        delegate?.webView(self, didRequestVisitToLocation: location)
-                    }
-                case .LocationChanged:
-                    if let data = body["data"] as? String, location = NSURL(string: data) {
-                        delegate?.webView(self, didNavigateToLocation: location)
-                    }
-                case .SnapshotRestored:
-                    if let data = body["data"] as? String, location = NSURL(string: data) {
-                        delegate?.webView(self, didRestoreSnapshotForLocation: location)
-                    }
-                case .RequestCompleted:
-                    if let response = body["data"] as? String {
-                        requestDelegate?.webView(self, didReceiveResponse: response)
-                    }
-                case .RequestFailed:
-                    let statusCode = body["data"] as? Int
-                    requestDelegate?.webView(self, requestDidFailWithStatusCode: statusCode)
-                case .ResponseLoaded:
-                    if let data = body["data"] as? String, location = NSURL(string: data) {
-                        delegate?.webView(self, didLoadResponseForLocation: location)
-                    }
-                }
+        if let (name: TLScriptMessageName, data: AnyObject) = parseScriptMessage(message) {
+            var location: NSURL? = locationFromScriptMessageData(data)
+
+            switch name {
+            case .VisitRequested:
+                delegate?.webView(self, didRequestVisitToLocation: location!)
+            case .LocationChanged:
+                delegate?.webView(self, didNavigateToLocation: location!)
+            case .SnapshotRestored:
+                delegate?.webView(self, didRestoreSnapshotForLocation: location!)
+            case .RequestCompleted:
+                let response = data as! String
+                requestDelegate?.webView(self, didReceiveResponse: response)
+            case .RequestFailed:
+                let statusCode = data as? Int
+                requestDelegate?.webView(self, requestDidFailWithStatusCode: statusCode)
+            case .ResponseLoaded:
+                delegate?.webView(self, didLoadResponseForLocation: location!)
+            }
         }
+    }
+
+    private func parseScriptMessage(message: WKScriptMessage) -> (name: TLScriptMessageName, data: AnyObject)? {
+        if let dictionary = message.body as? [String: AnyObject] {
+            if let rawName = dictionary["name"] as? String, data: AnyObject = dictionary["data"] {
+                if let name = TLScriptMessageName(rawValue: rawName) {
+                    return (name, data)
+                }
+            }
+        }
+        return nil
+    }
+
+    private func locationFromScriptMessageData(data: AnyObject?) -> NSURL? {
+        if let string = data as? String, location = NSURL(string: string) {
+            return location
+        }
+        return nil
     }
 
     // MARK: JavaScript Evaluation
