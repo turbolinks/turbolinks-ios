@@ -207,7 +207,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
             currentVisit = visit
         }
 
-        if visitable.webView == nil {
+        if !webView.isDescendantOfView(visitable.viewController.view) {
             visitable.activateWebView(webView)
         }
     }
