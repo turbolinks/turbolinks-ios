@@ -18,7 +18,7 @@ class TLLock {
     
     func unlock() {
         if locked {
-            self.locked = false
+            locked = false
             dispatch_group_leave(dispatchGroup)
         }
     }

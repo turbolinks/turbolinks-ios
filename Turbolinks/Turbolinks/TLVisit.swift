@@ -55,7 +55,7 @@ class TLVisit: NSObject {
     var succeeded: Bool {
         return completed && !failed
     }
-
+    
     init(visitable: TLVisitable, direction: TLVisitDirection, webView: TLWebView) {
         self.visitable = visitable
         self.direction = direction
@@ -70,7 +70,7 @@ class TLVisit: NSObject {
 
     func fail() {
         if !finished && !failed {
-            self.failed = true
+            failed = true
             delegate?.visitDidFail(self)
             finish()
         }
@@ -79,7 +79,7 @@ class TLVisit: NSObject {
     func finish() {
         if !finished {
             println("\(self) finish()")
-            self.finished = true
+            finished = true
             completeRequest()
             completeNavigation()
             delegate?.visitDidFinish(self)
@@ -89,7 +89,7 @@ class TLVisit: NSObject {
     func startRequest() {
         if requestState == .Initialized {
             println("\(self) startRequest()")
-            self.requestState = .Started
+            requestState = .Started
             delegate?.visitDidStart(self)
             delegate?.visitWillIssueRequest(self)
             issueRequest()
@@ -99,7 +99,7 @@ class TLVisit: NSObject {
     func completeRequest() {
         if requestState == .Started {
             println("\(self) completeRequest()")
-            self.requestState = .Completed
+            requestState = .Completed
             delegate?.visitDidFinishRequest(self)
         }
     }
@@ -107,7 +107,7 @@ class TLVisit: NSObject {
     func cancelRequest() {
         if requestState == .Started {
             println("\(self) cancelRequest()")
-            self.requestState = .Canceled
+            requestState = .Canceled
             abortRequest()
             delegate?.visitDidFinishRequest(self)
             finish()
@@ -117,7 +117,7 @@ class TLVisit: NSObject {
     func completeNavigation() {
         if navigationState == .Started {
             println("\(self) completeNavigation()")
-            self.navigationState = .Completed
+            navigationState = .Completed
             navigationLock.unlock()
         }
     }
@@ -125,7 +125,7 @@ class TLVisit: NSObject {
     func cancelNavigation() {
         if navigationState == .Started {
             println("\(self) cancelNavigation()")
-            self.navigationState = .Canceled
+            navigationState = .Canceled
             cancelRequest()
             finish()
         }
@@ -207,14 +207,14 @@ class TLTurbolinksVisit: TLVisit, TLRequestDelegate {
     // TLRequestDelegate
 
     func webView(webView: TLWebView, didReceiveResponse response: String) {
-        afterNavigationCompletion() {
+        afterNavigationCompletion {
             self.delegate?.visit(self, didCompleteRequestWithResponse: response)
             self.completeRequest()
         }
     }
 
     func webView(webView: TLWebView, requestDidFailWithStatusCode statusCode: Int?) {
-        afterNavigationCompletion() {
+        afterNavigationCompletion {
             if statusCode == nil {
                 let error = NSError(domain: TLVisitErrorDomain, code: 0, userInfo: nil)
                 self.delegate?.visit(self, didFailRequestWithError: error)
