@@ -18,8 +18,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     var initialized: Bool = false
     var refreshing: Bool = false
 
-    var currentVisitable: TLVisitable?
-
     lazy var webView: TLWebView = {
         let configuration = WKWebViewConfiguration()
         self.delegate?.prepareWebViewConfiguration(configuration, forSession: self)
@@ -30,6 +28,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     
     // MARK: Visiting
 
+    public var currentVisitable: TLVisitable?
     private var currentVisit: TLVisit? { didSet { println("currentVisit = \(currentVisit)") } }
     private var lastIssuedVisit: TLVisit? { didSet { println("lastIssuedVisit = \(lastIssuedVisit)") } }
 
