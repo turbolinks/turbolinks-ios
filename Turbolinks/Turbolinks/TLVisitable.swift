@@ -1,7 +1,7 @@
 import UIKit
 import WebKit
 
-public protocol TLVisitableDelegate: class {
+@objc public protocol TLVisitableDelegate: class {
     func visitableViewWillDisappear(visitable: TLVisitable)
     func visitableViewDidDisappear(visitable: TLVisitable)
     func visitableViewWillAppear(visitable: TLVisitable)
@@ -9,7 +9,7 @@ public protocol TLVisitableDelegate: class {
     func visitableDidRequestRefresh(visitable: TLVisitable)
 }
 
-public protocol TLVisitable: class {
+@objc public protocol TLVisitable: class {
     weak var visitableDelegate: TLVisitableDelegate? { get set }
 
     var location: NSURL? { get set }
@@ -28,5 +28,6 @@ public protocol TLVisitable: class {
     func willRefresh()
     func didRefresh()
 
-    func didBecomeInteractive()
+    optional func didRestoreSnapshot()
+    optional func didLoadResponse()
 }

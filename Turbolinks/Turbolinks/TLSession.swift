@@ -85,13 +85,14 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         if let visitable = currentVisitable where visitable.location == location {
             visitable.hideScreenshot()
             visitable.hideActivityIndicator()
-            visitable.didBecomeInteractive()
+            visitable.didRestoreSnapshot?()
         }
     }
 
     func webView(webView: TLWebView, didLoadResponseForLocation location: NSURL) {
         if let visit = currentVisit where visit.location == location {
             visit.finish()
+            visit.visitable.didLoadResponse?()
         }
     }
 
@@ -135,7 +136,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         if visit.completed {
             visitable.hideScreenshot()
             visitable.hideActivityIndicator()
-            visitable.didBecomeInteractive()
         }
 
         if refreshing {
@@ -163,8 +163,9 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     func visitDidCompleteWebViewLoad(visit: TLVisit) {
         initialized = true
         delegate?.session(self, didInitializeWebView: webView)
+        visit.visitable.didLoadResponse?()
     }
-   
+
     func visitDidFinishRequest(visit: TLVisit) {
         delegate?.sessionDidFinishRequest(self)
     }

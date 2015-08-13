@@ -39,7 +39,15 @@ class WebViewController: UIViewController, TLVisitable {
 
     // MARK: Visitable Lifecycle
 
-    func didBecomeInteractive() {
+    func didRestoreSnapshot() {
+        updateTitle()
+    }
+
+    func didLoadResponse() {
+        updateTitle()
+    }
+
+    private func updateTitle() {
         title = webView?.title
     }
 
