@@ -97,10 +97,12 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     func webViewDidInvalidatePage(webView: TLWebView) {
         if let visit = currentVisit, visitable = currentVisitable {
-            visit.cancel()
             visitable.updateScreenshot()
+            visit.cancel()
+
             visitable.showScreenshot()
             visitable.showActivityIndicator()
+
             reloadCurrentVisitable()
         }
     }
