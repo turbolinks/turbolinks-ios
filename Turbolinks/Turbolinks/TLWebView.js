@@ -50,6 +50,10 @@ TLWebView.prototype = {
         this.postMessage("requestFailed", statusCode)
     },
 
+    pageInvalidated: function() {
+        this.postMessage("pageInvalidated")
+    },
+
     // Private
 
     postMessage: function(name, data) {

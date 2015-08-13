@@ -7,6 +7,7 @@ enum TLScriptMessageName: String {
     case RequestCompleted = "requestCompleted"
     case RequestFailed = "requestFailed"
     case ResponseLoaded = "responseLoaded"
+    case PageInvalidated = "pageInvalidated"
 }
 
 protocol TLWebViewDelegate: class {
@@ -14,6 +15,7 @@ protocol TLWebViewDelegate: class {
     func webView(webView: TLWebView, didNavigateToLocation location: NSURL)
     func webView(webView: TLWebView, didRestoreSnapshotForLocation location: NSURL)
     func webView(webView: TLWebView, didLoadResponseForLocation location: NSURL)
+    func webViewDidInvalidatePage(webView: TLWebView)
 }
 
 protocol TLRequestDelegate: class {
@@ -69,7 +71,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
     // MARK: WKScriptMessageHandler
 
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
-        if let (name: TLScriptMessageName, data: AnyObject) = parseScriptMessage(message) {
+        if let (name: TLScriptMessageName, data: AnyObject?) = parseScriptMessage(message) {
             var location: NSURL? = locationFromScriptMessageData(data)
 
             switch name {
@@ -87,13 +89,15 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
                 requestDelegate?.webView(self, requestDidFailWithStatusCode: statusCode)
             case .ResponseLoaded:
                 delegate?.webView(self, didLoadResponseForLocation: location!)
+            case .PageInvalidated:
+                delegate?.webViewDidInvalidatePage(self)
             }
         }
     }
 
-    private func parseScriptMessage(message: WKScriptMessage) -> (name: TLScriptMessageName, data: AnyObject)? {
+    private func parseScriptMessage(message: WKScriptMessage) -> (name: TLScriptMessageName, data: AnyObject?)? {
         if let dictionary = message.body as? [String: AnyObject] {
-            if let rawName = dictionary["name"] as? String, data: AnyObject = dictionary["data"] {
+            if let rawName = dictionary["name"] as? String, data: AnyObject? = dictionary["data"] {
                 if let name = TLScriptMessageName(rawValue: rawName) {
                     return (name, data)
                 }

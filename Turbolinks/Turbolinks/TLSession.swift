@@ -41,8 +41,10 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         issueVisitForVisitable(visitable, direction: .Forward)
     }
     
-    public func revisitCurrentVisitable() {
+    public func reloadCurrentVisitable() {
         if let visitable = currentVisitable {
+            initialized = false
+            currentVisit = nil
             visitVisitable(visitable)
             activateVisitable(visitable)
         }
@@ -92,7 +94,17 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
             visit.finish()
         }
     }
-    
+
+    func webViewDidInvalidatePage(webView: TLWebView) {
+        if let visit = currentVisit, visitable = currentVisitable {
+            visit.cancel()
+            visitable.updateScreenshot()
+            visitable.showScreenshot()
+            visitable.showActivityIndicator()
+            reloadCurrentVisitable()
+        }
+    }
+
     // MARK: TLVisitDelegate
     
     func visitDidStart(visit: TLVisit) {
@@ -192,11 +204,9 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     public func visitableDidRequestRefresh(visitable: TLVisitable) {
         if visitable === currentVisitable {
-            initialized = false
             refreshing = true
-            currentVisit = nil
             visitable.willRefresh()
-            revisitCurrentVisitable()
+            reloadCurrentVisitable()
         }
     }
 
