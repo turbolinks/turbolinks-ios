@@ -213,8 +213,11 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     private func activateVisitable(visitable: TLVisitable) {
-        currentVisitable = visitable
+        if let currentVisitable = self.currentVisitable where currentVisitable !== visitable {
+            deactivateVisitable(currentVisitable)
+        }
 
+        currentVisitable = visitable
         if let visit = lastIssuedVisit where !visit.canceled {
             currentVisit = visit
         }
@@ -225,6 +228,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     private func deactivateVisitable(visitable: TLVisitable) {
-        visitable.deactivateWebView()
+        if webView.isDescendantOfView(visitable.viewController.view) {
+            visitable.deactivateWebView()
+        }
     }
 }
