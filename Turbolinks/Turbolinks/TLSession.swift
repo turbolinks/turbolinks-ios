@@ -194,7 +194,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
     
     public func visitableViewDidDisappear(visitable: TLVisitable) {
-        deactivateVisitable(visitable)
     }
 
     public func visitableViewDidAppear(visitable: TLVisitable) {
