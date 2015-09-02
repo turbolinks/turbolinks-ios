@@ -5,7 +5,7 @@ import Turbolinks
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    let userAgent = "BC3 iOS"
+    let userAgent = "BC3 iOS (supports Turbolinks 5)"
 
     // MARK: UIApplicationDelegate
 
