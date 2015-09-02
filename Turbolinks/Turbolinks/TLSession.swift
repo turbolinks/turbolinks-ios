@@ -29,8 +29,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     // MARK: Visiting
 
     public var currentVisitable: TLVisitable?
-    private var currentVisit: TLVisit? { didSet { println("currentVisit = \(currentVisit)") } }
-    private var lastIssuedVisit: TLVisit? { didSet { println("lastIssuedVisit = \(lastIssuedVisit)") } }
+    private var currentVisit: TLVisit? { didSet { NSLog("\(self) currentVisit = \(currentVisit)") } }
+    private var lastIssuedVisit: TLVisit? { didSet { NSLog("\(self) lastIssuedVisit = \(lastIssuedVisit)") } }
 
     private func visitLocation(location: NSURL) {
         delegate?.session(self, didRequestVisitForLocation: location)
@@ -70,10 +70,14 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     // MARK: TLWebViewDelegate
 
     func webView(webView: TLWebView, didRequestVisitToLocation location: NSURL) {
+        NSLog("\(self) didRequestVisitToLocation: \(location)")
+        
         visitLocation(location)
     }
 
     func webView(webView: TLWebView, didNavigateToLocation location: NSURL) {
+        NSLog("\(self) didNavigateToLocation: \(location)")
+
         if let visit = currentVisit where visit.location == location {
             visit.completeNavigation()
             webView.restoreSnapshotByScrollingToSavedPosition(visit.direction == .Backward)
@@ -81,6 +85,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func webView(webView: TLWebView, didRestoreSnapshotForLocation location: NSURL) {
+        NSLog("\(self) didRestoreSnapshotForLocation: \(location), currentVisitable: \(currentVisitable)")
+
         if let visitable = currentVisitable where visitable.location == location {
             visitable.hideScreenshot()
             visitable.hideActivityIndicator()
@@ -89,6 +95,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func webView(webView: TLWebView, didLoadResponseForLocation location: NSURL) {
+        NSLog("\(self) didLoadResponseForLocation: \(location), currentVisit: \(currentVisit)")
+
         if let visit = currentVisit where visit.location == location {
             visit.finish()
             visit.visitable.didLoadResponse?()
@@ -96,6 +104,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func webViewDidInvalidatePage(webView: TLWebView) {
+        NSLog("\(self) webViewDidInvalidatePage: currentVisit: \(currentVisit), currentVisitable: \(currentVisitable)")
+
         if let visit = currentVisit, visitable = currentVisitable {
             visitable.updateScreenshot()
             visit.cancel()

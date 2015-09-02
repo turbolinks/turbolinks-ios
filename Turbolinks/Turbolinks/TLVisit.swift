@@ -26,15 +26,23 @@ class TLVisit: NSObject {
     var webView: TLWebView
     weak var delegate: TLVisitDelegate?
     
+    override var description: String {
+        return "<\(self.dynamicType), location: \(location)>"
+    }
+    
     var location: NSURL? {
         return visitable.location
     }
    
-    enum State: String {
+    enum State: String, Printable {
         case Initialized = "Initialized"
         case Started = "Started"
         case Completed = "Completed"
         case Canceled = "Canceled"
+        
+        var description: String {
+            return rawValue
+        }
     }
     
     var requestState: State = .Initialized
@@ -63,12 +71,16 @@ class TLVisit: NSObject {
     }
     
     func cancel() {
+        NSLog("\(self) cancel()")
+
         cancelNavigation()
         cancelRequest()
         finish()
     }
 
     func fail() {
+        NSLog("\(self) fail(), finished? \(finished), failed? \(failed)")
+
         if !finished && !failed {
             failed = true
             delegate?.visitDidFail(self)
@@ -77,8 +89,9 @@ class TLVisit: NSObject {
     }
 
     func finish() {
+        NSLog("\(self) finish(), finished? \(finished)")
+
         if !finished {
-            println("\(self) finish()")
             finished = true
             completeRequest()
             completeNavigation()
@@ -87,8 +100,9 @@ class TLVisit: NSObject {
     }
     
     func startRequest() {
+        NSLog("\(self) startRequest(), requestState: \(requestState)")
+
         if requestState == .Initialized {
-            println("\(self) startRequest()")
             requestState = .Started
             delegate?.visitDidStart(self)
             delegate?.visitWillIssueRequest(self)
@@ -97,16 +111,18 @@ class TLVisit: NSObject {
     }
     
     func completeRequest() {
+        NSLog("\(self) completeRequest(), requestState: \(requestState)")
+
         if requestState == .Started {
-            println("\(self) completeRequest()")
             requestState = .Completed
             delegate?.visitDidFinishRequest(self)
         }
     }
     
     func cancelRequest() {
+        NSLog("\(self) cancelRequest(), requestState: \(requestState)")
+
         if requestState == .Started {
-            println("\(self) cancelRequest()")
             requestState = .Canceled
             abortRequest()
             delegate?.visitDidFinishRequest(self)
@@ -115,16 +131,18 @@ class TLVisit: NSObject {
     }
     
     func completeNavigation() {
+        NSLog("\(self) completeNavigation(), navigationState: \(navigationState)")
+
         if navigationState == .Started {
-            println("\(self) completeNavigation()")
             navigationState = .Completed
             navigationLock.unlock()
         }
     }
     
     func cancelNavigation() {
+        NSLog("\(self) cancelNavigation(), navigationState: \(navigationState)")
+
         if navigationState == .Started {
-            println("\(self) cancelNavigation()")
             navigationState = .Canceled
             cancelRequest()
             finish()
