@@ -5,49 +5,73 @@ function TLWebView(controller, messageHandler) {
 }
 
 TLWebView.prototype = {
-    pushLocation: function(location) {
-        this.controller.pushHistory(location)
+    visitLocationWithAction: (location, action) {
+        this.controller.startVisit(location, action, false)
     },
 
-    hasSnapshotForLocation: function(location) {
-        return this.controller.hasSnapshotForLocation(location)
+    startProposedVisit: function() {
+        this.proposedVisit.start()
+        this.proposedVisit = null
     },
 
-    restoreSnapshotByScrollingToSavedPosition: function(scrollToSavedPosition) {
-        if (this.controller.restoreSnapshotByScrollingToSavedPosition(scrollToSavedPosition)) {
-            this.postMessageAfterNextRepaint("snapshotRestored", this.controller.location.absoluteURL)
-        }
+    // Current visit
+
+    issueRequest: function() {
+        this.currentVisit.issueRequest()
     },
 
-    issueRequestForLocation: function(location) {
-        this.controller.issueRequestForLocation(location)
+    changeHistory: function() {
+        this.currentVisit.changeHistory()
     },
 
-    abortCurrentRequest: function() {
-        this.controller.abortCurrentRequest()
+    restoreSnapshot: function() {
+        this.currentVisit.restoreSnapshot()
     },
 
-    loadResponse: function(response) {
-        this.controller.loadResponse(response)
-        this.postMessageAfterNextRepaint("responseLoaded", this.controller.location.absoluteURL)
+    loadResponse: function() {
+        this.currentVisit.loadResponse()
     },
+
+    cancelVisit: function() {
+        this.currentVisit.cancel()
+    }
 
     // Adapter interface
    
-    visitLocation: function(location) {
-        this.postMessage("visitRequested", location.absoluteURL)
+    visitProposed: function(visit) {
+        this.proposedVisit = visit
+        this.postMessage("visitProposed", { location: visit.location.absoluteURL })
     },
 
-    locationChangedByActor: function(location, actor) {
-        this.postMessage("locationChanged", location.absoluteURL)
+    visitStarted: function(visit) {
+        this.currentVisit = visit
+        var location = visit.location.absoluteURL
+        var hasSnapshot = visit.hasSnapshot()
+        this.postMessage("visitStarted", { location: location, hasSnapshot: hasSnapshot })
     },
 
-    requestCompletedWithResponse: function(response) {
-        this.postMessage("requestCompleted", response)
+    visitRequestStarted: function(visit) {
+        this.postMessage("visitRequestStarted")
     },
 
-    requestFailedWithStatusCode: function(statusCode, response) {
-        this.postMessage("requestFailed", statusCode)
+    visitRequestCompleted: function(visit) {
+        this.postMessage("visitRequestCompleted")
+    },
+
+    visitRequestFailedWithStatusCode: function(visit, statusCode) {
+        this.postMessage("visitRequestFailed", { statusCode: statusCode })
+    },
+
+    visitRequestFinished: function(visit) {
+        this.postMessage("visitRequestFinished")
+    },
+
+    visitSnapshotRestored: function(visit) {
+        this.postMessageAfterNextRepaint("visitSnapshotRestored")
+    },
+
+    visitResponseLoaded: function(visit) {
+        this.postMessageAfterNextRepaint("visitResponseLoaded")
     },
 
     pageInvalidated: function() {
@@ -57,7 +81,7 @@ TLWebView.prototype = {
     // Private
 
     postMessage: function(name, data) {
-        this.messageHandler.postMessage({ name: name, data: data })
+        this.messageHandler.postMessage({ name: name, data: data || {} })
     },
 
     postMessageAfterNextRepaint: function(name, data) {
@@ -72,5 +96,5 @@ window.webView = new TLWebView(Turbolinks.controller, webkit.messageHandlers.tur
 
 addEventListener("error", function(event) {
     var message = event.message + " (" + event.filename + ":" + event.lineno + ":" + event.colno + ")"
-    webView.postMessage("error", message)
+    webView.postMessage("error", { message: message })
 }, false)

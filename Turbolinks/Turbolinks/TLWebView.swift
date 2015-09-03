@@ -1,27 +1,27 @@
 import WebKit
 
 enum TLScriptMessageName: String {
-    case VisitRequested = "visitRequested"
-    case LocationChanged = "locationChanged"
-    case SnapshotRestored = "snapshotRestored"
-    case RequestCompleted = "requestCompleted"
-    case RequestFailed = "requestFailed"
-    case ResponseLoaded = "responseLoaded"
+    case VisitProposed = "visitProposed"
+    case VisitStarted = "visitStarted"
+    case VisitSnapshotRestored = "visitSnapshotRestored"
+    case VisitRequestCompleted = "visitRequestCompleted"
+    case VisitRequestFailed = "visitRequestFailed"
+    case VisitResponseLoaded = "visitResponseLoaded"
     case PageInvalidated = "pageInvalidated"
     case Error = "error"
 }
 
 protocol TLWebViewDelegate: class {
-    func webView(webView: TLWebView, didRequestVisitToLocation location: NSURL)
-    func webView(webView: TLWebView, didNavigateToLocation location: NSURL)
-    func webView(webView: TLWebView, didRestoreSnapshotForLocation location: NSURL)
-    func webView(webView: TLWebView, didLoadResponseForLocation location: NSURL)
+    func webView(webView: TLWebView, didProposeVisitToLocation location: NSURL)
+    func webView(webView: TLWebView, didStartVisitToLocation location: NSURL, hasSnapshot: Bool)
+    func webViewVisitDidRestoreSnapshot(webView: TLWebView)
+    func webViewVisitDidLoadResponse(webView: TLWebView)
     func webViewDidInvalidatePage(webView: TLWebView)
 }
 
 protocol TLRequestDelegate: class {
-    func webView(webView: TLWebView, didReceiveResponse response: String)
-    func webView(webView: TLWebView, requestDidFailWithStatusCode statusCode: Int?)
+    func webViewVisitRequestDidComplete(webView: TLWebView)
+    func webView(webView: TLWebView, visitRequestDidFailWithStatusCode statusCode: Int)
 }
 
 class TLWebView: WKWebView, WKScriptMessageHandler {
@@ -41,79 +41,77 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
     }
 
-    func pushLocation(location: NSURL) {
-        callJavaScriptFunction("webView.pushLocation", withArguments: [location.absoluteString!])
+    func visitLocation(location: NSURL, withAction action: String) {
+        callJavaScriptFunction("webView.visitLocationWithAction", withArguments: [location.absoluteString!, action])
     }
 
-    func ifSnapshotExistsForLocation(location: NSURL, completion: () -> ()) {
-        callJavaScriptFunction("webView.hasSnapshotForLocation", withArguments: [location.absoluteString!]) { (result) -> () in
-            if let hasSnapshot = result as? Bool where hasSnapshot {
-                dispatch_async(dispatch_get_main_queue(), completion)
-            }
-        }
+    func startProposedVisit() {
+        callJavaScriptFunction("webView.startProposedVisit")
     }
 
-    func restoreSnapshotByScrollingToSavedPosition(scrollToSavedPosition: Bool) {
-        callJavaScriptFunction("webView.restoreSnapshotByScrollingToSavedPosition", withArguments: [scrollToSavedPosition])
+    func issueRequest() {
+        callJavaScriptFunction("webView.issueRequest")
     }
 
-    func issueRequestForLocation(location: NSURL) {
-        callJavaScriptFunction("webView.issueRequestForLocation", withArguments: [location.absoluteString!])
+    func changeHistory() {
+        callJavaScriptFunction("webView.changeHistory")
+    }
+   
+    func restoreSnapshot() {
+        callJavaScriptFunction("webView.restoreSnapshot")
     }
 
-    func abortCurrentRequest() {
-        callJavaScriptFunction("webView.abortCurrentRequest")
+    func loadResponse() {
+        callJavaScriptFunction("webView.loadResponse")
     }
 
-    func loadResponse(response: String) {
-        callJavaScriptFunction("webView.loadResponse", withArguments: [response])
+    func cancelVisit() {
+        callJavaScriptFunction("webView.cancelVisit")
     }
 
     // MARK: WKScriptMessageHandler
 
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
-        if let (name: TLScriptMessageName, data: AnyObject?) = parseScriptMessage(message) {
-            var location: NSURL? = locationFromScriptMessageData(data)
-
+        if let (name: TLScriptMessageName, data: [String: AnyObject]) = parseScriptMessage(message) {
             switch name {
-            case .VisitRequested:
-                delegate?.webView(self, didRequestVisitToLocation: location!)
-            case .LocationChanged:
-                delegate?.webView(self, didNavigateToLocation: location!)
-            case .SnapshotRestored:
-                delegate?.webView(self, didRestoreSnapshotForLocation: location!)
-            case .RequestCompleted:
-                let response = data as! String
-                requestDelegate?.webView(self, didReceiveResponse: response)
-            case .RequestFailed:
-                let statusCode = data as? Int
-                requestDelegate?.webView(self, requestDidFailWithStatusCode: statusCode)
-            case .ResponseLoaded:
-                delegate?.webView(self, didLoadResponseForLocation: location!)
+            case .VisitProposed:
+                if let location = data["location"] as? NSURL {
+                    delegate?.webView(self, didProposeVisitToLocation: location)
+                }
+            case .VisitStarted:
+                if let location = data["location"] as? NSURL, hasSnapshot = data["hasSnapshot"] as? Bool {
+                    delegate?.webView(self, didStartVisitToLocation: location, hasSnapshot: hasSnapshot)
+                }
+            case .VisitSnapshotRestored:
+                delegate?.webViewVisitDidRestoreSnapshot(self)
+            case .VisitRequestCompleted:
+                requestDelegate?.webViewVisitRequestDidComplete(self)
+            case .VisitRequestFailed:
+                if let statusCode = data["statusCode"] as? Int {
+                    requestDelegate?.webView(self, visitRequestDidFailWithStatusCode: statusCode)
+                }
+            case .VisitResponseLoaded:
+                delegate?.webViewVisitDidLoadResponse(self)
             case .PageInvalidated:
                 delegate?.webViewDidInvalidatePage(self)
             case .Error:
-                if let message = data as? String {
+                if let message = data["message"] as? String {
                     NSLog("JavaScript error: \(message)")
                 }
             }
         }
     }
 
-    private func parseScriptMessage(message: WKScriptMessage) -> (name: TLScriptMessageName, data: AnyObject?)? {
+    private func parseScriptMessage(message: WKScriptMessage) -> (name: TLScriptMessageName, data: [String: AnyObject])? {
         if let dictionary = message.body as? [String: AnyObject] {
-            if let rawName = dictionary["name"] as? String, data: AnyObject? = dictionary["data"] {
+            if let rawName = dictionary["name"] as? String, var data = dictionary["data"] as? [String: AnyObject] {
                 if let name = TLScriptMessageName(rawValue: rawName) {
+                    if let locationString = data["location"] as? String {
+                        data["location"] = NSURL(string: locationString)!
+                    }
                     return (name, data)
                 }
             }
-        }
-        return nil
-    }
-
-    private func locationFromScriptMessageData(data: AnyObject?) -> NSURL? {
-        if let string = data as? String, location = NSURL(string: string) {
-            return location
         }
         return nil
     }
