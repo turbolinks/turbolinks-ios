@@ -45,7 +45,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
     }
 
     func ifSnapshotExistsForLocation(location: NSURL, completion: () -> ()) {
-        callJavaScriptFunction("webView.hasSnapshotForLocation", withArguments: [location.absoluteString!]) { (result, error) -> () in
+        callJavaScriptFunction("webView.hasSnapshotForLocation", withArguments: [location.absoluteString!]) { (result) -> () in
             if let hasSnapshot = result as? Bool where hasSnapshot {
                 dispatch_async(dispatch_get_main_queue(), completion)
             }
@@ -115,14 +115,17 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
 
     // MARK: JavaScript Evaluation
 
-    private func callJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject] = [], completionHandler: ((AnyObject?, NSError?) -> ())? = nil) {
+    private func callJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject] = [], completionHandler: ((AnyObject?) -> ())? = nil) {
         if let script = scriptForCallingJavaScriptFunction(functionExpression, withArguments: arguments) {
             evaluateJavaScript(script) { (result, error) in
-                if error != nil {
-                    NSLog("Error evaluating JavaScript function `\(functionExpression)'")
+                if let result = result as? Dictionary<String, AnyObject> {
+                    if let error = result["error"] as? String, stack = result["stack"] as? String {
+                        NSLog("Error evaluating JavaScript function `\(functionExpression)': \(error)\n\(stack)")
+                    } else {
+                        completionHandler?(result["value"])
+                    }
                 }
 
-                completionHandler?(result, error)
             }
         } else {
             NSLog("Error encoding arguments for JavaScript function `\(functionExpression)'")
@@ -131,7 +134,16 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
 
     private func scriptForCallingJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject]) -> String? {
         if let encodedArguments = encodeJavaScriptArguments(arguments) {
-            return functionExpression + "(" + encodedArguments + ")"
+            return
+                "(function(result) {\n" +
+                "  try {\n" +
+                "    result.value = " + functionExpression + "(" + encodedArguments + ")\n" +
+                "  } catch (error) {\n" +
+                "    result.error = error.toString()\n" +
+                "    result.stack = error.stack\n" +
+                "  }\n" +
+                "  return result\n" +
+                "})({})"
         }
         return nil
     }
