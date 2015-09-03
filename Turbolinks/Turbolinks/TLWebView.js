@@ -69,3 +69,8 @@ TLWebView.prototype = {
 }
 
 window.webView = new TLWebView(Turbolinks.controller, webkit.messageHandlers.turbolinks)
+
+addEventListener("error", function(event) {
+    var message = event.message + " (" + event.filename + ":" + event.lineno + ":" + event.colno + ")"
+    webView.postMessage("error", message)
+}, false)

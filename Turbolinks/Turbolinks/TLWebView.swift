@@ -8,6 +8,7 @@ enum TLScriptMessageName: String {
     case RequestFailed = "requestFailed"
     case ResponseLoaded = "responseLoaded"
     case PageInvalidated = "pageInvalidated"
+    case Error = "error"
 }
 
 protocol TLWebViewDelegate: class {
@@ -91,6 +92,10 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
                 delegate?.webView(self, didLoadResponseForLocation: location!)
             case .PageInvalidated:
                 delegate?.webViewDidInvalidatePage(self)
+            case .Error:
+                if let message = data as? String {
+                    NSLog("JavaScript error: \(message)")
+                }
             }
         }
     }
