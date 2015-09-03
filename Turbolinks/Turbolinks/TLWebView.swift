@@ -117,7 +117,13 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
 
     private func callJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject] = [], completionHandler: ((AnyObject?, NSError?) -> ())? = nil) {
         if let script = scriptForCallingJavaScriptFunction(functionExpression, withArguments: arguments) {
-            evaluateJavaScript(script, completionHandler: completionHandler)
+            evaluateJavaScript(script) { (result, error) in
+                if error != nil {
+                    NSLog("Error evaluating JavaScript function `\(functionExpression)'")
+                }
+
+                completionHandler?(result, error)
+            }
         } else {
             NSLog("Error encoding arguments for JavaScript function `\(functionExpression)'")
         }
