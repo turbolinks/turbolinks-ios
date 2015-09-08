@@ -22,11 +22,6 @@ class WebViewController: UIViewController, TLVisitable {
         visitableDelegate?.visitableViewWillDisappear(self)
     }
 
-    override func viewDidDisappear(animated: Bool) {
-        super.viewDidDisappear(animated)
-        visitableDelegate?.visitableViewDidDisappear(self)
-    }
-
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         visitableDelegate?.visitableViewWillAppear(self)

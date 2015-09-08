@@ -128,9 +128,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         delegate?.sessionDidStartRequest(self)
     }
 
-    func visitRequestDidComplete(visit: TLVisit) {
-    }
-
     func visitRequestDidFinish(visit: TLVisit) {
         delegate?.sessionDidFinishRequest(self)
     }
@@ -170,9 +167,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     public func visitableViewWillDisappear(visitable: TLVisitable) {
         visitable.updateScreenshot()
-    }
-
-    public func visitableViewDidDisappear(visitable: TLVisitable) {
     }
 
     public func visitableDidRequestRefresh(visitable: TLVisitable) {

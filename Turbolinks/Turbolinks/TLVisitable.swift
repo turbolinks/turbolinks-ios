@@ -3,7 +3,6 @@ import WebKit
 
 @objc public protocol TLVisitableDelegate: class {
     func visitableViewWillDisappear(visitable: TLVisitable)
-    func visitableViewDidDisappear(visitable: TLVisitable)
     func visitableViewWillAppear(visitable: TLVisitable)
     func visitableViewDidAppear(visitable: TLVisitable)
     func visitableDidRequestRefresh(visitable: TLVisitable)

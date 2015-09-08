@@ -13,7 +13,6 @@ protocol TLVisitDelegate: class {
     func visitDidLoadResponse(visit: TLVisit)
 
     func visitRequestDidStart(visit: TLVisit)
-    func visitRequestDidComplete(visit: TLVisit)
     func visit(visit: TLVisit, requestDidFailWithError error: NSError)
     func visit(visit: TLVisit, requestDidFailWithStatusCode statusCode: Int)
     func visitRequestDidFinish(visit: TLVisit)
@@ -185,7 +184,6 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
     }
 
     func webViewVisitRequestDidComplete(webView: TLWebView) {
-        delegate?.visitRequestDidComplete(self)
         afterNavigationCompletion {
             self.webView.loadResponse()
         }
