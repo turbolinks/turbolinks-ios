@@ -99,7 +99,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
     }
 
     func authenticationControllerDidAuthenticate(authenticationController: AuthenticationController) {
-        session.reloadCurrentVisitable()
+        session.reload()
         dismissViewControllerAnimated(true, completion: nil)
     }
 

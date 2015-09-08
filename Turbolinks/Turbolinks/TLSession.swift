@@ -55,7 +55,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
-    public func reloadCurrentVisitable() {
+    public func reload() {
         if let visitable = currentVisitable {
             initialized = false
             visitVisitable(visitable)
@@ -77,7 +77,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
             visitable.showScreenshot()
             visitable.showActivityIndicator()
 
-            reloadCurrentVisitable()
+            reload()
         }
     }
 
@@ -173,7 +173,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         if visitable === currentVisitable {
             refreshing = true
             visitable.willRefresh()
-            reloadCurrentVisitable()
+            reload()
         }
     }
 
