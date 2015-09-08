@@ -34,7 +34,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
     private func presentVisitableForSession(session: TLSession, atLocation location: NSURL) {
         let visitable = visitableForSession(session, atLocation: location)
         mainNavigationController?.pushViewController(visitable.viewController, animated: true)
-        session.visitVisitable(visitable)
+        session.visit(visitable)
     }
 
     private func visitableForSession(session: TLSession, atLocation location: NSURL) -> TLVisitable {

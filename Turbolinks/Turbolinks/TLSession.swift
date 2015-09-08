@@ -33,7 +33,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     private var currentVisit: TLVisit? { didSet { NSLog("\(self) currentVisit = \(currentVisit)") } }
     private var lastIssuedVisit: TLVisit? { didSet { NSLog("\(self) lastIssuedVisit = \(lastIssuedVisit)") } }
 
-    public func visitVisitable(visitable: TLVisitable) {
+    public func visit(visitable: TLVisitable) {
         visitVisitable(visitable, action: .Advance)
     }
     
@@ -58,7 +58,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     public func reload() {
         if let visitable = currentVisitable {
             initialized = false
-            visitVisitable(visitable)
+            visitVisitable(visitable, action: .Advance)
             activateVisitable(visitable)
         }
     }
