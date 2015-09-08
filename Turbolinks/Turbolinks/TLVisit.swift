@@ -84,6 +84,7 @@ class TLVisit: NSObject {
         if state == .Started {
             self.state = .Failed
             callback?()
+            failVisit()
             delegate?.visitDidFail(self)
             NSLog("\(self) fail()")
         }
@@ -91,6 +92,7 @@ class TLVisit: NSObject {
 
     private func startVisit() {}
     private func cancelVisit() {}
+    private func failVisit() {}
 
     // MARK: Navigation
 
@@ -112,6 +114,26 @@ class TLVisit: NSObject {
             }
         }
     }
+
+
+    // MARK: Request state
+
+    private var requestStarted = false
+    private var requestFinished = false
+
+    private func startRequest() {
+        if !requestStarted {
+            requestStarted = true
+            delegate?.visitRequestDidStart(self)
+        }
+    }
+
+    private func finishRequest() {
+        if requestStarted && !requestFinished {
+            self.requestFinished = true
+            delegate?.visitRequestDidFinish(self)
+        }
+    }
 }
 
 class TLColdBootVisit: TLVisit, WKNavigationDelegate {
@@ -119,10 +141,16 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate {
         webView.navigationDelegate = self
         webView.loadRequest(NSURLRequest(URL: location))
         delegate?.visitDidStart(self)
+        startRequest()
     }
 
     override private func cancelVisit() {
         webView.stopLoading()
+    }
+
+    override private func failVisit() {
+        webView.navigationDelegate = nil
+        finishRequest()
     }
 
     // MARK: WKNavigationDelegate
@@ -130,6 +158,7 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate {
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         webView.navigationDelegate = nil
         delegate?.visitDidInitializeWebView(self)
+        finishRequest()
         complete()
     }
 
@@ -154,7 +183,7 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate {
 }
 
 class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
-    var identifier: String = "(pending)"
+    private var identifier = "(pending)"
 
     override var description: String {
         return "<\(self.dynamicType) \(identifier): state=\(state.rawValue) location=\(location)>"
@@ -167,6 +196,11 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
 
     override private func cancelVisit() {
         webView.cancelVisitWithIdentifier(identifier)
+        finishRequest()
+    }
+
+    override private func failVisit() {
+        finishRequest()
     }
 
     // MARK: TLWebViewVisitDelegate
@@ -193,7 +227,7 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
 
     func webView(webView: TLWebView, didStartRequestForVisitWithIdentifier identifier: String) {
         if identifier == self.identifier {
-            delegate?.visitRequestDidStart(self)
+            startRequest()
         }
     }
 
@@ -220,7 +254,7 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
 
     func webView(webView: TLWebView, didFinishRequestForVisitWithIdentifier identifier: String) {
         if identifier == self.identifier {
-            delegate?.visitRequestDidFinish(self)
+            finishRequest()
         }
     }
 
