@@ -96,21 +96,27 @@ class TLVisit: NSObject {
 
     // MARK: Navigation
 
-    private lazy var navigationLock: TLLock = {
-        return TLLock(queue: dispatch_get_main_queue())
-    }()
+    private var navigationCompleted = false
+    private var navigationCallback: (() -> ())?
 
     func completeNavigation() {
         if state == .Started {
-            navigationLock.unlock()
+            self.navigationCompleted = true
+            navigationCallback?()
             NSLog("\(self) completeNavigation()")
         }
     }
 
     private func afterNavigationCompletion(callback: () -> ()) {
-        navigationLock.afterUnlock() {
-            if self.state != .Canceled {
-                callback()
+        if navigationCompleted {
+            callback()
+        } else {
+            let previousNavigationCallback = navigationCallback
+            self.navigationCallback = { _ in
+                previousNavigationCallback?()
+                if self.state != .Canceled {
+                    callback()
+                }
             }
         }
     }
