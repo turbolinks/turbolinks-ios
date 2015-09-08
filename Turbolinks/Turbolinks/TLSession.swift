@@ -89,8 +89,11 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         visit.visitable.didLoadResponse?()
     }
 
-    func visitDidStart(visit: TLVisit) {
+    func visitWillStart(visit: TLVisit) {
         visit.visitable.showScreenshot()
+    }
+   
+    func visitDidStart(visit: TLVisit) {
         if !visit.hasSnapshot {
             visit.visitable.showActivityIndicator()
         }

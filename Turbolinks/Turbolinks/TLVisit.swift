@@ -5,6 +5,7 @@ let TLVisitErrorDomain = "com.basecamp.Turbolinks"
 protocol TLVisitDelegate: class {
     func visitDidInitializeWebView(visit: TLVisit)
 
+    func visitWillStart(visit: TLVisit)
     func visitDidStart(visit: TLVisit)
     func visitDidComplete(visit: TLVisit)
     func visitDidFail(visit: TLVisit)
@@ -56,6 +57,7 @@ class TLVisit: NSObject {
 
     func start() {
         if state == .Initialized {
+            delegate?.visitWillStart(self)
             self.state = .Started
             startVisit()
             NSLog("\(self) start()")
