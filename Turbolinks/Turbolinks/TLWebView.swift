@@ -4,29 +4,35 @@ enum TLScriptMessageName: String {
     case VisitProposed = "visitProposed"
     case VisitStarted = "visitStarted"
     case VisitSnapshotRestored = "visitSnapshotRestored"
+    case VisitRequestStarted = "visitRequestStarted"
     case VisitRequestCompleted = "visitRequestCompleted"
     case VisitRequestFailed = "visitRequestFailed"
+    case VisitRequestFinished = "visitRequestFinished"
     case VisitResponseLoaded = "visitResponseLoaded"
+    case VisitCompleted = "visitCompleted"
     case PageInvalidated = "pageInvalidated"
     case Error = "error"
 }
 
 protocol TLWebViewDelegate: class {
     func webView(webView: TLWebView, didProposeVisitToLocation location: NSURL)
-    func webView(webView: TLWebView, didStartVisitToLocation location: NSURL, hasSnapshot: Bool)
-    func webViewVisitDidRestoreSnapshot(webView: TLWebView)
-    func webViewVisitDidLoadResponse(webView: TLWebView)
     func webViewDidInvalidatePage(webView: TLWebView)
 }
 
-protocol TLRequestDelegate: class {
+protocol TLWebViewVisitDelegate: class {
+    func webView(webView: TLWebView, didStartVisitToLocation location: NSURL, hasSnapshot: Bool)
+    func webViewVisitDidRestoreSnapshot(webView: TLWebView)
+    func webViewVisitRequestDidStart(webview: TLWebView)
     func webViewVisitRequestDidComplete(webView: TLWebView)
-    func webView(webView: TLWebView, visitRequestDidFailWithStatusCode statusCode: Int)
+    func webView(webView: TLWebView, visitRequestDidFailWithStatusCode statusCode: Int?)
+    func webViewVisitRequestDidFinish(webView: TLWebView)
+    func webViewVisitDidLoadResponse(webView: TLWebView)
+    func webViewVisitDidComplete(webView: TLWebView)
 }
 
 class TLWebView: WKWebView, WKScriptMessageHandler {
     weak var delegate: TLWebViewDelegate?
-    weak var requestDelegate: TLRequestDelegate?
+    weak var visitDelegate: TLWebViewVisitDelegate?
 
     init(configuration: WKWebViewConfiguration) {
         super.init(frame: CGRectZero, configuration: configuration)
@@ -45,10 +51,6 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         callJavaScriptFunction("webView.visitLocationWithAction", withArguments: [location.absoluteString!, action])
     }
 
-    func startProposedVisit() {
-        callJavaScriptFunction("webView.startProposedVisit")
-    }
-
     func issueRequest() {
         callJavaScriptFunction("webView.issueRequest")
     }
@@ -56,7 +58,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
     func changeHistory() {
         callJavaScriptFunction("webView.changeHistory")
     }
-   
+
     func restoreSnapshot() {
         callJavaScriptFunction("webView.restoreSnapshot")
     }
@@ -80,18 +82,23 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
                 }
             case .VisitStarted:
                 if let location = data["location"] as? NSURL, hasSnapshot = data["hasSnapshot"] as? Bool {
-                    delegate?.webView(self, didStartVisitToLocation: location, hasSnapshot: hasSnapshot)
+                    visitDelegate?.webView(self, didStartVisitToLocation: location, hasSnapshot: hasSnapshot)
                 }
             case .VisitSnapshotRestored:
-                delegate?.webViewVisitDidRestoreSnapshot(self)
+                visitDelegate?.webViewVisitDidRestoreSnapshot(self)
+            case .VisitRequestStarted:
+                visitDelegate?.webViewVisitRequestDidStart(self)
             case .VisitRequestCompleted:
-                requestDelegate?.webViewVisitRequestDidComplete(self)
+                visitDelegate?.webViewVisitRequestDidComplete(self)
             case .VisitRequestFailed:
-                if let statusCode = data["statusCode"] as? Int {
-                    requestDelegate?.webView(self, visitRequestDidFailWithStatusCode: statusCode)
-                }
+                let statusCode = data["statusCode"] as? Int
+                visitDelegate?.webView(self, visitRequestDidFailWithStatusCode: statusCode)
+            case .VisitRequestFinished:
+                visitDelegate?.webViewVisitRequestDidFinish(self)
             case .VisitResponseLoaded:
-                delegate?.webViewVisitDidLoadResponse(self)
+                visitDelegate?.webViewVisitDidLoadResponse(self)
+            case .VisitCompleted:
+                visitDelegate?.webViewVisitDidComplete(self)
             case .PageInvalidated:
                 delegate?.webViewDidInvalidatePage(self)
             case .Error:
@@ -103,8 +110,8 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
     }
 
     private func parseScriptMessage(message: WKScriptMessage) -> (name: TLScriptMessageName, data: [String: AnyObject])? {
-        if let dictionary = message.body as? [String: AnyObject] {
-            if let rawName = dictionary["name"] as? String, var data = dictionary["data"] as? [String: AnyObject] {
+        if let message = message.body as? [String: AnyObject] {
+            if let rawName = message["name"] as? String, var data = message["data"] as? [String: AnyObject] {
                 if let name = TLScriptMessageName(rawValue: rawName) {
                     if let locationString = data["location"] as? String {
                         data["location"] = NSURL(string: locationString)!
