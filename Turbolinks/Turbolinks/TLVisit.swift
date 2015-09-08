@@ -152,6 +152,12 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate {
 }
 
 class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
+    var identifier: String = "(pending)"
+
+    override var description: String {
+        return "<\(self.dynamicType) \(identifier): state=\(state.rawValue) location=\(location)>"
+    }
+
     override private func startVisit() {
         webView.visitDelegate = self
         webView.visitLocation(location, withAction: action.rawValue)
@@ -163,7 +169,8 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
 
     // MARK: TLWebViewVisitDelegate
 
-    func webView(webView: TLWebView, didStartVisitToLocation location: NSURL, hasSnapshot: Bool) {
+    func webView(webView: TLWebView, didStartVisitWithIdentifier identifier: String, hasSnapshot: Bool) {
+        self.identifier = identifier
         self.hasSnapshot = hasSnapshot
 
         delegate?.visitDidStart(self)

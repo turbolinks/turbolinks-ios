@@ -20,7 +20,7 @@ protocol TLWebViewDelegate: class {
 }
 
 protocol TLWebViewVisitDelegate: class {
-    func webView(webView: TLWebView, didStartVisitToLocation location: NSURL, hasSnapshot: Bool)
+    func webView(webView: TLWebView, didStartVisitWithIdentifier identifier: String, hasSnapshot: Bool)
     func webViewVisitDidRestoreSnapshot(webView: TLWebView)
     func webViewVisitRequestDidStart(webview: TLWebView)
     func webViewVisitRequestDidComplete(webView: TLWebView)
@@ -81,8 +81,8 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
                     delegate?.webView(self, didProposeVisitToLocation: location)
                 }
             case .VisitStarted:
-                if let location = data["location"] as? NSURL, hasSnapshot = data["hasSnapshot"] as? Bool {
-                    visitDelegate?.webView(self, didStartVisitToLocation: location, hasSnapshot: hasSnapshot)
+                if let identifier = data["identifier"] as? String, hasSnapshot = data["hasSnapshot"] as? Bool {
+                    visitDelegate?.webView(self, didStartVisitWithIdentifier: identifier, hasSnapshot: hasSnapshot)
                 }
             case .VisitSnapshotRestored:
                 visitDelegate?.webViewVisitDidRestoreSnapshot(self)

@@ -39,47 +39,45 @@ TLWebView.prototype = {
 
     visitStarted: function(visit) {
         this.currentVisit = visit
-        var location = visit.location.absoluteURL
-        var hasSnapshot = visit.hasSnapshot()
-        this.postMessage("visitStarted", { location: location, hasSnapshot: hasSnapshot })
+        this.postMessage("visitStarted", { identifier: visit.identifier, hasSnapshot: visit.hasSnapshot() })
     },
 
     visitRequestStarted: function(visit) {
-        this.postMessage("visitRequestStarted")
+        this.postMessage("visitRequestStarted", { identifier: visit.identifier })
     },
 
     visitRequestCompleted: function(visit) {
-        this.postMessage("visitRequestCompleted")
+        this.postMessage("visitRequestCompleted", { identifier: visit.identifier })
     },
 
     visitRequestFailedWithStatusCode: function(visit, statusCode) {
-        this.postMessage("visitRequestFailed", { statusCode: statusCode })
+        this.postMessage("visitRequestFailed", { identifier: visit.identifier, statusCode: statusCode })
     },
 
     visitRequestFinished: function(visit) {
-        this.postMessage("visitRequestFinished")
+        this.postMessage("visitRequestFinished", { identifier: visit.identifier })
     },
 
     visitSnapshotRestored: function(visit) {
-        this.postMessageAfterNextRepaint("visitSnapshotRestored")
+        this.postMessageAfterNextRepaint("visitSnapshotRestored", { identifier: visit.identifier })
     },
 
     visitResponseLoaded: function(visit) {
-        this.postMessageAfterNextRepaint("visitResponseLoaded")
+        this.postMessageAfterNextRepaint("visitResponseLoaded", { identifier: visit.identifier })
     },
 
     visitCompleted: function(visit) {
-        this.postMessageAfterNextRepaint("visitCompleted")
+        this.postMessageAfterNextRepaint("visitCompleted", { identifier: visit.identifier })
     },
 
     pageInvalidated: function() {
-        this.postMessage("pageInvalidated")
+        this.postMessage("pageInvalidated", { identifier: visit.identifier })
     },
 
     // Private
 
     postMessage: function(name, data) {
-        this.messageHandler.postMessage({ name: name, data: data || {} })
+        this.messageHandler.postMessage({ name: name, data: data })
     },
 
     postMessageAfterNextRepaint: function(name, data) {
