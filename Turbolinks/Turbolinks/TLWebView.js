@@ -5,13 +5,8 @@ function TLWebView(controller, messageHandler) {
 }
 
 TLWebView.prototype = {
-    visitLocationWithAction: (location, action) {
-        this.controller.startVisit(location, action, false)
-    },
-
-    startProposedVisit: function() {
-        this.proposedVisit.start()
-        this.proposedVisit = null
+    visitLocationWithAction: function(location, action) {
+        this.controller.startVisitToLocationWithAction(location, action)
     },
 
     // Current visit
@@ -34,13 +29,12 @@ TLWebView.prototype = {
 
     cancelVisit: function() {
         this.currentVisit.cancel()
-    }
+    },
 
     // Adapter interface
    
-    visitProposed: function(visit) {
-        this.proposedVisit = visit
-        this.postMessage("visitProposed", { location: visit.location.absoluteURL })
+    visitProposedToLocationWithAction: function(location, action) {
+        this.postMessage("visitProposed", { location: location.absoluteURL })
     },
 
     visitStarted: function(visit) {
