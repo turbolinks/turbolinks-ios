@@ -56,34 +56,34 @@ class TLVisit: NSObject {
 
     func start() {
         if state == .Initialized {
-            NSLog("\(self) start()")
             self.state = .Started
             startVisit()
+            NSLog("\(self) start()")
         }
     }
 
     func cancel() {
         if state == .Started {
-            NSLog("\(self) cancel()")
             self.state = .Canceled
             cancelVisit()
+            NSLog("\(self) cancel()")
         }
     }
 
     private func complete() {
         if state == .Started {
-            NSLog("\(self) complete()")
             self.state = .Completed
             delegate?.visitDidComplete(self)
+            NSLog("\(self) complete()")
         }
     }
 
     private func fail(callback: (() -> ())? = nil) {
         if state == .Started {
-            NSLog("\(self) fail()")
             self.state = .Failed
             callback?()
             delegate?.visitDidFail(self)
+            NSLog("\(self) fail()")
         }
     }
 
@@ -98,8 +98,8 @@ class TLVisit: NSObject {
 
     func completeNavigation() {
         if state == .Started {
-            NSLog("\(self) completeNavigation()")
             navigationLock.unlock()
+            NSLog("\(self) completeNavigation()")
         }
     }
 
