@@ -68,6 +68,10 @@ TLWebView.prototype = {
         this.postMessageAfterNextRepaint("visitResponseLoaded")
     },
 
+    visitCompleted: function(visit) {
+        this.postMessageAfterNextRepaint("visitCompleted")
+    },
+
     pageInvalidated: function() {
         this.postMessage("pageInvalidated")
     },
