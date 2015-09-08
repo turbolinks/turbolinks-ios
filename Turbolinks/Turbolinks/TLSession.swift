@@ -30,8 +30,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     // MARK: Visiting
 
     public var currentVisitable: TLVisitable?
-    private var currentVisit: TLVisit? { didSet { NSLog("\(self) currentVisit = \(currentVisit)") } }
-    private var lastIssuedVisit: TLVisit? { didSet { NSLog("\(self) lastIssuedVisit = \(lastIssuedVisit)") } }
+    private var currentVisit: TLVisit?
+    private var lastIssuedVisit: TLVisit?
 
     public func visit(visitable: TLVisitable) {
         visitVisitable(visitable, action: .Advance)
