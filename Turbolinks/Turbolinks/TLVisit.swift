@@ -33,7 +33,7 @@ enum TLVisitState: String {
 }
 
 class TLVisit: NSObject {
-    var delegate: TLVisitDelegate?
+    weak var delegate: TLVisitDelegate?
 
     var visitable: TLVisitable
     var action: TLVisitAction
