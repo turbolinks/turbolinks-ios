@@ -71,13 +71,13 @@ TLWebView.prototype = {
     },
 
     pageInvalidated: function() {
-        this.postMessage("pageInvalidated", { identifier: visit.identifier })
+        this.postMessage("pageInvalidated")
     },
 
     // Private
 
     postMessage: function(name, data) {
-        this.messageHandler.postMessage({ name: name, data: data })
+        this.messageHandler.postMessage({ name: name, data: data || {} })
     },
 
     postMessageAfterNextRepaint: function(name, data) {
