@@ -185,40 +185,54 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
     }
 
     func webView(webView: TLWebView, didRestoreSnapshotForVisitWithIdentifier identifier: String) {
-        delegate?.visitDidRestoreSnapshot(self)
+        if identifier == self.identifier {
+            delegate?.visitDidRestoreSnapshot(self)
+        }
     }
 
 
     func webView(webView: TLWebView, didStartRequestForVisitWithIdentifier identifier: String) {
-        delegate?.visitRequestDidStart(self)
+        if identifier == self.identifier {
+            delegate?.visitRequestDidStart(self)
+        }
     }
 
     func webView(webView: TLWebView, didCompleteRequestForVisitWithIdentifier identifier: String) {
-        afterNavigationCompletion {
-            self.webView.loadResponse()
+        if identifier == self.identifier {
+            afterNavigationCompletion {
+                self.webView.loadResponse()
+            }
         }
     }
 
     func webView(webView: TLWebView, didFailRequestForVisitWithIdentifier identifier: String, withStatusCode statusCode: Int?) {
-        fail {
-            if statusCode == nil {
-                let error = NSError(domain: TLVisitErrorDomain, code: 0, userInfo: nil)
-                self.delegate?.visit(self, requestDidFailWithError: error)
-            } else {
-                self.delegate?.visit(self, requestDidFailWithStatusCode: statusCode!)
+        if identifier == self.identifier {
+            fail {
+                if statusCode == nil {
+                    let error = NSError(domain: TLVisitErrorDomain, code: 0, userInfo: nil)
+                    self.delegate?.visit(self, requestDidFailWithError: error)
+                } else {
+                    self.delegate?.visit(self, requestDidFailWithStatusCode: statusCode!)
+                }
             }
         }
     }
 
     func webView(webView: TLWebView, didFinishRequestForVisitWithIdentifier identifier: String) {
-        delegate?.visitRequestDidFinish(self)
+        if identifier == self.identifier {
+            delegate?.visitRequestDidFinish(self)
+        }
     }
 
     func webView(webView: TLWebView, didLoadResponseForVisitWithIdentifier identifier: String) {
-        delegate?.visitDidLoadResponse(self)
+        if identifier == self.identifier {
+            delegate?.visitDidLoadResponse(self)
+        }
     }
 
     func webView(webView: TLWebView, didCompleteVisitWithIdentifier identifier: String) {
-        complete()
+        if identifier == self.identifier {
+            complete()
+        }
     }
 }
