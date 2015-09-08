@@ -3,13 +3,14 @@ import WebKit
 
 public protocol TLSessionDelegate: class {
     func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: TLSession)
-    func session(session: TLSession, didRequestVisitForLocation location: NSURL)
+
+    func session(session: TLSession, didInitializeWebView webView: WKWebView)
+    func session(session: TLSession, didProposeVisitToLocation location: NSURL)
     
-    func sessionWillIssueRequest(session: TLSession)
+    func sessionDidStartRequest(session: TLSession)
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withError error: NSError)
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withStatusCode statusCode: Int)
     func sessionDidFinishRequest(session: TLSession)
-    func session(session: TLSession, didInitializeWebView webView: WKWebView)
 }
 
 public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitableDelegate {
@@ -32,83 +33,46 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     private var currentVisit: TLVisit? { didSet { NSLog("\(self) currentVisit = \(currentVisit)") } }
     private var lastIssuedVisit: TLVisit? { didSet { NSLog("\(self) lastIssuedVisit = \(lastIssuedVisit)") } }
 
-    private func visitLocation(location: NSURL) {
-        delegate?.session(self, didRequestVisitForLocation: location)
-    }
-
     public func visitVisitable(visitable: TLVisitable) {
-        issueVisitForVisitable(visitable, direction: .Forward)
+        visitVisitable(visitable, action: .Advance)
     }
     
+    func visitVisitable(visitable: TLVisitable, action: TLVisitAction) {
+        if let location = visitable.location {
+            let visit: TLVisit
+
+            if initialized {
+                visit = TLJavaScriptVisit(visitable: visitable, action: action, webView: webView)
+            } else {
+                visit = TLColdBootVisit(visitable: visitable, action: action, webView: webView)
+            }
+
+            lastIssuedVisit?.cancel()
+            lastIssuedVisit = visit
+
+            visit.delegate = self
+            visit.start()
+        }
+    }
+
     public func reloadCurrentVisitable() {
         if let visitable = currentVisitable {
             initialized = false
-            currentVisit = nil
             visitVisitable(visitable)
             activateVisitable(visitable)
         }
     }
 
-    private func issueVisitForVisitable(visitable: TLVisitable, direction: TLVisitDirection) {
-        if let location = visitable.location {
-            let visit: TLVisit
-
-            if initialized {
-                visit = TLTurbolinksVisit(visitable: visitable, direction: direction, webView: webView)
-            } else {
-                visit = TLWebViewVisit(visitable: visitable, direction: direction, webView: webView)
-            }
-            
-            lastIssuedVisit?.cancel()
-            lastIssuedVisit = visit
-
-            visit.delegate = self
-            visit.startRequest()
-        }
-    }
-    
     // MARK: TLWebViewDelegate
 
-    func webView(webView: TLWebView, didRequestVisitToLocation location: NSURL) {
-        NSLog("\(self) didRequestVisitToLocation: \(location)")
-        
-        visitLocation(location)
-    }
-
-    func webView(webView: TLWebView, didNavigateToLocation location: NSURL) {
-        NSLog("\(self) didNavigateToLocation: \(location)")
-
-        if let visit = currentVisit where visit.location == location {
-            visit.completeNavigation()
-            webView.restoreSnapshotByScrollingToSavedPosition(visit.direction == .Backward)
-        }
-    }
-
-    func webView(webView: TLWebView, didRestoreSnapshotForLocation location: NSURL) {
-        NSLog("\(self) didRestoreSnapshotForLocation: \(location), currentVisitable: \(currentVisitable)")
-
-        if let visitable = currentVisitable where visitable.location == location {
-            visitable.hideScreenshot()
-            visitable.hideActivityIndicator()
-            visitable.didRestoreSnapshot?()
-        }
-    }
-
-    func webView(webView: TLWebView, didLoadResponseForLocation location: NSURL) {
-        NSLog("\(self) didLoadResponseForLocation: \(location), currentVisit: \(currentVisit)")
-
-        if let visit = currentVisit where visit.location == location {
-            visit.finish()
-            visit.visitable.didLoadResponse?()
-        }
+    func webView(webView: TLWebView, didProposeVisitToLocation location: NSURL) {
+        delegate?.session(self, didProposeVisitToLocation: location)
     }
 
     func webViewDidInvalidatePage(webView: TLWebView) {
-        NSLog("\(self) webViewDidInvalidatePage: currentVisit: \(currentVisit), currentVisitable: \(currentVisitable)")
-
-        if let visit = currentVisit, visitable = currentVisitable {
+        if let visitable = currentVisitable {
             visitable.updateScreenshot()
-            visit.cancel()
+            currentVisit?.cancel()
 
             visitable.showScreenshot()
             visitable.showActivityIndicator()
@@ -118,99 +82,97 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     // MARK: TLVisitDelegate
-    
-    func visitDidStart(visit: TLVisit) {
-        if currentVisit == nil {
-            currentVisit = lastIssuedVisit
-        }
 
-        let visitable = visit.visitable
-        visitable.showScreenshot()
-        visitable.showActivityIndicator()
-
-        if let location = visitable.location where visit.direction == .Backward {
-            webView.ifSnapshotExistsForLocation(location) {
-                visitable.hideActivityIndicator()
-            }
-        }
-    }
-
-    func visitDidFail(visit: TLVisit) {
-        deactivateVisitable(visit.visitable)
-    }
-
-    func visitDidFinish(visit: TLVisit) {
-        let visitable = visit.visitable
-
-        if visit.completed {
-            visitable.hideScreenshot()
-            visitable.hideActivityIndicator()
-        }
-
-        if refreshing {
-            refreshing = false
-            visitable.didRefresh()
-        }
-    }
-    
-    func visitWillIssueRequest(visit: TLVisit) {
-        delegate?.sessionWillIssueRequest(self)
-    }
-    
-    func visit(visit: TLVisit, didFailRequestWithError error: NSError) {
-        delegate?.session(self, didFailRequestForVisitable: visit.visitable, withError: error)
-    }
-
-    func visit(visit: TLVisit, didFailRequestWithStatusCode statusCode: Int) {
-        delegate?.session(self, didFailRequestForVisitable: visit.visitable, withStatusCode: statusCode)
-    }
-
-    func visit(visit: TLVisit, didCompleteRequestWithResponse response: String) {
-        webView.loadResponse(response)
-    }
-    
-    func visitDidCompleteWebViewLoad(visit: TLVisit) {
+    func visitDidInitializeWebView(visit: TLVisit) {
         initialized = true
         delegate?.session(self, didInitializeWebView: webView)
         visit.visitable.didLoadResponse?()
     }
 
-    func visitDidFinishRequest(visit: TLVisit) {
+    func visitDidStart(visit: TLVisit) {
+        visit.visitable.showScreenshot()
+        if !visit.hasSnapshot {
+            visit.visitable.showActivityIndicator()
+        }
+    }
+
+    func visitDidRestoreSnapshot(visit: TLVisit) {
+        visit.visitable.hideScreenshot()
+        visit.visitable.hideActivityIndicator()
+        visit.visitable.didRestoreSnapshot?()
+    }
+
+    func visitDidLoadResponse(visit: TLVisit) {
+        visit.visitable.didLoadResponse?()
+    }
+
+    func visitDidComplete(visit: TLVisit) {
+        visit.visitable.hideScreenshot()
+        visit.visitable.hideActivityIndicator()
+
+        if refreshing {
+            refreshing = false
+            visit.visitable.didRefresh()
+        }
+    }
+
+    func visitDidFail(visit: TLVisit) {
+        visit.visitable.hideScreenshot()
+        visit.visitable.hideActivityIndicator()
+        deactivateVisitable(visit.visitable)
+    }
+
+    // MARK: TLVisitDelegate - Request
+
+    func visitRequestDidStart(visit: TLVisit) {
+        delegate?.sessionDidStartRequest(self)
+    }
+
+    func visitRequestDidComplete(visit: TLVisit) {
+    }
+
+    func visitRequestDidFinish(visit: TLVisit) {
         delegate?.sessionDidFinishRequest(self)
     }
 
-    // MARK: TLVisitableDelegate
-
-    public func visitableViewWillDisappear(visitable: TLVisitable) {
-        visitable.updateScreenshot()
+    func visit(visit: TLVisit, requestDidFailWithError error: NSError) {
+        delegate?.session(self, didFailRequestForVisitable: visit.visitable, withError: error)
     }
+
+    func visit(visit: TLVisit, requestDidFailWithStatusCode statusCode: Int) {
+        delegate?.session(self, didFailRequestForVisitable: visit.visitable, withStatusCode: statusCode)
+    }
+
+    // MARK: TLVisitableDelegate
 
     public func visitableViewWillAppear(visitable: TLVisitable) {
         if let currentVisitable = self.currentVisitable, currentVisit = self.currentVisit, lastIssuedVisit = self.lastIssuedVisit {
             if visitable === currentVisitable && visitable.viewController.isMovingToParentViewController() {
                 // Back swipe gesture canceled
-                if currentVisit.succeeded {
+                if currentVisit.state == .Completed {
                     // Top visitable was fully loaded before the gesture began
                     lastIssuedVisit.cancel()
                 } else {
                     // Top visitable was *not* fully loaded before the gesture began
-                    issueVisitForVisitable(visitable, direction: .Forward)
+                    visitVisitable(visitable, action: .Advance)
                 }
-            } else if lastIssuedVisit.visitable !== visitable || lastIssuedVisit.canceled {
+            } else if lastIssuedVisit.visitable !== visitable || lastIssuedVisit.state == .Canceled {
                 // Navigating backward
-                issueVisitForVisitable(visitable, direction: .Backward)
+                visitVisitable(visitable, action: .Restore)
             }
         }
     }
     
-    public func visitableViewDidDisappear(visitable: TLVisitable) {
+    public func visitableViewDidAppear(visitable: TLVisitable) {
+        activateVisitable(visitable)
+        currentVisit?.completeNavigation()
     }
 
-    public func visitableViewDidAppear(visitable: TLVisitable) {
-        if let location = visitable.location {
-            activateVisitable(visitable)
-            webView.pushLocation(location)
-        }
+    public func visitableViewWillDisappear(visitable: TLVisitable) {
+        visitable.updateScreenshot()
+    }
+
+    public func visitableViewDidDisappear(visitable: TLVisitable) {
     }
 
     public func visitableDidRequestRefresh(visitable: TLVisitable) {
@@ -221,14 +183,14 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
-    private func activateVisitable(visitable: TLVisitable) {
-        if let currentVisitable = self.currentVisitable where currentVisitable !== visitable {
-            deactivateVisitable(currentVisitable)
+    func activateVisitable(visitable: TLVisitable) {
+        if currentVisitable != nil && currentVisitable !== visitable {
+            deactivateVisitable(currentVisitable!)
         }
 
         currentVisitable = visitable
-        if let visit = lastIssuedVisit where !visit.canceled {
-            currentVisit = visit
+        if lastIssuedVisit?.visitable === visitable {
+            currentVisit = lastIssuedVisit
         }
 
         if !webView.isDescendantOfView(visitable.viewController.view) {
@@ -236,7 +198,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
-    private func deactivateVisitable(visitable: TLVisitable) {
+    func deactivateVisitable(visitable: TLVisitable) {
         if webView.isDescendantOfView(visitable.viewController.view) {
             visitable.deactivateWebView()
         }

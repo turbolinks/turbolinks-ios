@@ -3,184 +3,133 @@ import WebKit
 let TLVisitErrorDomain = "com.basecamp.Turbolinks"
 
 protocol TLVisitDelegate: class {
-    func visitDidStart(visit: TLVisit)
-    func visitDidFail(visit: TLVisit)
-    func visitDidFinish(visit: TLVisit)
+    func visitDidInitializeWebView(visit: TLVisit)
 
-    func visitWillIssueRequest(visit: TLVisit)
-    func visit(visit: TLVisit, didFailRequestWithError error: NSError)
-    func visit(visit: TLVisit, didFailRequestWithStatusCode statusCode: Int)
-    func visit(visit: TLVisit, didCompleteRequestWithResponse response: String)
-    func visitDidCompleteWebViewLoad(visit: TLVisit)
-    func visitDidFinishRequest(visit: TLVisit)
+    func visitDidStart(visit: TLVisit)
+    func visitDidComplete(visit: TLVisit)
+    func visitDidFail(visit: TLVisit)
+
+    func visitDidRestoreSnapshot(visit: TLVisit)
+    func visitDidLoadResponse(visit: TLVisit)
+
+    func visitRequestDidStart(visit: TLVisit)
+    func visitRequestDidComplete(visit: TLVisit)
+    func visit(visit: TLVisit, requestDidFailWithError error: NSError)
+    func visit(visit: TLVisit, requestDidFailWithStatusCode statusCode: Int)
+    func visitRequestDidFinish(visit: TLVisit)
 }
 
-enum TLVisitDirection: String {
-    case Forward = "Forward"
-    case Backward = "Backward"
+enum TLVisitAction: String {
+    case Advance = "advance"
+    case Restore = "restore"
+}
+
+enum TLVisitState: String {
+    case Initialized = "Initialized"
+    case Started = "Started"
+    case Canceled = "Canceled"
+    case Failed = "Failed"
+    case Completed = "Completed"
 }
 
 class TLVisit: NSObject {
+    var delegate: TLVisitDelegate?
+
     var visitable: TLVisitable
-    var direction: TLVisitDirection
+    var action: TLVisitAction
     var webView: TLWebView
-    weak var delegate: TLVisitDelegate?
-    
+    var state: TLVisitState
+
+    var location: NSURL
+    var hasSnapshot: Bool = false
+
     override var description: String {
-        return "<\(self.dynamicType), location: \(location)>"
+        return "<\(self.dynamicType): state=\(state.rawValue) location=\(location)>"
     }
-    
-    var location: NSURL? {
-        return visitable.location
-    }
-   
-    enum State: String, Printable {
-        case Initialized = "Initialized"
-        case Started = "Started"
-        case Completed = "Completed"
-        case Canceled = "Canceled"
-        
-        var description: String {
-            return rawValue
-        }
-    }
-    
-    var requestState: State = .Initialized
-    var navigationState: State = .Started
 
-    var finished: Bool = false
-
-    var completed: Bool {
-        return finished && !canceled
-    }
-    
-    var canceled: Bool {
-        return finished && (requestState == .Canceled || navigationState == .Canceled)
-    }
-    
-    var failed: Bool = false
-
-    var succeeded: Bool {
-        return completed && !failed
-    }
-    
-    init(visitable: TLVisitable, direction: TLVisitDirection, webView: TLWebView) {
+    init(visitable: TLVisitable, action: TLVisitAction, webView: TLWebView) {
         self.visitable = visitable
-        self.direction = direction
+        self.location = visitable.location!
+        self.action = action
         self.webView = webView
+        self.state = .Initialized
     }
-    
+
+    func start() {
+        if state == .Initialized {
+            NSLog("\(self) start()")
+            self.state = .Started
+            startVisit()
+        }
+    }
+
     func cancel() {
-        NSLog("\(self) cancel()")
-
-        cancelNavigation()
-        cancelRequest()
-        finish()
+        if state == .Started {
+            NSLog("\(self) cancel()")
+            self.state = .Canceled
+            cancelVisit()
+        }
     }
 
-    func fail() {
-        NSLog("\(self) fail(), finished? \(finished), failed? \(failed)")
+    private func complete() {
+        if state == .Started {
+            NSLog("\(self) complete()")
+            self.state = .Completed
+            delegate?.visitDidComplete(self)
+        }
+    }
 
-        if !finished && !failed {
-            failed = true
+    private func fail(callback: (() -> ())? = nil) {
+        if state == .Started {
+            NSLog("\(self) fail()")
+            self.state = .Failed
+            callback?()
             delegate?.visitDidFail(self)
-            finish()
         }
     }
 
-    func finish() {
-        NSLog("\(self) finish(), finished? \(finished)")
+    private func startVisit() {}
+    private func cancelVisit() {}
 
-        if !finished {
-            finished = true
-            completeRequest()
-            completeNavigation()
-            delegate?.visitDidFinish(self)
-        }
-    }
-    
-    func startRequest() {
-        NSLog("\(self) startRequest(), requestState: \(requestState)")
+    // MARK: Navigation
 
-        if requestState == .Initialized {
-            requestState = .Started
-            delegate?.visitDidStart(self)
-            delegate?.visitWillIssueRequest(self)
-            issueRequest()
-        }
-    }
-    
-    func completeRequest() {
-        NSLog("\(self) completeRequest(), requestState: \(requestState)")
-
-        if requestState == .Started {
-            requestState = .Completed
-            delegate?.visitDidFinishRequest(self)
-        }
-    }
-    
-    func cancelRequest() {
-        NSLog("\(self) cancelRequest(), requestState: \(requestState)")
-
-        if requestState == .Started {
-            requestState = .Canceled
-            abortRequest()
-            delegate?.visitDidFinishRequest(self)
-            finish()
-        }
-    }
-    
-    func completeNavigation() {
-        NSLog("\(self) completeNavigation(), navigationState: \(navigationState)")
-
-        if navigationState == .Started {
-            navigationState = .Completed
-            navigationLock.unlock()
-        }
-    }
-    
-    func cancelNavigation() {
-        NSLog("\(self) cancelNavigation(), navigationState: \(navigationState)")
-
-        if navigationState == .Started {
-            navigationState = .Canceled
-            cancelRequest()
-            finish()
-        }
-    }
-    
-    private func issueRequest() {}
-    private func abortRequest() {}
-    
     private lazy var navigationLock: TLLock = {
         return TLLock(queue: dispatch_get_main_queue())
     }()
-    
+
+    func completeNavigation() {
+        if state == .Started {
+            NSLog("\(self) completeNavigation()")
+            navigationLock.unlock()
+        }
+    }
+
     private func afterNavigationCompletion(callback: () -> ()) {
-        navigationLock.afterUnlock(callback)
+        navigationLock.afterUnlock() {
+            if self.state != .Canceled {
+                callback()
+            }
+        }
     }
 }
 
-class TLWebViewVisit: TLVisit, WKNavigationDelegate {
-    lazy var request: NSURLRequest? = {
-        if let location = self.location {
-            return NSURLRequest(URL: location)
-        } else {
-            return nil
-        }
-    }()
-
-    override private func issueRequest() {
-        if let request = self.request {
-            webView.navigationDelegate = self
-            webView.loadRequest(request)
-        }
+class TLColdBootVisit: TLVisit, WKNavigationDelegate {
+    override private func startVisit() {
+        webView.navigationDelegate = self
+        webView.loadRequest(NSURLRequest(URL: location))
+        delegate?.visitDidStart(self)
     }
-    
+
+    override private func cancelVisit() {
+        webView.stopLoading()
+    }
+
+    // MARK: WKNavigationDelegate
+
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         webView.navigationDelegate = nil
-        delegate?.visitDidCompleteWebViewLoad(self)
-        finish()
+        delegate?.visitDidInitializeWebView(self)
+        complete()
     }
 
     func webView(webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void) {
@@ -189,58 +138,79 @@ class TLWebViewVisit: TLVisit, WKNavigationDelegate {
                 decisionHandler(.Allow)
             } else {
                 decisionHandler(.Cancel)
-                delegate?.visit(self, didFailRequestWithStatusCode: httpResponse.statusCode)
-                fail()
+                fail { self.delegate?.visit(self, requestDidFailWithStatusCode: httpResponse.statusCode) }
             }
         }
     }
 
     func webView(webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: NSError) {
-        if !failed {
-            delegate?.visit(self, didFailRequestWithError: error)
-            fail()
-        }
+        fail { self.delegate?.visit(self, requestDidFailWithError: error) }
     }
 
     func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
-        if !failed {
-            delegate?.visit(self, didFailRequestWithError: error)
-            fail()
-        }
+        fail { self.delegate?.visit(self, requestDidFailWithError: error) }
     }
 }
 
-class TLTurbolinksVisit: TLVisit, TLRequestDelegate {
-    override private func issueRequest() {
-        if let location = self.location {
-            webView.requestDelegate = self
-            webView.issueRequestForLocation(location)
+class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
+    override private func startVisit() {
+        webView.visitDelegate = self
+        webView.visitLocation(location, withAction: action.rawValue)
+    }
+
+    override private func cancelVisit() {
+        webView.cancelVisit()
+    }
+
+    // MARK: TLWebViewVisitDelegate
+
+    func webView(webView: TLWebView, didStartVisitToLocation location: NSURL, hasSnapshot: Bool) {
+        self.hasSnapshot = hasSnapshot
+
+        delegate?.visitDidStart(self)
+        webView.issueRequest()
+
+        afterNavigationCompletion {
+            self.webView.changeHistory()
+            self.webView.restoreSnapshot()
         }
     }
-    
-    override private func abortRequest() {
-        webView.abortCurrentRequest()
+
+    func webViewVisitDidRestoreSnapshot(webView: TLWebView) {
+        delegate?.visitDidRestoreSnapshot(self)
     }
 
-    // TLRequestDelegate
+    func webViewVisitRequestDidStart(webview: TLWebView) {
+        delegate?.visitRequestDidStart(self)
+    }
 
-    func webView(webView: TLWebView, didReceiveResponse response: String) {
+    func webViewVisitRequestDidComplete(webView: TLWebView) {
+        delegate?.visitRequestDidComplete(self)
         afterNavigationCompletion {
-            self.delegate?.visit(self, didCompleteRequestWithResponse: response)
-            self.completeRequest()
+            self.webView.loadResponse()
         }
     }
 
-    func webView(webView: TLWebView, requestDidFailWithStatusCode statusCode: Int?) {
-        afterNavigationCompletion {
+    func webView(webView: TLWebView, visitRequestDidFailWithStatusCode statusCode: Int?) {
+        fail {
             if statusCode == nil {
                 let error = NSError(domain: TLVisitErrorDomain, code: 0, userInfo: nil)
-                self.delegate?.visit(self, didFailRequestWithError: error)
+                self.delegate?.visit(self, requestDidFailWithError: error)
             } else {
-                self.delegate?.visit(self, didFailRequestWithStatusCode: statusCode!)
+                self.delegate?.visit(self, requestDidFailWithStatusCode: statusCode!)
             }
-
-            self.fail()
         }
+    }
+
+    func webViewVisitRequestDidFinish(webView: TLWebView) {
+        delegate?.visitRequestDidFinish(self)
+    }
+
+    func webViewVisitDidLoadResponse(webView: TLWebView) {
+        delegate?.visitDidLoadResponse(self)
+    }
+
+    func webViewVisitDidComplete(webView: TLWebView) {
+        complete()
     }
 }

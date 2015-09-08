@@ -64,11 +64,11 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
         configuration.processPool = webViewProcessPool
     }
 
-    func session(session: TLSession, didRequestVisitForLocation location: NSURL) {
+    func session(session: TLSession, didProposeVisitToLocation location: NSURL) {
         presentVisitableForSession(session, atLocation: location)
     }
 
-    func sessionWillIssueRequest(session: TLSession) {
+    func sessionDidStartRequest(session: TLSession) {
         application.networkActivityIndicatorVisible = true
     }
 
