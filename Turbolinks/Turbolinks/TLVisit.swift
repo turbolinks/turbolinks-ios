@@ -166,7 +166,7 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
     }
 
     override private func cancelVisit() {
-        webView.cancelVisit()
+        webView.cancelVisitWithIdentifier(identifier)
     }
 
     // MARK: TLWebViewVisitDelegate
@@ -176,11 +176,11 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
         self.hasSnapshot = hasSnapshot
 
         delegate?.visitDidStart(self)
-        webView.issueRequest()
+        webView.issueRequestForVisitWithIdentifier(identifier)
 
         afterNavigationCompletion {
-            self.webView.changeHistory()
-            self.webView.restoreSnapshot()
+            self.webView.changeHistoryForVisitWithIdentifier(identifier)
+            self.webView.restoreSnapshotForVisitWithIdentifier(identifier)
         }
     }
 
@@ -200,7 +200,7 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
     func webView(webView: TLWebView, didCompleteRequestForVisitWithIdentifier identifier: String) {
         if identifier == self.identifier {
             afterNavigationCompletion {
-                self.webView.loadResponse()
+                self.webView.loadResponseForVisitWithIdentifier(identifier)
             }
         }
     }

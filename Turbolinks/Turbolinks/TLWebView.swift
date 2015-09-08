@@ -37,24 +37,24 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         callJavaScriptFunction("webView.visitLocationWithAction", withArguments: [location.absoluteString!, action])
     }
 
-    func issueRequest() {
-        callJavaScriptFunction("webView.issueRequest")
+    func issueRequestForVisitWithIdentifier(identifier: String) {
+        callJavaScriptFunction("webView.issueRequestForVisitWithIdentifier", withArguments: [identifier])
     }
 
-    func changeHistory() {
-        callJavaScriptFunction("webView.changeHistory")
+    func changeHistoryForVisitWithIdentifier(identifier: String) {
+        callJavaScriptFunction("webView.changeHistoryForVisitWithIdentifier", withArguments: [identifier])
     }
 
-    func restoreSnapshot() {
-        callJavaScriptFunction("webView.restoreSnapshot")
+    func restoreSnapshotForVisitWithIdentifier(identifier: String) {
+        callJavaScriptFunction("webView.restoreSnapshotForVisitWithIdentifier", withArguments: [identifier])
     }
 
-    func loadResponse() {
-        callJavaScriptFunction("webView.loadResponse")
+    func loadResponseForVisitWithIdentifier(identifier: String) {
+        callJavaScriptFunction("webView.loadResponseForVisitWithIdentifier", withArguments: [identifier])
     }
 
-    func cancelVisit() {
-        callJavaScriptFunction("webView.cancelVisit")
+    func cancelVisitWithIdentifier(identifier: String) {
+        callJavaScriptFunction("webView.cancelVisitWithIdentifier", withArguments: [identifier])
     }
 
     // MARK: WKScriptMessageHandler

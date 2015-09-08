@@ -11,24 +11,34 @@ TLWebView.prototype = {
 
     // Current visit
 
-    issueRequest: function() {
-        this.currentVisit.issueRequest()
+    issueRequestForVisitWithIdentifier: function(identifier) {
+        if (identifier == this.currentVisit.identifier) {
+            this.currentVisit.issueRequest()
+        }
     },
 
-    changeHistory: function() {
-        this.currentVisit.changeHistory()
+    changeHistoryForVisitWithIdentifier: function(identifier) {
+        if (identifier == this.currentVisit.identifier) {
+            this.currentVisit.changeHistory()
+        }
     },
 
-    restoreSnapshot: function() {
-        this.currentVisit.restoreSnapshot()
+    restoreSnapshotForVisitWithIdentifier: function(identifier) {
+        if (identifier == this.currentVisit.identifier) {
+            this.currentVisit.restoreSnapshot()
+        }
     },
 
-    loadResponse: function() {
-        this.currentVisit.loadResponse()
+    loadResponseForVisitWithIdentifier: function(identifier) {
+        if (identifier == this.currentVisit.identifier) {
+            this.currentVisit.loadResponse()
+        }
     },
 
-    cancelVisit: function() {
-        this.currentVisit.cancel()
+    cancelVisitWithIdentifier: function(identifier) {
+        if (identifier == this.currentVisit.identifier) {
+            this.currentVisit.cancel()
+        }
     },
 
     // Adapter interface
