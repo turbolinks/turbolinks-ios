@@ -182,21 +182,22 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
         }
     }
 
-    func webViewVisitDidRestoreSnapshot(webView: TLWebView) {
+    func webView(webView: TLWebView, didRestoreSnapshotForVisitWithIdentifier identifier: String) {
         delegate?.visitDidRestoreSnapshot(self)
     }
 
-    func webViewVisitRequestDidStart(webview: TLWebView) {
+
+    func webView(webView: TLWebView, didStartRequestForVisitWithIdentifier identifier: String) {
         delegate?.visitRequestDidStart(self)
     }
 
-    func webViewVisitRequestDidComplete(webView: TLWebView) {
+    func webView(webView: TLWebView, didCompleteRequestForVisitWithIdentifier identifier: String) {
         afterNavigationCompletion {
             self.webView.loadResponse()
         }
     }
 
-    func webView(webView: TLWebView, visitRequestDidFailWithStatusCode statusCode: Int?) {
+    func webView(webView: TLWebView, didFailRequestForVisitWithIdentifier identifier: String, withStatusCode statusCode: Int?) {
         fail {
             if statusCode == nil {
                 let error = NSError(domain: TLVisitErrorDomain, code: 0, userInfo: nil)
@@ -207,15 +208,15 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
         }
     }
 
-    func webViewVisitRequestDidFinish(webView: TLWebView) {
+    func webView(webView: TLWebView, didFinishRequestForVisitWithIdentifier identifier: String) {
         delegate?.visitRequestDidFinish(self)
     }
 
-    func webViewVisitDidLoadResponse(webView: TLWebView) {
+    func webView(webView: TLWebView, didLoadResponseForVisitWithIdentifier identifier: String) {
         delegate?.visitDidLoadResponse(self)
     }
 
-    func webViewVisitDidComplete(webView: TLWebView) {
+    func webView(webView: TLWebView, didCompleteVisitWithIdentifier identifier: String) {
         complete()
     }
 }

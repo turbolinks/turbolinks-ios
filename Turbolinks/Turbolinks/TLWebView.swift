@@ -7,13 +7,13 @@ protocol TLWebViewDelegate: class {
 
 protocol TLWebViewVisitDelegate: class {
     func webView(webView: TLWebView, didStartVisitWithIdentifier identifier: String, hasSnapshot: Bool)
-    func webViewVisitDidRestoreSnapshot(webView: TLWebView)
-    func webViewVisitRequestDidStart(webview: TLWebView)
-    func webViewVisitRequestDidComplete(webView: TLWebView)
-    func webView(webView: TLWebView, visitRequestDidFailWithStatusCode statusCode: Int?)
-    func webViewVisitRequestDidFinish(webView: TLWebView)
-    func webViewVisitDidLoadResponse(webView: TLWebView)
-    func webViewVisitDidComplete(webView: TLWebView)
+    func webView(webView: TLWebView, didRestoreSnapshotForVisitWithIdentifier identifier: String)
+    func webView(webView: TLWebView, didStartRequestForVisitWithIdentifier identifier: String)
+    func webView(webView: TLWebView, didCompleteRequestForVisitWithIdentifier identifier: String)
+    func webView(webView: TLWebView, didFailRequestForVisitWithIdentifier identifier: String, withStatusCode statusCode: Int?)
+    func webView(webView: TLWebView, didFinishRequestForVisitWithIdentifier identifier: String)
+    func webView(webView: TLWebView, didLoadResponseForVisitWithIdentifier identifier: String)
+    func webView(webView: TLWebView, didCompleteVisitWithIdentifier identifier: String)
 }
 
 class TLWebView: WKWebView, WKScriptMessageHandler {
@@ -63,34 +63,29 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         if let message = TLScriptMessage.parse(message) {
             switch message.name {
             case .VisitProposed:
-                if let location = message.location {
-                    delegate?.webView(self, didProposeVisitToLocation: location)
-                }
-            case .VisitStarted:
-                if let identifier = message.identifier, hasSnapshot = message.data["hasSnapshot"] as? Bool {
-                    visitDelegate?.webView(self, didStartVisitWithIdentifier: identifier, hasSnapshot: hasSnapshot)
-                }
-            case .VisitSnapshotRestored:
-                visitDelegate?.webViewVisitDidRestoreSnapshot(self)
-            case .VisitRequestStarted:
-                visitDelegate?.webViewVisitRequestDidStart(self)
-            case .VisitRequestCompleted:
-                visitDelegate?.webViewVisitRequestDidComplete(self)
-            case .VisitRequestFailed:
-                let statusCode = message.data["statusCode"] as? Int
-                visitDelegate?.webView(self, visitRequestDidFailWithStatusCode: statusCode)
-            case .VisitRequestFinished:
-                visitDelegate?.webViewVisitRequestDidFinish(self)
-            case .VisitResponseLoaded:
-                visitDelegate?.webViewVisitDidLoadResponse(self)
-            case .VisitCompleted:
-                visitDelegate?.webViewVisitDidComplete(self)
+                delegate?.webView(self, didProposeVisitToLocation: message.location!)
             case .PageInvalidated:
                 delegate?.webViewDidInvalidatePage(self)
+            case .VisitStarted:
+                visitDelegate?.webView(self, didStartVisitWithIdentifier: message.identifier!, hasSnapshot: message.data["hasSnapshot"] as! Bool)
+            case .VisitSnapshotRestored:
+                visitDelegate?.webView(self, didRestoreSnapshotForVisitWithIdentifier: message.identifier!)
+            case .VisitRequestStarted:
+                visitDelegate?.webView(self, didStartRequestForVisitWithIdentifier: message.identifier!)
+            case .VisitRequestCompleted:
+                visitDelegate?.webView(self, didCompleteRequestForVisitWithIdentifier: message.identifier!)
+            case .VisitRequestFailed:
+                let statusCode = message.data["statusCode"] as? Int
+                visitDelegate?.webView(self, didFailRequestForVisitWithIdentifier: message.identifier!, withStatusCode: statusCode)
+            case .VisitRequestFinished:
+                visitDelegate?.webView(self, didFinishRequestForVisitWithIdentifier: message.identifier!)
+            case .VisitResponseLoaded:
+                visitDelegate?.webView(self, didLoadResponseForVisitWithIdentifier: message.identifier!)
+            case .VisitCompleted:
+                visitDelegate?.webView(self, didCompleteVisitWithIdentifier: message.identifier!)
             case .Error:
-                if let error = message.data["error"] as? String {
-                    NSLog("JavaScript error: \(error)")
-                }
+                let error = message.data["error"] as? String
+                NSLog("JavaScript error: \(error)")
             }
         }
     }
