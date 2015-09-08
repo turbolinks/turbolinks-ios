@@ -151,6 +151,7 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate {
     }
 
     override private func cancelVisit() {
+        webView.navigationDelegate = nil
         webView.stopLoading()
     }
 
@@ -180,11 +181,21 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate {
     }
 
     func webView(webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: NSError) {
-        fail { self.delegate?.visit(self, requestDidFailWithError: error) }
+        if locationMatchesURLForError(error) {
+            fail { self.delegate?.visit(self, requestDidFailWithError: error) }
+        }
     }
 
     func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
-        fail { self.delegate?.visit(self, requestDidFailWithError: error) }
+        if locationMatchesURLForError(error) {
+            fail { self.delegate?.visit(self, requestDidFailWithError: error) }
+        }
+    }
+
+    private func locationMatchesURLForError(error: NSError) -> Bool {
+        let key: NSObject = NSString(string: NSURLErrorFailingURLErrorKey)
+        let failingURL = error.userInfo?[key] as? NSURL
+        return failingURL == location
     }
 }
 
