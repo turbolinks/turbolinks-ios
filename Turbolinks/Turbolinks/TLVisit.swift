@@ -143,9 +143,11 @@ class TLVisit: NSObject {
 }
 
 class TLColdBootVisit: TLVisit, WKNavigationDelegate {
+    private var navigation: WKNavigation?
+
     override private func startVisit() {
         webView.navigationDelegate = self
-        webView.loadRequest(NSURLRequest(URL: location))
+        self.navigation = webView.loadRequest(NSURLRequest(URL: location))
         delegate?.visitDidStart(self)
         startRequest()
     }
@@ -163,10 +165,12 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate {
     // MARK: WKNavigationDelegate
 
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
-        webView.navigationDelegate = nil
-        delegate?.visitDidInitializeWebView(self)
-        finishRequest()
-        complete()
+        if navigation === self.navigation {
+            webView.navigationDelegate = nil
+            delegate?.visitDidInitializeWebView(self)
+            finishRequest()
+            complete()
+        }
     }
 
     func webView(webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void) {
@@ -181,21 +185,15 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate {
     }
 
     func webView(webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: NSError) {
-        if locationMatchesURLForError(error) {
+        if navigation === self.navigation {
             fail { self.delegate?.visit(self, requestDidFailWithError: error) }
         }
     }
 
     func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
-        if locationMatchesURLForError(error) {
+        if navigation === self.navigation {
             fail { self.delegate?.visit(self, requestDidFailWithError: error) }
         }
-    }
-
-    private func locationMatchesURLForError(error: NSError) -> Bool {
-        let key: NSObject = NSString(string: NSURLErrorFailingURLErrorKey)
-        let failingURL = error.userInfo?[key] as? NSURL
-        return failingURL == location
     }
 }
 
