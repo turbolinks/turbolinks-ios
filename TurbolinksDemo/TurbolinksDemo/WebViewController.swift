@@ -7,7 +7,7 @@ class WebViewController: UIViewController, TLVisitable {
 
     var location: NSURL?
     var viewController: UIViewController { return self }
-    var navigating = false
+    private var navigating = false
 
     // MARK: View Lifecycle
 
