@@ -91,6 +91,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     func visitWillStart(visit: TLVisit) {
         visit.visitable.showScreenshot()
+        activateWebViewForVisitable(visit.visitable)
     }
    
     func visitDidStart(visit: TLVisit) {
@@ -165,11 +166,20 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     
     public func visitableViewDidAppear(visitable: TLVisitable) {
         activateVisitable(visitable)
-        currentVisit?.completeNavigation()
+
+        if let currentVisit = self.currentVisit where currentVisit.visitable === visitable {
+            if currentVisit.state == .Completed {
+                visitable.hideActivityIndicator()
+                visitable.hideScreenshot()
+            } else {
+                currentVisit.completeNavigation()
+            }
+        }
     }
 
     public func visitableViewWillDisappear(visitable: TLVisitable) {
         visitable.updateScreenshot()
+        visitable.showScreenshot()
     }
 
     public func visitableDidRequestRefresh(visitable: TLVisitable) {
@@ -181,23 +191,28 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func activateVisitable(visitable: TLVisitable) {
-        if currentVisitable != nil && currentVisitable !== visitable {
-            deactivateVisitable(currentVisitable!)
-        }
-
         currentVisitable = visitable
         if lastIssuedVisit?.visitable === visitable {
             currentVisit = lastIssuedVisit
         }
 
+        activateWebViewForVisitable(visitable)
+    }
+
+    func deactivateVisitable(visitable: TLVisitable) {
+        deactivateWebViewForVisitable(visitable)
+    }
+
+    func activateWebViewForVisitable(visitable: TLVisitable) {
         if !webView.isDescendantOfView(visitable.viewController.view) {
+            if currentVisitable != nil && currentVisitable !== visitable {
+                deactivateWebViewForVisitable(currentVisitable!)
+            }
             visitable.activateWebView(webView)
         }
     }
 
-    func deactivateVisitable(visitable: TLVisitable) {
-        if webView.isDescendantOfView(visitable.viewController.view) {
-            visitable.deactivateWebView()
-        }
+    func deactivateWebViewForVisitable(visitable: TLVisitable) {
+        visitable.deactivateWebView()
     }
 }

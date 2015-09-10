@@ -30,6 +30,7 @@ class WebViewController: UIViewController, TLVisitable {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         visitableDelegate?.visitableViewDidAppear(self)
+        updateWebViewScrollViewInsets()
     }
 
     // MARK: Visitable Lifecycle
