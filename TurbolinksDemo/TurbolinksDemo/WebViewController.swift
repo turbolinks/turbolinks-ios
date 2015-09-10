@@ -7,6 +7,7 @@ class WebViewController: UIViewController, TLVisitable {
 
     var location: NSURL?
     var viewController: UIViewController { return self }
+    var navigating = false
 
     // MARK: View Lifecycle
 
@@ -23,11 +24,13 @@ class WebViewController: UIViewController, TLVisitable {
     }
 
     override func viewWillAppear(animated: Bool) {
+        self.navigating = true
         super.viewWillAppear(animated)
         visitableDelegate?.visitableViewWillAppear(self)
     }
 
     override func viewDidAppear(animated: Bool) {
+        self.navigating = false
         super.viewDidAppear(animated)
         visitableDelegate?.visitableViewDidAppear(self)
         updateWebViewScrollViewInsets()
@@ -59,7 +62,6 @@ class WebViewController: UIViewController, TLVisitable {
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
         view.sendSubviewToBack(webView)
 
-        updateWebViewScrollViewInsets()
         installRefreshControl()
     }
 
@@ -75,9 +77,11 @@ class WebViewController: UIViewController, TLVisitable {
     }
 
     private func updateWebViewScrollViewInsets() {
-        let insets = UIEdgeInsets(top: topLayoutGuide.length, left: 0, bottom: bottomLayoutGuide.length, right: 0)
-        webView?.scrollView.scrollIndicatorInsets = insets
-        webView?.scrollView.contentInset = insets
+        if let scrollView = webView?.scrollView where !navigating {
+            let insets = UIEdgeInsets(top: topLayoutGuide.length, left: 0, bottom: bottomLayoutGuide.length, right: 0)
+            scrollView.scrollIndicatorInsets = insets
+            scrollView.contentInset = insets
+        }
     }
     
     // MARK: Activity Indicator
