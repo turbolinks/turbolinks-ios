@@ -106,6 +106,11 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         visit.visitable.didRestoreSnapshot?()
     }
 
+    func visitWillLoadResponse(visit: TLVisit) {
+        visit.visitable.updateScreenshot()
+        visit.visitable.showScreenshot()
+    }
+
     func visitDidLoadResponse(visit: TLVisit) {
         visit.visitable.hideScreenshot()
         visit.visitable.hideActivityIndicator()
