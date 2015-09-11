@@ -122,10 +122,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func visitDidComplete(visit: TLVisit) {
-        if visit === currentVisit {
-            self.topmostVisit = currentVisit
-        }
-
         if refreshing {
             refreshing = false
             visit.visitable.didRefresh()
@@ -175,6 +171,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
                 visitVisitable(visitable, action: .Restore)
             } else {
                 // Forward visits can complete navigation early
+                self.topmostVisit = currentVisit
                 currentVisit.completeNavigation()
             }
         }
