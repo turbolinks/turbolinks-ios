@@ -30,8 +30,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     // MARK: Visiting
 
     public var currentVisitable: TLVisitable?
-    private var currentVisit: TLVisit?
     private var lastIssuedVisit: TLVisit?
+    private var topmostVisit: TLVisit?
 
     public func visit(visitable: TLVisitable) {
         visitVisitable(visitable, action: .Advance)
@@ -72,7 +72,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     func webViewDidInvalidatePage(webView: TLWebView) {
         if let visitable = currentVisitable {
             visitable.updateScreenshot()
-            currentVisit?.cancel()
+            topmostVisit?.cancel()
 
             visitable.showScreenshot()
             visitable.showActivityIndicator()
@@ -147,10 +147,11 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     // MARK: TLVisitableDelegate
 
     public func visitableViewWillAppear(visitable: TLVisitable) {
-        if let currentVisitable = self.currentVisitable, currentVisit = self.currentVisit, lastIssuedVisit = self.lastIssuedVisit {
-            if visitable === currentVisitable && visitable.viewController.isMovingToParentViewController() {
+        if let topmostVisit = self.topmostVisit, lastIssuedVisit = self.lastIssuedVisit {
+            let topmostVisitable = topmostVisit.visitable
+            if visitable === topmostVisitable && visitable.viewController.isMovingToParentViewController() {
                 // Back swipe gesture canceled
-                if currentVisit.state == .Completed {
+                if topmostVisit.state == .Completed {
                     // Top visitable was fully loaded before the gesture began
                     lastIssuedVisit.cancel()
                 } else {
@@ -165,14 +166,18 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
     
     public func visitableViewDidAppear(visitable: TLVisitable) {
+        if lastIssuedVisit?.visitable === visitable {
+            self.topmostVisit = lastIssuedVisit
+        }
+
         activateVisitable(visitable)
 
-        if let currentVisit = self.currentVisit where currentVisit.visitable === visitable {
-            if currentVisit.state == .Completed {
+        if let visit = self.topmostVisit where visit.visitable === visitable {
+            if visit.state == .Completed {
                 visitable.hideActivityIndicator()
                 visitable.hideScreenshot()
             } else {
-                currentVisit.completeNavigation()
+                visit.completeNavigation()
             }
         }
     }
@@ -192,10 +197,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     func activateVisitable(visitable: TLVisitable) {
         currentVisitable = visitable
-        if lastIssuedVisit?.visitable === visitable {
-            currentVisit = lastIssuedVisit
-        }
-
         activateWebViewForVisitable(visitable)
     }
 
