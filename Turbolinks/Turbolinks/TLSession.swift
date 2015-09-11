@@ -29,9 +29,13 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     
     // MARK: Visiting
 
-    public var currentVisitable: TLVisitable?
-    private var lastIssuedVisit: TLVisit?
+    private var currentVisit: TLVisit?
     private var topmostVisit: TLVisit?
+
+    private var activatedVisitable: TLVisitable?
+    public var topmostVisitable: TLVisitable? {
+        return self.topmostVisit?.visitable
+    }
 
     public func visit(visitable: TLVisitable) {
         visitVisitable(visitable, action: .Advance)
@@ -47,8 +51,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
                 visit = TLColdBootVisit(visitable: visitable, action: action, webView: webView)
             }
 
-            lastIssuedVisit?.cancel()
-            lastIssuedVisit = visit
+            currentVisit?.cancel()
+            currentVisit = visit
 
             visit.delegate = self
             visit.start()
@@ -56,7 +60,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     public func reload() {
-        if let visitable = currentVisitable {
+        if let visitable = activatedVisitable {
             initialized = false
             visitVisitable(visitable, action: .Advance)
             activateVisitable(visitable)
@@ -70,7 +74,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func webViewDidInvalidatePage(webView: TLWebView) {
-        if let visitable = currentVisitable {
+        if let visitable = activatedVisitable {
             visitable.updateScreenshot()
             topmostVisit?.cancel()
 
@@ -91,7 +95,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     func visitWillStart(visit: TLVisit) {
         visit.visitable.showScreenshot()
-        activateWebViewForVisitable(visit.visitable)
+        activateVisitable(visit.visitable)
     }
    
     func visitDidStart(visit: TLVisit) {
@@ -147,18 +151,18 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     // MARK: TLVisitableDelegate
 
     public func visitableViewWillAppear(visitable: TLVisitable) {
-        if let topmostVisit = self.topmostVisit, lastIssuedVisit = self.lastIssuedVisit {
+        if let topmostVisit = self.topmostVisit, currentVisit = self.currentVisit {
             let topmostVisitable = topmostVisit.visitable
             if visitable === topmostVisitable && visitable.viewController.isMovingToParentViewController() {
                 // Back swipe gesture canceled
                 if topmostVisit.state == .Completed {
                     // Top visitable was fully loaded before the gesture began
-                    lastIssuedVisit.cancel()
+                    currentVisit.cancel()
                 } else {
                     // Top visitable was *not* fully loaded before the gesture began
                     visitVisitable(visitable, action: .Advance)
                 }
-            } else if lastIssuedVisit.visitable !== visitable || lastIssuedVisit.state == .Canceled {
+            } else if currentVisit.visitable !== visitable || currentVisit.state == .Canceled {
                 // Navigating backward
                 visitVisitable(visitable, action: .Restore)
             }
@@ -166,8 +170,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
     
     public func visitableViewDidAppear(visitable: TLVisitable) {
-        if lastIssuedVisit?.visitable === visitable {
-            self.topmostVisit = lastIssuedVisit
+        if currentVisit?.visitable === visitable {
+            self.topmostVisit = currentVisit
         }
 
         activateVisitable(visitable)
@@ -188,7 +192,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     public func visitableDidRequestRefresh(visitable: TLVisitable) {
-        if visitable === currentVisitable {
+        if visitable === activatedVisitable {
             refreshing = true
             visitable.willRefresh()
             reload()
@@ -196,24 +200,20 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func activateVisitable(visitable: TLVisitable) {
-        currentVisitable = visitable
-        activateWebViewForVisitable(visitable)
-    }
-
-    func deactivateVisitable(visitable: TLVisitable) {
-        deactivateWebViewForVisitable(visitable)
-    }
-
-    func activateWebViewForVisitable(visitable: TLVisitable) {
-        if !webView.isDescendantOfView(visitable.viewController.view) {
-            if currentVisitable != nil && currentVisitable !== visitable {
-                deactivateWebViewForVisitable(currentVisitable!)
+        if visitable !== activatedVisitable {
+            if let activatedVisitable = self.activatedVisitable {
+                deactivateVisitable(activatedVisitable)
             }
+
             visitable.activateWebView(webView)
+            self.activatedVisitable = visitable
         }
     }
 
-    func deactivateWebViewForVisitable(visitable: TLVisitable) {
-        visitable.deactivateWebView()
+    func deactivateVisitable(visitable: TLVisitable) {
+        if visitable === activatedVisitable {
+            visitable.deactivateWebView()
+            self.activatedVisitable = nil
+        }
     }
 }
