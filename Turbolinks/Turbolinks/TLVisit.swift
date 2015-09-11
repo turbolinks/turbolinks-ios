@@ -11,6 +11,7 @@ protocol TLVisitDelegate: class {
     func visitDidFail(visit: TLVisit)
 
     func visitDidRestoreSnapshot(visit: TLVisit)
+    func visitWillLoadResponse(visit: TLVisit)
     func visitDidLoadResponse(visit: TLVisit)
 
     func visitRequestDidStart(visit: TLVisit)
@@ -169,6 +170,7 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate {
             webView.navigationDelegate = nil
             delegate?.visitDidInitializeWebView(self)
             finishRequest()
+            delegate?.visitDidLoadResponse(self)
             complete()
         }
     }
@@ -249,6 +251,7 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
     func webView(webView: TLWebView, didCompleteRequestForVisitWithIdentifier identifier: String) {
         if identifier == self.identifier {
             afterNavigationCompletion {
+                self.delegate?.visitWillLoadResponse(self)
                 self.webView.loadResponseForVisitWithIdentifier(identifier)
             }
         }

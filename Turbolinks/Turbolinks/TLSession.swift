@@ -110,14 +110,18 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         visit.visitable.didRestoreSnapshot?()
     }
 
+    func visitWillLoadResponse(visit: TLVisit) {
+        visit.visitable.updateScreenshot()
+        visit.visitable.showScreenshot()
+    }
+
     func visitDidLoadResponse(visit: TLVisit) {
+        visit.visitable.hideScreenshot()
+        visit.visitable.hideActivityIndicator()
         visit.visitable.didLoadResponse?()
     }
 
     func visitDidComplete(visit: TLVisit) {
-        visit.visitable.hideScreenshot()
-        visit.visitable.hideActivityIndicator()
-
         if refreshing {
             refreshing = false
             visit.visitable.didRefresh()
@@ -165,6 +169,9 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
             } else if currentVisit.visitable !== visitable || currentVisit.state == .Canceled {
                 // Navigating backward
                 visitVisitable(visitable, action: .Restore)
+            } else {
+                // Forward visits can complete navigation early
+                lastIssuedVisit.completeNavigation()
             }
         }
     }
