@@ -169,6 +169,7 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate {
             webView.navigationDelegate = nil
             delegate?.visitDidInitializeWebView(self)
             finishRequest()
+            delegate?.visitDidLoadResponse(self)
             complete()
         }
     }

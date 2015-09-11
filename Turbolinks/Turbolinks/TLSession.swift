@@ -107,13 +107,12 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func visitDidLoadResponse(visit: TLVisit) {
+        visit.visitable.hideScreenshot()
+        visit.visitable.hideActivityIndicator()
         visit.visitable.didLoadResponse?()
     }
 
     func visitDidComplete(visit: TLVisit) {
-        visit.visitable.hideScreenshot()
-        visit.visitable.hideActivityIndicator()
-
         if refreshing {
             refreshing = false
             visit.visitable.didRefresh()
