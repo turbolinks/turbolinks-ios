@@ -164,6 +164,9 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
             } else if lastIssuedVisit.visitable !== visitable || lastIssuedVisit.state == .Canceled {
                 // Navigating backward
                 visitVisitable(visitable, action: .Restore)
+            } else {
+                // Forward visits can complete navigation early
+                lastIssuedVisit.completeNavigation()
             }
         }
     }
