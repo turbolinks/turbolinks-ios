@@ -60,7 +60,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     public func reload() {
-        if let visitable = activatedVisitable {
+        if let visitable = topmostVisitable {
             initialized = false
             visitVisitable(visitable, action: .Advance)
             activateVisitable(visitable)
@@ -186,9 +186,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
+    // TODO: Remove from TLVisitable protocol
     public func visitableViewWillDisappear(visitable: TLVisitable) {
-        visitable.updateScreenshot()
-        visitable.showScreenshot()
     }
 
     public func visitableDidRequestRefresh(visitable: TLVisitable) {
@@ -212,6 +211,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     func deactivateVisitable(visitable: TLVisitable) {
         if visitable === activatedVisitable {
+            visitable.updateScreenshot()
+            visitable.showScreenshot()
             visitable.deactivateWebView()
             self.activatedVisitable = nil
         }
