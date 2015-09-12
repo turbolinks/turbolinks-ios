@@ -156,41 +156,37 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     public func visitableViewWillAppear(visitable: TLVisitable) {
         if let topmostVisit = self.topmostVisit, currentVisit = self.currentVisit {
-            let topmostVisitable = topmostVisit.visitable
-            if visitable === topmostVisitable && visitable.viewController.isMovingToParentViewController() {
-                // Back swipe gesture canceled
-                if topmostVisit.state == .Completed {
-                    // Top visitable was fully loaded before the gesture began
-                    currentVisit.cancel()
+            if visitable.viewController.isMovingToParentViewController() {
+                if visitable !== topmostVisit.visitable {
+                    // Navigating forward - complete navigation early
+                    self.topmostVisit = currentVisit
+                    currentVisit.completeNavigation()
                 } else {
-                    // Top visitable was *not* fully loaded before the gesture began
-                    visitVisitable(visitable, action: .Advance)
+                    // Back swipe gesture canceled
+                    if topmostVisit.state == .Completed {
+                        currentVisit.cancel()
+                    } else {
+                        visitVisitable(visitable, action: .Advance)
+                    }
                 }
-            } else if currentVisit.visitable !== visitable || currentVisit.state == .Canceled {
+            } else if visitable !== topmostVisit.visitable {
                 // Navigating backward
                 visitVisitable(visitable, action: .Restore)
-            } else {
-                // Forward visits can complete navigation early
-                self.topmostVisit = currentVisit
-                currentVisit.completeNavigation()
             }
         }
     }
     
     public func visitableViewDidAppear(visitable: TLVisitable) {
-        if currentVisit?.visitable === visitable {
-            self.topmostVisit = currentVisit
-        }
-
         activateVisitable(visitable)
 
-        if let visit = self.topmostVisit where visit.visitable === visitable {
-            if visit.state == .Completed {
-                visitable.hideActivityIndicator()
-                visitable.hideScreenshot()
-            } else {
-                visit.completeNavigation()
-            }
+        if visitable === currentVisit?.visitable {
+            // Appearing after successful navigation
+            topmostVisit = currentVisit
+            currentVisit!.completeNavigation()
+        } else if visitable === topmostVisit?.visitable && topmostVisit?.state == .Completed {
+            // Reappearing after canceled navigation
+            visitable.hideActivityIndicator()
+            visitable.hideScreenshot()
         }
     }
 
