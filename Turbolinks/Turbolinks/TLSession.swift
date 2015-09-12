@@ -34,7 +34,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     private var activatedVisitable: TLVisitable?
     public var topmostVisitable: TLVisitable? {
-        return self.topmostVisit?.visitable
+        return topmostVisit?.visitable
     }
 
     public func visit(visitable: TLVisitable) {
