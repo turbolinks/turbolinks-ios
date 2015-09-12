@@ -101,7 +101,7 @@ class TLVisit: NSObject {
     private var navigationCallback: (() -> ())?
 
     func completeNavigation() {
-        if state == .Started {
+        if state == .Started && !navigationCompleted {
             self.navigationCompleted = true
             navigationCallback?()
             NSLog("\(self) completeNavigation()")
