@@ -42,7 +42,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
     
     func visitVisitable(visitable: TLVisitable, action: TLVisitAction) {
-        if let location = visitable.location {
+        if visitable.location != nil {
             let visit: TLVisit
 
             if initialized {

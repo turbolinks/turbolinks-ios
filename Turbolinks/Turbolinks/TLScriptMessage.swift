@@ -17,7 +17,7 @@ enum TLScriptMessageName: String {
 class TLScriptMessage {
     static func parse(message: WKScriptMessage) -> TLScriptMessage? {
         if let body = message.body as? [String: AnyObject] {
-            if let rawName = body["name"] as? String, var data = body["data"] as? [String: AnyObject] {
+            if let rawName = body["name"] as? String, let data = body["data"] as? [String: AnyObject] {
                 if let name = TLScriptMessageName(rawValue: rawName) {
                     return TLScriptMessage(name: name, data: data)
                 }

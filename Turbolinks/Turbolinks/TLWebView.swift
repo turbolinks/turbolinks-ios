@@ -24,17 +24,17 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         super.init(frame: CGRectZero, configuration: configuration)
 
         let bundle = NSBundle(forClass: self.dynamicType)
-        let source = String(contentsOfURL: bundle.URLForResource("TLWebView", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
+        let source = try! String(contentsOfURL: bundle.URLForResource("TLWebView", withExtension: "js")!, encoding: NSUTF8StringEncoding)
         let userScript = WKUserScript(source: source, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
         configuration.userContentController.addUserScript(userScript)
         configuration.userContentController.addScriptMessageHandler(self, name: "turbolinks")
 
-        setTranslatesAutoresizingMaskIntoConstraints(false)
+        translatesAutoresizingMaskIntoConstraints = false
         scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
     }
 
     func visitLocation(location: NSURL, withAction action: String) {
-        callJavaScriptFunction("webView.visitLocationWithAction", withArguments: [location.absoluteString!, action])
+        callJavaScriptFunction("webView.visitLocationWithAction", withArguments: [location.absoluteString, action])
     }
 
     func issueRequestForVisitWithIdentifier(identifier: String) {
@@ -126,7 +126,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
     }
 
     private func encodeJavaScriptArguments(arguments: [AnyObject]) -> String? {
-        if let data = NSJSONSerialization.dataWithJSONObject(arguments, options: nil, error: nil),
+        if let data = try? NSJSONSerialization.dataWithJSONObject(arguments, options: []),
             string = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
                 return string[Range(start: string.startIndex.successor(), end: string.endIndex.predecessor())]
         }

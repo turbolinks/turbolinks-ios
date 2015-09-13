@@ -58,7 +58,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
 
     func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: TLSession) {
         let bundle = NSBundle.mainBundle()
-        let source = String(contentsOfURL: bundle.URLForResource("TurbolinksDemo", withExtension: "js")!, encoding: NSUTF8StringEncoding, error: nil)!
+        let source = try! String(contentsOfURL: bundle.URLForResource("TurbolinksDemo", withExtension: "js")!, encoding: NSUTF8StringEncoding)
         let userScript = WKUserScript(source: source, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
         configuration.userContentController.addUserScript(userScript)
         configuration.processPool = webViewProcessPool
@@ -73,11 +73,11 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
     }
 
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withError error: NSError) {
-        println("REQUEST ERROR: \(error)")
+        print("REQUEST ERROR: \(error)")
     }
 
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withStatusCode statusCode: Int) {
-        println("RECEIVED ERROR RESPONSE: \(statusCode)")
+        print("RECEIVED ERROR RESPONSE: \(statusCode)")
 
         if statusCode == 401 {
             presentAuthenticationController()

@@ -54,8 +54,8 @@ class WebViewController: UIViewController, TLVisitable {
         self.webView = webView
 
         view.addSubview(webView)
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: nil, metrics: nil, views: [ "view": webView ]))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": webView ]))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": webView ]))
         view.sendSubviewToBack(webView)
 
         installRefreshControl()
@@ -84,7 +84,7 @@ class WebViewController: UIViewController, TLVisitable {
 
     lazy var activityIndicator: UIActivityIndicatorView = {
         let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
-        activityIndicator.setTranslatesAutoresizingMaskIntoConstraints(false)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         activityIndicator.color = UIColor.grayColor()
         return activityIndicator
     }()
@@ -110,7 +110,7 @@ class WebViewController: UIViewController, TLVisitable {
 
     private lazy var screenshotView: UIView = {
         let screenshotView = UIView(frame: CGRectZero)
-        screenshotView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        screenshotView.translatesAutoresizingMaskIntoConstraints = false
         screenshotView.backgroundColor = UIColor.whiteColor()
         return screenshotView
     }()
@@ -128,8 +128,8 @@ class WebViewController: UIViewController, TLVisitable {
     func showScreenshot() {
         if !screenshotVisible && !refreshing {
             view.addSubview(screenshotView)
-            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: nil, metrics: nil, views: [ "view": screenshotView ]))
-            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: nil, metrics: nil, views: [ "view": screenshotView ]))
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": screenshotView ]))
+            view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": screenshotView ]))
         }
     }
 
@@ -142,7 +142,7 @@ class WebViewController: UIViewController, TLVisitable {
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: "requestRefresh", forControlEvents: .ValueChanged)
-        refreshControl.setTranslatesAutoresizingMaskIntoConstraints(false)
+        refreshControl.translatesAutoresizingMaskIntoConstraints = false
         return refreshControl
     }()
 
