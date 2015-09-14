@@ -20,7 +20,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
     override func viewDidLoad() {
         super.viewDidLoad()
         installMainNavigationController()
-        presentVisitableForSession(session, atLocation: accountLocation)
+        presentVisitableForSession(session, atLocation: accountLocation, withAction: .Advance)
     }
 
     func installMainNavigationController() {
@@ -31,10 +31,20 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
         mainNavigationController.didMoveToParentViewController(self)
     }
 
-    private func presentVisitableForSession(session: TLSession, atLocation location: NSURL) {
-        let visitable = visitableForSession(session, atLocation: location)
-        mainNavigationController?.pushViewController(visitable.viewController, animated: true)
-        session.visit(visitable)
+    private func presentVisitableForSession(session: TLSession, atLocation location: NSURL, withAction action: TLAction) {
+        if let navigationController = mainNavigationController {
+            let visitable = visitableForSession(session, atLocation: location)
+            let viewController = visitable.viewController
+
+            if action == .Advance {
+                navigationController.pushViewController(viewController, animated: true)
+            } else if action == .Replace {
+                navigationController.popViewControllerAnimated(false)
+                navigationController.pushViewController(viewController, animated: false)
+            }
+
+            session.visit(visitable)
+        }
     }
 
     private func visitableForSession(session: TLSession, atLocation location: NSURL) -> TLVisitable {
@@ -64,8 +74,8 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
         configuration.processPool = webViewProcessPool
     }
 
-    func session(session: TLSession, didProposeVisitToLocation location: NSURL) {
-        presentVisitableForSession(session, atLocation: location)
+    func session(session: TLSession, didProposeVisitToLocation location: NSURL, withAction action: TLAction) {
+        presentVisitableForSession(session, atLocation: location, withAction: action)
     }
 
     func sessionDidStartRequest(session: TLSession) {

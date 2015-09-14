@@ -20,11 +20,6 @@ protocol TLVisitDelegate: class {
     func visitRequestDidFinish(visit: TLVisit)
 }
 
-enum TLVisitAction: String {
-    case Advance = "advance"
-    case Restore = "restore"
-}
-
 enum TLVisitState: String {
     case Initialized = "Initialized"
     case Started = "Started"
@@ -37,7 +32,7 @@ class TLVisit: NSObject {
     weak var delegate: TLVisitDelegate?
 
     var visitable: TLVisitable
-    var action: TLVisitAction
+    var action: TLAction
     var webView: TLWebView
     var state: TLVisitState
 
@@ -48,7 +43,7 @@ class TLVisit: NSObject {
         return "<\(self.dynamicType): state=\(state.rawValue) location=\(location)>"
     }
 
-    init(visitable: TLVisitable, action: TLVisitAction, webView: TLWebView) {
+    init(visitable: TLVisitable, action: TLAction, webView: TLWebView) {
         self.visitable = visitable
         self.location = visitable.location!
         self.action = action
@@ -208,7 +203,7 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
 
     override private func startVisit() {
         webView.visitDelegate = self
-        webView.visitLocation(location, withAction: action.rawValue)
+        webView.visitLocation(location, withAction: action)
     }
 
     override private func cancelVisit() {

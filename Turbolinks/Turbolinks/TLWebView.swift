@@ -1,7 +1,7 @@
 import WebKit
 
 protocol TLWebViewDelegate: class {
-    func webView(webView: TLWebView, didProposeVisitToLocation location: NSURL)
+    func webView(webView: TLWebView, didProposeVisitToLocation location: NSURL, withAction action: TLAction)
     func webViewDidInvalidatePage(webView: TLWebView)
 }
 
@@ -33,8 +33,8 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
     }
 
-    func visitLocation(location: NSURL, withAction action: String) {
-        callJavaScriptFunction("webView.visitLocationWithAction", withArguments: [location.absoluteString, action])
+    func visitLocation(location: NSURL, withAction action: TLAction) {
+        callJavaScriptFunction("webView.visitLocationWithAction", withArguments: [location.absoluteString, action.rawValue])
     }
 
     func issueRequestForVisitWithIdentifier(identifier: String) {
@@ -63,7 +63,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         if let message = TLScriptMessage.parse(message) {
             switch message.name {
             case .VisitProposed:
-                delegate?.webView(self, didProposeVisitToLocation: message.location!)
+                delegate?.webView(self, didProposeVisitToLocation: message.location!, withAction: message.action!)
             case .PageInvalidated:
                 delegate?.webViewDidInvalidatePage(self)
             case .VisitStarted:

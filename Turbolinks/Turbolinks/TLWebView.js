@@ -44,7 +44,7 @@ TLWebView.prototype = {
     // Adapter interface
    
     visitProposedToLocationWithAction: function(location, action) {
-        this.postMessage("visitProposed", { location: location.absoluteURL })
+        this.postMessage("visitProposed", { location: location.absoluteURL, action: action })
     },
 
     visitStarted: function(visit) {

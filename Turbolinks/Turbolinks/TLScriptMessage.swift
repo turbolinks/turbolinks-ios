@@ -44,4 +44,11 @@ class TLScriptMessage {
         }
         return nil
     }
+
+    var action: TLAction? {
+        if let actionString = data["action"] as? String {
+            return TLAction(rawValue: actionString)
+        }
+        return nil
+    }
 }

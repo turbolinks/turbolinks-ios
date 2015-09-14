@@ -5,7 +5,7 @@ public protocol TLSessionDelegate: class {
     func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: TLSession)
 
     func session(session: TLSession, didInitializeWebView webView: WKWebView)
-    func session(session: TLSession, didProposeVisitToLocation location: NSURL)
+    func session(session: TLSession, didProposeVisitToLocation location: NSURL, withAction action: TLAction)
     
     func sessionDidStartRequest(session: TLSession)
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withError error: NSError)
@@ -41,7 +41,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         visitVisitable(visitable, action: .Advance)
     }
     
-    func visitVisitable(visitable: TLVisitable, action: TLVisitAction) {
+    func visitVisitable(visitable: TLVisitable, action: TLAction) {
         if visitable.location != nil {
             let visit: TLVisit
 
@@ -69,8 +69,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     // MARK: TLWebViewDelegate
 
-    func webView(webView: TLWebView, didProposeVisitToLocation location: NSURL) {
-        delegate?.session(self, didProposeVisitToLocation: location)
+    func webView(webView: TLWebView, didProposeVisitToLocation location: NSURL, withAction action: TLAction) {
+        delegate?.session(self, didProposeVisitToLocation: location, withAction: action)
     }
 
     func webViewDidInvalidatePage(webView: TLWebView) {
