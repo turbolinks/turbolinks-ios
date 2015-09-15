@@ -3,6 +3,7 @@ import WebKit
 protocol TLWebViewDelegate: class {
     func webView(webView: TLWebView, didProposeVisitToLocation location: NSURL)
     func webViewDidInvalidatePage(webView: TLWebView)
+    func webView(webView: TLWebView, didFailJavaScriptEvaluationWithError error: NSError)
 }
 
 protocol TLWebViewVisitDelegate: class {
@@ -102,7 +103,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
                         completionHandler?(result["value"])
                     }
                 } else if let error = error {
-                    NSLog("Error evaluating JavaScript function `\(functionExpression)': \(error)")
+                    self.delegate?.webView(self, didFailJavaScriptEvaluationWithError: error)
                 }
             }
         } else {

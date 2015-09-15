@@ -85,6 +85,14 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
+    func webView(webView: TLWebView, didFailJavaScriptEvaluationWithError error: NSError) {
+        if let currentVisit = self.currentVisit where initialized {
+            self.initialized = false
+            currentVisit.cancel()
+            visit(currentVisit.visitable)
+        }
+    }
+
     // MARK: TLVisitDelegate
 
     func visitDidInitializeWebView(visit: TLVisit) {
