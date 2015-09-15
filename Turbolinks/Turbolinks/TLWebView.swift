@@ -101,8 +101,9 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
                     } else {
                         completionHandler?(result["value"])
                     }
+                } else if let error = error {
+                    NSLog("Error evaluating JavaScript function `\(functionExpression)': \(error)")
                 }
-
             }
         } else {
             NSLog("Error encoding arguments for JavaScript function `\(functionExpression)'")
