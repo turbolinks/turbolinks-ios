@@ -190,10 +190,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
-    // TODO: Remove from TLVisitable protocol
-    public func visitableViewWillDisappear(visitable: TLVisitable) {
-    }
-
     public func visitableDidRequestRefresh(visitable: TLVisitable) {
         if visitable === activatedVisitable {
             refreshing = true

@@ -17,11 +17,6 @@ class WebViewController: UIViewController, TLVisitable {
         installActivityIndicator()
     }
 
-    override func viewWillDisappear(animated: Bool) {
-        super.viewWillDisappear(animated)
-        visitableDelegate?.visitableViewWillDisappear(self)
-    }
-
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         visitableDelegate?.visitableViewWillAppear(self)
