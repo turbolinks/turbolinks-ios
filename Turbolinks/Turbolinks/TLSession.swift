@@ -85,6 +85,14 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
+    func webView(webView: TLWebView, didFailJavaScriptEvaluationWithError error: NSError) {
+        if let currentVisit = self.currentVisit where initialized {
+            self.initialized = false
+            currentVisit.cancel()
+            visit(currentVisit.visitable)
+        }
+    }
+
     // MARK: TLVisitDelegate
 
     func visitDidInitializeWebView(visit: TLVisit) {
@@ -156,21 +164,22 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     public func visitableViewWillAppear(visitable: TLVisitable) {
         if let topmostVisit = self.topmostVisit, currentVisit = self.currentVisit {
-            if visitable.viewController.isMovingToParentViewController() {
-                if visitable !== topmostVisit.visitable {
-                    // Navigating forward - complete navigation early
-                    self.topmostVisit = currentVisit
-                    currentVisit.completeNavigation()
+            if visitable === topmostVisit.visitable && visitable.viewController.isMovingToParentViewController() {
+                // Back swipe gesture canceled
+                NSLog("\(self) Backward navigation canceled")
+                if topmostVisit.state == .Completed {
+                    currentVisit.cancel()
                 } else {
-                    // Back swipe gesture canceled
-                    if topmostVisit.state == .Completed {
-                        currentVisit.cancel()
-                    } else {
-                        visitVisitable(visitable, action: .Advance)
-                    }
+                    visitVisitable(visitable, action: .Advance)
                 }
+            } else if visitable === currentVisit.visitable && currentVisit.state == .Started {
+                // Navigating forward - complete navigation early
+                NSLog("\(self) Navigating forward")
+                self.topmostVisit = currentVisit
+                currentVisit.completeNavigation()
             } else if visitable !== topmostVisit.visitable {
                 // Navigating backward
+                NSLog("\(self) Navigating backward")
                 visitVisitable(visitable, action: .Restore)
             }
         }
