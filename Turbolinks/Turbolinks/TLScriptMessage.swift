@@ -1,6 +1,8 @@
 import WebKit
 
 enum TLScriptMessageName: String {
+    case PageLoaded = "pageLoaded"
+    case ErrorRaised = "errorRaised"
     case VisitProposed = "visitProposed"
     case VisitStarted = "visitStarted"
     case VisitSnapshotRestored = "visitSnapshotRestored"
@@ -11,7 +13,6 @@ enum TLScriptMessageName: String {
     case VisitResponseLoaded = "visitResponseLoaded"
     case VisitCompleted = "visitCompleted"
     case PageInvalidated = "pageInvalidated"
-    case Error = "error"
 }
 
 class TLScriptMessage {

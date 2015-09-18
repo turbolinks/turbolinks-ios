@@ -138,11 +138,12 @@ class TLVisit: NSObject {
     }
 }
 
-class TLColdBootVisit: TLVisit, WKNavigationDelegate {
+class TLColdBootVisit: TLVisit, WKNavigationDelegate, TLWebViewPageLoadDelegate {
     private var navigation: WKNavigation?
 
     override private func startVisit() {
         webView.navigationDelegate = self
+        webView.pageLoadDelegate = self
         self.navigation = webView.loadRequest(NSURLRequest(URL: location))
         delegate?.visitDidStart(self)
         startRequest()
@@ -165,8 +166,6 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate {
             webView.navigationDelegate = nil
             delegate?.visitDidInitializeWebView(self)
             finishRequest()
-            delegate?.visitDidLoadResponse(self)
-            complete()
         }
     }
 
@@ -191,6 +190,13 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate {
         if navigation === self.navigation {
             fail { self.delegate?.visit(self, requestDidFailWithError: error) }
         }
+    }
+
+    // MARK: TLWebViewPageLoadDelegate
+
+    func webViewDidLoadPage(webView: TLWebView) {
+        delegate?.visitDidLoadResponse(self)
+        complete()
     }
 }
 

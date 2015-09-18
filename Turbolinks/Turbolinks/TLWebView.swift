@@ -6,6 +6,10 @@ protocol TLWebViewDelegate: class {
     func webView(webView: TLWebView, didFailJavaScriptEvaluationWithError error: NSError)
 }
 
+protocol TLWebViewPageLoadDelegate: class {
+    func webViewDidLoadPage(webView: TLWebView)
+}
+
 protocol TLWebViewVisitDelegate: class {
     func webView(webView: TLWebView, didStartVisitWithIdentifier identifier: String, hasSnapshot: Bool)
     func webView(webView: TLWebView, didRestoreSnapshotForVisitWithIdentifier identifier: String)
@@ -19,6 +23,7 @@ protocol TLWebViewVisitDelegate: class {
 
 class TLWebView: WKWebView, WKScriptMessageHandler {
     weak var delegate: TLWebViewDelegate?
+    weak var pageLoadDelegate: TLWebViewPageLoadDelegate?
     weak var visitDelegate: TLWebViewVisitDelegate?
 
     init(configuration: WKWebViewConfiguration) {
@@ -63,6 +68,11 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         if let message = TLScriptMessage.parse(message) {
             switch message.name {
+            case .PageLoaded:
+                pageLoadDelegate?.webViewDidLoadPage(self)
+            case .ErrorRaised:
+                let error = message.data["error"] as? String
+                NSLog("JavaScript error: %@", error ?? "<unknown error>")
             case .VisitProposed:
                 delegate?.webView(self, didProposeVisitToLocation: message.location!, withAction: message.action!)
             case .PageInvalidated:
@@ -84,9 +94,6 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
                 visitDelegate?.webView(self, didLoadResponseForVisitWithIdentifier: message.identifier!)
             case .VisitCompleted:
                 visitDelegate?.webView(self, didCompleteVisitWithIdentifier: message.identifier!)
-            case .Error:
-                let error = message.data["error"] as? String
-                NSLog("JavaScript error: %@", error ?? "<unknown error>")
             }
         }
     }

@@ -5,6 +5,14 @@ function TLWebView(controller, messageHandler) {
 }
 
 TLWebView.prototype = {
+    pageLoaded: function() {
+        this.postMessageAfterNextRepaint("pageLoaded")
+    },
+
+    errorRaised: function(error) {
+        this.postMessage("errorRaised", { error: error })
+    },
+
     visitLocationWithAction: function(location, action) {
         this.controller.startVisitToLocationWithAction(location, action)
     },
@@ -102,5 +110,7 @@ window.webView = new TLWebView(Turbolinks.controller, webkit.messageHandlers.tur
 
 addEventListener("error", function(event) {
     var error = event.message + " (" + event.filename + ":" + event.lineno + ":" + event.colno + ")"
-    webView.postMessage("error", { error: error })
+    webView.errorRaised(error)
 }, false)
+
+webView.pageLoaded()
