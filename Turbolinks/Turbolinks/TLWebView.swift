@@ -86,7 +86,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
                 visitDelegate?.webView(self, didCompleteVisitWithIdentifier: message.identifier!)
             case .Error:
                 let error = message.data["error"] as? String
-                NSLog("JavaScript error: \(error)")
+                NSLog("JavaScript error: %@", error ?? "<unknown error>")
             }
         }
     }
@@ -98,7 +98,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
             evaluateJavaScript(script) { (result, error) in
                 if let result = result as? Dictionary<String, AnyObject> {
                     if let error = result["error"] as? String, stack = result["stack"] as? String {
-                        NSLog("Error evaluating JavaScript function `\(functionExpression)': \(error)\n\(stack)")
+                        NSLog("Error evaluating JavaScript function `%@': %@\n%@", functionExpression, error, stack)
                     } else {
                         completionHandler?(result["value"])
                     }
@@ -107,7 +107,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
                 }
             }
         } else {
-            NSLog("Error encoding arguments for JavaScript function `\(functionExpression)'")
+            NSLog("Error encoding arguments for JavaScript function `%@'", functionExpression)
         }
     }
 
