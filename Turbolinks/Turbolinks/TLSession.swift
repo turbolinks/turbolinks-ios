@@ -67,6 +67,20 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
+    // MARK: Visitable restoration identifiers
+
+    lazy private var visitableRestorationIdentifiers: NSMapTable = {
+        return NSMapTable(keyOptions: .WeakMemory, valueOptions: .StrongMemory)
+    }()
+
+    func restorationIdentifierForVisitable(visitable: TLVisitable) -> String? {
+        return visitableRestorationIdentifiers.objectForKey(visitable) as? String
+    }
+
+    func storeRestorationIdentifier(restorationIdentifier: String, forVisitable visitable: TLVisitable) {
+        visitableRestorationIdentifiers.setObject(restorationIdentifier, forKey: visitable)
+    }
+
     // MARK: TLWebViewDelegate
 
     func webView(webView: TLWebView, didProposeVisitToLocation location: NSURL, withAction action: TLAction) {
@@ -130,7 +144,9 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func visitDidComplete(visit: TLVisit) {
-        print("restoration identifier = \(visit.restorationIdentifier)")
+        if let restorationIdentifier = visit.restorationIdentifier {
+            storeRestorationIdentifier(restorationIdentifier, forVisitable: visit.visitable)
+        }
 
         if refreshing {
             refreshing = false
