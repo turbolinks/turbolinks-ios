@@ -130,6 +130,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func visitDidComplete(visit: TLVisit) {
+        print("restoration identifier = \(visit.restorationIdentifier)")
+
         if refreshing {
             refreshing = false
             visit.visitable.didRefresh()

@@ -38,6 +38,10 @@ class TLScriptMessage {
     var identifier: String? {
         return data["identifier"] as? String
     }
+
+    var restorationIdentifier: String? {
+        return data["restorationIdentifier"] as? String
+    }
    
     var location: NSURL? {
         if let locationString = data["location"] as? String {

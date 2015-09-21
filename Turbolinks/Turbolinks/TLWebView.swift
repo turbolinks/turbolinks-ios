@@ -7,7 +7,7 @@ protocol TLWebViewDelegate: class {
 }
 
 protocol TLWebViewPageLoadDelegate: class {
-    func webViewDidLoadPage(webView: TLWebView)
+    func webView(webView: TLWebView, didLoadPageWithRestorationIdentifier restorationIdentifier: String)
 }
 
 protocol TLWebViewVisitDelegate: class {
@@ -18,7 +18,7 @@ protocol TLWebViewVisitDelegate: class {
     func webView(webView: TLWebView, didFailRequestForVisitWithIdentifier identifier: String, withStatusCode statusCode: Int?)
     func webView(webView: TLWebView, didFinishRequestForVisitWithIdentifier identifier: String)
     func webView(webView: TLWebView, didLoadResponseForVisitWithIdentifier identifier: String)
-    func webView(webView: TLWebView, didCompleteVisitWithIdentifier identifier: String)
+    func webView(webView: TLWebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String)
 }
 
 class TLWebView: WKWebView, WKScriptMessageHandler {
@@ -69,7 +69,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         if let message = TLScriptMessage.parse(message) {
             switch message.name {
             case .PageLoaded:
-                pageLoadDelegate?.webViewDidLoadPage(self)
+                pageLoadDelegate?.webView(self, didLoadPageWithRestorationIdentifier: message.restorationIdentifier!)
             case .ErrorRaised:
                 let error = message.data["error"] as? String
                 NSLog("JavaScript error: %@", error ?? "<unknown error>")
@@ -93,7 +93,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
             case .VisitResponseLoaded:
                 visitDelegate?.webView(self, didLoadResponseForVisitWithIdentifier: message.identifier!)
             case .VisitCompleted:
-                visitDelegate?.webView(self, didCompleteVisitWithIdentifier: message.identifier!)
+                visitDelegate?.webView(self, didCompleteVisitWithIdentifier: message.identifier!, restorationIdentifier: message.restorationIdentifier!)
             }
         }
     }

@@ -38,6 +38,7 @@ class TLVisit: NSObject {
 
     var location: NSURL
     var hasSnapshot: Bool = false
+    var restorationIdentifier: String?
 
     override var description: String {
         return "<\(self.dynamicType): state=\(state.rawValue) location=\(location)>"
@@ -194,7 +195,8 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate, TLWebViewPageLoadDelegate 
 
     // MARK: TLWebViewPageLoadDelegate
 
-    func webViewDidLoadPage(webView: TLWebView) {
+    func webView(webView: TLWebView, didLoadPageWithRestorationIdentifier restorationIdentifier: String) {
+        self.restorationIdentifier = restorationIdentifier
         delegate?.visitDidLoadResponse(self)
         complete()
     }
@@ -283,8 +285,9 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
         }
     }
 
-    func webView(webView: TLWebView, didCompleteVisitWithIdentifier identifier: String) {
+    func webView(webView: TLWebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String) {
         if identifier == self.identifier {
+            self.restorationIdentifier = restorationIdentifier
             complete()
         }
     }

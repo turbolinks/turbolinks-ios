@@ -6,7 +6,8 @@ function TLWebView(controller, messageHandler) {
 
 TLWebView.prototype = {
     pageLoaded: function() {
-        this.postMessageAfterNextRepaint("pageLoaded")
+        var restorationIdentifier = this.controller.restorationIdentifier
+        this.postMessageAfterNextRepaint("pageLoaded", { restorationIdentifier: restorationIdentifier })
     },
 
     errorRaised: function(error) {
@@ -85,7 +86,7 @@ TLWebView.prototype = {
     },
 
     visitCompleted: function(visit) {
-        this.postMessageAfterNextRepaint("visitCompleted", { identifier: visit.identifier })
+        this.postMessageAfterNextRepaint("visitCompleted", { identifier: visit.identifier, restorationIdentifier: visit.restorationIdentifier })
     },
 
     pageInvalidated: function() {
