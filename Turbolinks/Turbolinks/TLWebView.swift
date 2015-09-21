@@ -100,7 +100,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
 
     // MARK: JavaScript Evaluation
 
-    private func callJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject] = [], completionHandler: ((AnyObject?) -> ())? = nil) {
+    private func callJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject?] = [], completionHandler: ((AnyObject?) -> ())? = nil) {
         if let script = scriptForCallingJavaScriptFunction(functionExpression, withArguments: arguments) {
             evaluateJavaScript(script) { (result, error) in
                 if let result = result as? Dictionary<String, AnyObject> {
@@ -118,7 +118,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         }
     }
 
-    private func scriptForCallingJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject]) -> String? {
+    private func scriptForCallingJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject?]) -> String? {
         if let encodedArguments = encodeJavaScriptArguments(arguments) {
             return
                 "(function(result) {\n" +
@@ -134,7 +134,9 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         return nil
     }
 
-    private func encodeJavaScriptArguments(arguments: [AnyObject]) -> String? {
+    private func encodeJavaScriptArguments(arguments: [AnyObject?]) -> String? {
+        let arguments = arguments.map { $0 == nil ? NSNull() : $0! }
+
         if let data = try? NSJSONSerialization.dataWithJSONObject(arguments, options: []),
             string = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
                 return string[Range(start: string.startIndex.successor(), end: string.endIndex.predecessor())]
