@@ -39,8 +39,8 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
     }
 
-    func visitLocation(location: NSURL, withAction action: TLAction) {
-        callJavaScriptFunction("webView.visitLocationWithAction", withArguments: [location.absoluteString, action.rawValue])
+    func visitLocation(location: NSURL, withAction action: TLAction, restorationIdentifier: String?) {
+        callJavaScriptFunction("webView.visitLocationWithActionAndRestorationIdentifier", withArguments: [location.absoluteString, action.rawValue, restorationIdentifier])
     }
 
     func issueRequestForVisitWithIdentifier(identifier: String) {

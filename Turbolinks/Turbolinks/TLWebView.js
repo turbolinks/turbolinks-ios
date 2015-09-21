@@ -14,8 +14,8 @@ TLWebView.prototype = {
         this.postMessage("errorRaised", { error: error })
     },
 
-    visitLocationWithAction: function(location, action) {
-        this.controller.startVisitToLocationWithAction(location, action)
+    visitLocationWithActionAndRestorationIdentifier: function(location, action, restorationIdentifier) {
+        this.controller.startVisitToLocationWithAction(location, action, restorationIdentifier)
     },
 
     // Current visit

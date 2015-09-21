@@ -47,6 +47,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
             if initialized {
                 visit = TLJavaScriptVisit(visitable: visitable, action: action, webView: webView)
+                visit.restorationIdentifier = restorationIdentifierForVisitable(visitable)
             } else {
                 visit = TLColdBootVisit(visitable: visitable, action: action, webView: webView)
             }
