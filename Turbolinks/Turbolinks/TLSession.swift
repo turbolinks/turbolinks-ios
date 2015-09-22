@@ -70,9 +70,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     // MARK: Visitable restoration identifiers
 
-    lazy private var visitableRestorationIdentifiers: NSMapTable = {
-        return NSMapTable(keyOptions: .WeakMemory, valueOptions: .StrongMemory)
-    }()
+    private var visitableRestorationIdentifiers = NSMapTable(keyOptions: .WeakMemory, valueOptions: .StrongMemory)
 
     func restorationIdentifierForVisitable(visitable: TLVisitable) -> String? {
         return visitableRestorationIdentifiers.objectForKey(visitable) as? String
