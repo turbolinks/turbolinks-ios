@@ -83,14 +83,11 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
     }
 
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withError error: NSError) {
-        print("REQUEST ERROR: \(error)")
-    }
-
-    func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withStatusCode statusCode: Int) {
-        print("RECEIVED ERROR RESPONSE: \(statusCode)")
-
-        if statusCode == 401 {
-            presentAuthenticationController()
+        print("ERROR: \(error)")
+        if error.code == TLErrorCode.HTTPFailure.rawValue {
+            if let statusCode = error.userInfo["statusCode"] as? Int where statusCode == 401 {
+                presentAuthenticationController()
+            }
         }
     }
 

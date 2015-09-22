@@ -9,7 +9,6 @@ public protocol TLSessionDelegate: class {
     
     func sessionDidStartRequest(session: TLSession)
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withError error: NSError)
-    func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withStatusCode statusCode: Int)
     func sessionDidFinishRequest(session: TLSession)
 }
 
@@ -171,10 +170,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     func visit(visit: TLVisit, requestDidFailWithError error: NSError) {
         delegate?.session(self, didFailRequestForVisitable: visit.visitable, withError: error)
-    }
-
-    func visit(visit: TLVisit, requestDidFailWithStatusCode statusCode: Int) {
-        delegate?.session(self, didFailRequestForVisitable: visit.visitable, withStatusCode: statusCode)
     }
 
     // MARK: TLVisitableDelegate

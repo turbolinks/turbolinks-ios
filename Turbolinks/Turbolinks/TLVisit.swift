@@ -1,7 +1,5 @@
 import WebKit
 
-let TLVisitErrorDomain = "com.basecamp.Turbolinks"
-
 protocol TLVisitDelegate: class {
     func visitDidInitializeWebView(visit: TLVisit)
 
@@ -16,7 +14,6 @@ protocol TLVisitDelegate: class {
 
     func visitRequestDidStart(visit: TLVisit)
     func visit(visit: TLVisit, requestDidFailWithError error: NSError)
-    func visit(visit: TLVisit, requestDidFailWithStatusCode statusCode: Int)
     func visitRequestDidFinish(visit: TLVisit)
 }
 
@@ -176,20 +173,29 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate, TLWebViewPageLoadDelegate 
                 decisionHandler(.Allow)
             } else {
                 decisionHandler(.Cancel)
-                fail { self.delegate?.visit(self, requestDidFailWithStatusCode: httpResponse.statusCode) }
+                fail {
+                    let error = TLError(code: .HTTPFailure, statusCode: httpResponse.statusCode)
+                    self.delegate?.visit(self, requestDidFailWithError: error)
+                }
             }
         }
     }
 
-    func webView(webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: NSError) {
+    func webView(webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError originalError: NSError) {
         if navigation === self.navigation {
-            fail { self.delegate?.visit(self, requestDidFailWithError: error) }
+            fail {
+                let error = TLError(code: .NetworkFailure, error: originalError)
+                self.delegate?.visit(self, requestDidFailWithError: error)
+            }
         }
     }
 
-    func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
+    func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError originalError: NSError) {
         if navigation === self.navigation {
-            fail { self.delegate?.visit(self, requestDidFailWithError: error) }
+            fail {
+                let error = TLError(code: .NetworkFailure, error: originalError)
+                self.delegate?.visit(self, requestDidFailWithError: error)
+            }
         }
     }
 
@@ -260,15 +266,16 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
         }
     }
 
-    func webView(webView: TLWebView, didFailRequestForVisitWithIdentifier identifier: String, withStatusCode statusCode: Int?) {
+    func webView(webView: TLWebView, didFailRequestForVisitWithIdentifier identifier: String, statusCode: Int) {
         if identifier == self.identifier {
             fail {
-                if statusCode == nil {
-                    let error = NSError(domain: TLVisitErrorDomain, code: 0, userInfo: nil)
-                    self.delegate?.visit(self, requestDidFailWithError: error)
+                let error: NSError
+                if statusCode == 0 {
+                    error = TLError(code: .NetworkFailure, localizedDescription: "A network error occurred.")
                 } else {
-                    self.delegate?.visit(self, requestDidFailWithStatusCode: statusCode!)
+                    error = TLError(code: .HTTPFailure, statusCode: statusCode)
                 }
+                self.delegate?.visit(self, requestDidFailWithError: error)
             }
         }
     }

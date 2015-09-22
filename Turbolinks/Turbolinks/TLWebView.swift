@@ -15,7 +15,7 @@ protocol TLWebViewVisitDelegate: class {
     func webView(webView: TLWebView, didRestoreSnapshotForVisitWithIdentifier identifier: String)
     func webView(webView: TLWebView, didStartRequestForVisitWithIdentifier identifier: String)
     func webView(webView: TLWebView, didCompleteRequestForVisitWithIdentifier identifier: String)
-    func webView(webView: TLWebView, didFailRequestForVisitWithIdentifier identifier: String, withStatusCode statusCode: Int?)
+    func webView(webView: TLWebView, didFailRequestForVisitWithIdentifier identifier: String, statusCode: Int)
     func webView(webView: TLWebView, didFinishRequestForVisitWithIdentifier identifier: String)
     func webView(webView: TLWebView, didLoadResponseForVisitWithIdentifier identifier: String)
     func webView(webView: TLWebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String)
@@ -86,8 +86,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
             case .VisitRequestCompleted:
                 visitDelegate?.webView(self, didCompleteRequestForVisitWithIdentifier: message.identifier!)
             case .VisitRequestFailed:
-                let statusCode = message.data["statusCode"] as? Int
-                visitDelegate?.webView(self, didFailRequestForVisitWithIdentifier: message.identifier!, withStatusCode: statusCode)
+                visitDelegate?.webView(self, didFailRequestForVisitWithIdentifier: message.identifier!, statusCode: message.data["statusCode"] as! Int)
             case .VisitRequestFinished:
                 visitDelegate?.webView(self, didFinishRequestForVisitWithIdentifier: message.identifier!)
             case .VisitResponseLoaded:

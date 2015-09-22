@@ -25,6 +25,8 @@
 		22C197DF1B59835300749B4E /* TLWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C197DD1B59835300749B4E /* TLWebView.swift */; };
 		22C81A1D1BA72CDA00E47138 /* TLAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C81A1C1BA72CDA00E47138 /* TLAction.swift */; settings = {ASSET_TAGS = (); }; };
 		22C81A1E1BA72CDA00E47138 /* TLAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C81A1C1BA72CDA00E47138 /* TLAction.swift */; settings = {ASSET_TAGS = (); }; };
+		22F1C91F1BB1FD6A008FDFFB /* TLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F1C91E1BB1FD6A008FDFFB /* TLError.swift */; settings = {ASSET_TAGS = (); }; };
+		22F1C9201BB1FD6A008FDFFB /* TLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F1C91E1BB1FD6A008FDFFB /* TLError.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +66,7 @@
 		22960AAA1B9F51E100AA144A /* TLScriptMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLScriptMessage.swift; sourceTree = "<group>"; };
 		22C197DD1B59835300749B4E /* TLWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLWebView.swift; sourceTree = "<group>"; };
 		22C81A1C1BA72CDA00E47138 /* TLAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLAction.swift; sourceTree = "<group>"; };
+		22F1C91E1BB1FD6A008FDFFB /* TLError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLError.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				22C81A1C1BA72CDA00E47138 /* TLAction.swift */,
+				22F1C91E1BB1FD6A008FDFFB /* TLError.swift */,
 				22960AAA1B9F51E100AA144A /* TLScriptMessage.swift */,
 				1F8FC6B01B55A37400A781C8 /* TLSession.swift */,
 				1F8FC6B11B55A37400A781C8 /* TLVisit.swift */,
@@ -262,6 +266,7 @@
 				22C197DE1B59835300749B4E /* TLWebView.swift in Sources */,
 				1F8FC6B91B55A37400A781C8 /* TLVisit.swift in Sources */,
 				22C81A1D1BA72CDA00E47138 /* TLAction.swift in Sources */,
+				22F1C91F1BB1FD6A008FDFFB /* TLError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,6 +276,7 @@
 			files = (
 				1F8FC6BC1B55A37400A781C8 /* TLVisitable.swift in Sources */,
 				22960AAC1B9F51E100AA144A /* TLScriptMessage.swift in Sources */,
+				22F1C9201BB1FD6A008FDFFB /* TLError.swift in Sources */,
 				22C81A1E1BA72CDA00E47138 /* TLAction.swift in Sources */,
 				1F8FC6BA1B55A37400A781C8 /* TLVisit.swift in Sources */,
 				22C197DF1B59835300749B4E /* TLWebView.swift in Sources */,
