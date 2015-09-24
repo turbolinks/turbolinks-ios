@@ -150,6 +150,7 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate, TLWebViewPageLoadDelegate 
     override private func cancelVisit() {
         webView.navigationDelegate = nil
         webView.stopLoading()
+        finishRequest()
     }
 
     override private func failVisit() {
