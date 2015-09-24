@@ -206,8 +206,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
             currentVisit!.completeNavigation()
         } else if visitable === topmostVisit?.visitable && topmostVisit?.state == .Completed {
             // Reappearing after canceled navigation
-            visitable.hideActivityIndicator()
             visitable.hideScreenshot()
+            visitable.hideActivityIndicator()
         }
     }
 
@@ -222,6 +222,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     func activateVisitable(visitable: TLVisitable) {
         if visitable !== activatedVisitable {
             if let activatedVisitable = self.activatedVisitable {
+                activatedVisitable.updateScreenshot()
+                activatedVisitable.showScreenshot()
                 deactivateVisitable(activatedVisitable)
             }
 
@@ -232,8 +234,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     func deactivateVisitable(visitable: TLVisitable) {
         if visitable === activatedVisitable {
-            visitable.updateScreenshot()
-            visitable.showScreenshot()
             visitable.deactivateWebView()
             self.activatedVisitable = nil
         }
