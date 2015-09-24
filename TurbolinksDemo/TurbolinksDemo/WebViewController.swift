@@ -68,13 +68,14 @@ class WebViewController: UIViewController, TLVisitable {
     }
     
     private func updateWebViewScrollViewInsets() {
-        if let scrollView = webView?.scrollView {
-            let insets = UIEdgeInsets(top: topLayoutGuide.length, left: 0, bottom: bottomLayoutGuide.length, right: 0)
+        if let scrollView = webView?.scrollView where scrollView.contentInset.top != topLayoutGuide.length && !refreshing {
+            var insets = scrollView.contentInset
+            insets.top = topLayoutGuide.length
             scrollView.scrollIndicatorInsets = insets
             scrollView.contentInset = insets
         }
     }
-    
+
     // MARK: Activity Indicator
 
     lazy var activityIndicator: UIActivityIndicatorView = {
@@ -137,7 +138,6 @@ class WebViewController: UIViewController, TLVisitable {
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: "requestRefresh", forControlEvents: .ValueChanged)
-        refreshControl.translatesAutoresizingMaskIntoConstraints = false
         return refreshControl
     }()
 
