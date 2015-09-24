@@ -142,7 +142,10 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate, TLWebViewPageLoadDelegate 
     override private func startVisit() {
         webView.navigationDelegate = self
         webView.pageLoadDelegate = self
-        self.navigation = webView.loadRequest(NSURLRequest(URL: location))
+
+        let request = NSURLRequest(URL: location)
+        navigation = webView.loadRequest(request)
+
         delegate?.visitDidStart(self)
         startRequest()
     }
