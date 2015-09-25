@@ -218,15 +218,17 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
     
     public func visitableViewDidAppear(visitable: TLVisitable) {
-        activateVisitable(visitable)
-
         if visitable === currentVisit?.visitable {
             // Appearing after successful navigation
             completeNavigationForCurrentVisit()
+            if currentVisit!.state != .Failed {
+                activateVisitable(visitable)
+            }
         } else if visitable === topmostVisit?.visitable && topmostVisit?.state == .Completed {
             // Reappearing after canceled navigation
             visitable.hideScreenshot()
             visitable.hideActivityIndicator()
+            activateVisitable(visitable)
         }
     }
 
