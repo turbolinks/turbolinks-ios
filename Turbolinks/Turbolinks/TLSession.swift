@@ -207,8 +207,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
             } else if visitable === currentVisit.visitable && currentVisit.state == .Started {
                 // Navigating forward - complete navigation early
                 NSLog("%@ Navigating forward", self)
-                self.topmostVisit = currentVisit
-                currentVisit.completeNavigation()
+                completeNavigationForCurrentVisit()
             } else if visitable !== topmostVisit.visitable {
                 // Navigating backward
                 NSLog("%@ Navigating backward", self)
@@ -222,8 +221,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
         if visitable === currentVisit?.visitable {
             // Appearing after successful navigation
-            topmostVisit = currentVisit
-            currentVisit!.completeNavigation()
+            completeNavigationForCurrentVisit()
         } else if visitable === topmostVisit?.visitable && topmostVisit?.state == .Completed {
             // Reappearing after canceled navigation
             visitable.hideScreenshot()
@@ -236,6 +234,13 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
             refreshing = true
             visitable.willRefresh()
             reload()
+        }
+    }
+
+    private func completeNavigationForCurrentVisit() {
+        if let visit = currentVisit {
+            topmostVisit = visit
+            visit.completeNavigation()
         }
     }
 }
