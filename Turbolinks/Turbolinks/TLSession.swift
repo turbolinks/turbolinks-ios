@@ -228,14 +228,14 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
             }
 
             visitable.activateWebView(webView)
-            self.activatedVisitable = visitable
+            activatedVisitable = visitable
         }
     }
 
     func deactivateVisitable(visitable: TLVisitable) {
         if visitable === activatedVisitable {
             visitable.deactivateWebView()
-            self.activatedVisitable = nil
+            activatedVisitable = nil
         }
     }
 }
