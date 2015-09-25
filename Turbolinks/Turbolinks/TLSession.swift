@@ -31,7 +31,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     private var currentVisit: TLVisit?
     private var topmostVisit: TLVisit?
 
-    private var activatedVisitable: TLVisitable?
     public var topmostVisitable: TLVisitable? {
         return topmostVisit?.visitable
     }
@@ -68,6 +67,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     // MARK: Visitable activation
+
+    private var activatedVisitable: TLVisitable?
 
     func activateVisitable(visitable: TLVisitable) {
         if visitable !== activatedVisitable {
@@ -108,7 +109,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func webViewDidInvalidatePage(webView: TLWebView) {
-        if let visitable = activatedVisitable {
+        if let visitable = topmostVisitable {
             visitable.updateScreenshot()
             topmostVisit?.cancel()
 
@@ -230,7 +231,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     public func visitableDidRequestRefresh(visitable: TLVisitable) {
-        if visitable === activatedVisitable {
+        if visitable === topmostVisitable {
             refreshing = true
             visitable.willRefresh()
             reload()
