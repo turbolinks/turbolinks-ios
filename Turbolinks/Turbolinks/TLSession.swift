@@ -114,11 +114,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     func webViewDidInvalidatePage(webView: TLWebView) {
         if let visitable = topmostVisitable {
             visitable.updateScreenshot()
-            topmostVisit?.cancel()
-
             visitable.showScreenshot()
             visitable.showActivityIndicator()
-
             reload()
         }
     }
