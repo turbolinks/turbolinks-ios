@@ -62,7 +62,8 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     public func reload() {
         if let visitable = topmostVisitable {
             initialized = false
-            visitVisitable(visitable, action: .Advance)
+            visit(visitable)
+            topmostVisit = currentVisit
         }
     }
 
