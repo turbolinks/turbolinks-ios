@@ -63,7 +63,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         if let visitable = topmostVisitable {
             initialized = false
             visitVisitable(visitable, action: .Advance)
-            activateVisitable(visitable)
         }
     }
 
