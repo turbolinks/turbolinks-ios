@@ -73,9 +73,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     func activateVisitable(visitable: TLVisitable) {
         if visitable !== activatedVisitable {
             if let activatedVisitable = self.activatedVisitable {
-                activatedVisitable.updateScreenshot()
-                activatedVisitable.showScreenshot()
-                deactivateVisitable(activatedVisitable)
+                deactivateVisitable(activatedVisitable, showScreenshot: true)
             }
 
             visitable.activateWebView(webView)
@@ -83,8 +81,13 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
-    func deactivateVisitable(visitable: TLVisitable) {
+    func deactivateVisitable(visitable: TLVisitable, showScreenshot: Bool = false) {
         if visitable === activatedVisitable {
+            if showScreenshot {
+                visitable.updateScreenshot()
+                visitable.showScreenshot()
+            }
+
             visitable.deactivateWebView()
             activatedVisitable = nil
         }
