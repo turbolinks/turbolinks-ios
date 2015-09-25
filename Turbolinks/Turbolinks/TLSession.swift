@@ -67,6 +67,28 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
+    // MARK: Visitable activation
+
+    func activateVisitable(visitable: TLVisitable) {
+        if visitable !== activatedVisitable {
+            if let activatedVisitable = self.activatedVisitable {
+                activatedVisitable.updateScreenshot()
+                activatedVisitable.showScreenshot()
+                deactivateVisitable(activatedVisitable)
+            }
+
+            visitable.activateWebView(webView)
+            activatedVisitable = visitable
+        }
+    }
+
+    func deactivateVisitable(visitable: TLVisitable) {
+        if visitable === activatedVisitable {
+            visitable.deactivateWebView()
+            activatedVisitable = nil
+        }
+    }
+
     // MARK: Visitable restoration identifiers
 
     private var visitableRestorationIdentifiers = NSMapTable(keyOptions: .WeakMemory, valueOptions: .StrongMemory)
@@ -153,12 +175,10 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
 
     func visitDidFail(visit: TLVisit) {
-        visit.visitable.hideScreenshot()
-        visit.visitable.hideActivityIndicator()
         deactivateVisitable(visit.visitable)
     }
 
-    // MARK: TLVisitDelegate - Request
+    // MARK: TLVisitDelegate networking
 
     func visitRequestDidStart(visit: TLVisit) {
         delegate?.sessionDidStartRequest(self)
@@ -216,26 +236,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
             refreshing = true
             visitable.willRefresh()
             reload()
-        }
-    }
-
-    func activateVisitable(visitable: TLVisitable) {
-        if visitable !== activatedVisitable {
-            if let activatedVisitable = self.activatedVisitable {
-                activatedVisitable.updateScreenshot()
-                activatedVisitable.showScreenshot()
-                deactivateVisitable(activatedVisitable)
-            }
-
-            visitable.activateWebView(webView)
-            activatedVisitable = visitable
-        }
-    }
-
-    func deactivateVisitable(visitable: TLVisitable) {
-        if visitable === activatedVisitable {
-            visitable.deactivateWebView()
-            activatedVisitable = nil
         }
     }
 }
