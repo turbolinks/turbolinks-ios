@@ -114,5 +114,9 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
 
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> ()) {
         decisionHandler(WKNavigationActionPolicy.Cancel)
+
+        if let URL = navigationAction.request.URL {
+            UIApplication.sharedApplication().openURL(URL)
+        }
     }
 }
