@@ -11,8 +11,19 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
         return UIApplication.sharedApplication()
     }
 
+    lazy var webViewConfiguration: WKWebViewConfiguration = {
+        let bundle = NSBundle.mainBundle()
+        let source = try! String(contentsOfURL: bundle.URLForResource("TurbolinksDemo", withExtension: "js")!, encoding: NSUTF8StringEncoding)
+        let userScript = WKUserScript(source: source, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
+
+        let configuration = WKWebViewConfiguration()
+        configuration.userContentController.addUserScript(userScript)
+        configuration.processPool = self.webViewProcessPool
+        return configuration
+    }()
+
     lazy var session: TLSession = {
-        let session = TLSession()
+        let session = TLSession(webViewConfiguration: self.webViewConfiguration)
         session.delegate = self
         return session
     }()
@@ -65,14 +76,6 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
     }
 
     // MARK: TLSessionDelegate
-
-    func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: TLSession) {
-        let bundle = NSBundle.mainBundle()
-        let source = try! String(contentsOfURL: bundle.URLForResource("TurbolinksDemo", withExtension: "js")!, encoding: NSUTF8StringEncoding)
-        let userScript = WKUserScript(source: source, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
-        configuration.userContentController.addUserScript(userScript)
-        configuration.processPool = webViewProcessPool
-    }
 
     func session(session: TLSession, didProposeVisitToLocation location: NSURL, withAction action: TLAction) {
         presentVisitableForSession(session, atLocation: location, withAction: action)

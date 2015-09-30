@@ -2,8 +2,6 @@ import UIKit
 import WebKit
 
 public protocol TLSessionDelegate: class {
-    func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forSession session: TLSession)
-
     func session(session: TLSession, didInitializeWebView webView: WKWebView)
     func session(session: TLSession, didProposeVisitToLocation location: NSURL, withAction action: TLAction)
     
@@ -15,17 +13,16 @@ public protocol TLSessionDelegate: class {
 public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitableDelegate {
     public weak var delegate: TLSessionDelegate?
 
+    var webView: TLWebView
     var initialized: Bool = false
     var refreshing: Bool = false
 
-    lazy var webView: TLWebView = {
-        let configuration = WKWebViewConfiguration()
-        self.delegate?.prepareWebViewConfiguration(configuration, forSession: self)
-        let webView = TLWebView(configuration: configuration)
+    public init(webViewConfiguration: WKWebViewConfiguration) {
+        self.webView = TLWebView(configuration: webViewConfiguration)
+        super.init()
         webView.delegate = self
-        return webView
-    }()
-    
+    }
+
     // MARK: Visiting
 
     private var currentVisit: TLVisit?
