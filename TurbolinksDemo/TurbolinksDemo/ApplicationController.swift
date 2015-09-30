@@ -98,8 +98,8 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
         application.networkActivityIndicatorVisible = false
     }
 
-    func session(session: TLSession, didInitializeWebView webView: WKWebView) {
-        webView.navigationDelegate = self
+    func sessionDidInitializeWebView(session: TLSession) {
+        session.webView.navigationDelegate = self
     }
 
     // MARK: AuthenticationControllerDelegate

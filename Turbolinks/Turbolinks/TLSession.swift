@@ -2,7 +2,7 @@ import UIKit
 import WebKit
 
 public protocol TLSessionDelegate: class {
-    func session(session: TLSession, didInitializeWebView webView: WKWebView)
+    func sessionDidInitializeWebView(session: TLSession)
     func session(session: TLSession, didProposeVisitToLocation location: NSURL, withAction action: TLAction)
     
     func sessionDidStartRequest(session: TLSession)
@@ -13,14 +13,18 @@ public protocol TLSessionDelegate: class {
 public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitableDelegate {
     public weak var delegate: TLSessionDelegate?
 
-    var webView: TLWebView
+    public var webView: WKWebView {
+        return self._webView
+    }
+
+    var _webView: TLWebView
     var initialized: Bool = false
     var refreshing: Bool = false
 
     public init(webViewConfiguration: WKWebViewConfiguration) {
-        self.webView = TLWebView(configuration: webViewConfiguration)
+        self._webView = TLWebView(configuration: webViewConfiguration)
         super.init()
-        webView.delegate = self
+        _webView.delegate = self
     }
 
     // MARK: Visiting
@@ -41,10 +45,10 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
             let visit: TLVisit
 
             if initialized {
-                visit = TLJavaScriptVisit(visitable: visitable, action: action, webView: webView)
+                visit = TLJavaScriptVisit(visitable: visitable, action: action, webView: _webView)
                 visit.restorationIdentifier = restorationIdentifierForVisitable(visitable)
             } else {
-                visit = TLColdBootVisit(visitable: visitable, action: action, webView: webView)
+                visit = TLColdBootVisit(visitable: visitable, action: action, webView: _webView)
             }
 
             currentVisit?.cancel()
@@ -129,7 +133,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     func visitDidInitializeWebView(visit: TLVisit) {
         initialized = true
-        delegate?.session(self, didInitializeWebView: webView)
+        delegate?.sessionDidInitializeWebView(self)
         visit.visitable.didLoadResponse?()
     }
 
