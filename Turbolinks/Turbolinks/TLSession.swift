@@ -200,7 +200,6 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         if let topmostVisit = self.topmostVisit, currentVisit = self.currentVisit {
             if visitable === topmostVisit.visitable && visitable.viewController.isMovingToParentViewController() {
                 // Back swipe gesture canceled
-                NSLog("%@ Backward navigation canceled", self)
                 if topmostVisit.state == .Completed {
                     currentVisit.cancel()
                 } else {
@@ -208,11 +207,9 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
                 }
             } else if visitable === currentVisit.visitable && currentVisit.state == .Started {
                 // Navigating forward - complete navigation early
-                NSLog("%@ Navigating forward", self)
                 completeNavigationForCurrentVisit()
             } else if visitable !== topmostVisit.visitable {
                 // Navigating backward
-                NSLog("%@ Navigating backward", self)
                 visitVisitable(visitable, action: .Restore)
             }
         }

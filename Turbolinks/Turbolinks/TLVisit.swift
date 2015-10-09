@@ -54,7 +54,6 @@ class TLVisit: NSObject {
             delegate?.visitWillStart(self)
             self.state = .Started
             startVisit()
-            NSLog("%@ start()", self)
         }
     }
 
@@ -62,7 +61,6 @@ class TLVisit: NSObject {
         if state == .Started {
             self.state = .Canceled
             cancelVisit()
-            NSLog("%@ cancel()", self)
         }
     }
 
@@ -70,7 +68,6 @@ class TLVisit: NSObject {
         if state == .Started {
             self.state = .Completed
             delegate?.visitDidComplete(self)
-            NSLog("%@ complete()", self)
         }
     }
 
@@ -80,7 +77,6 @@ class TLVisit: NSObject {
             callback?()
             failVisit()
             delegate?.visitDidFail(self)
-            NSLog("%@ fail()", self)
         }
     }
 
@@ -97,7 +93,6 @@ class TLVisit: NSObject {
         if state == .Started && !navigationCompleted {
             self.navigationCompleted = true
             navigationCallback?()
-            NSLog("%@ completeNavigation()", self)
         }
     }
 
