@@ -177,6 +177,12 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate, TLWebViewPageLoadDelegate 
                     self.delegate?.visit(self, requestDidFailWithError: error)
                 }
             }
+        } else {
+            decisionHandler(.Cancel)
+            fail {
+                let error = TLError(code: .NetworkFailure, localizedDescription: "An unknown error occurred")
+                self.delegate?.visit(self, requestDidFailWithError: error)
+            }
         }
     }
 
