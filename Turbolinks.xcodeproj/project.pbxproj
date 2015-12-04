@@ -23,10 +23,18 @@
 		22960AAC1B9F51E100AA144A /* TLScriptMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22960AAA1B9F51E100AA144A /* TLScriptMessage.swift */; };
 		22C197DE1B59835300749B4E /* TLWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C197DD1B59835300749B4E /* TLWebView.swift */; };
 		22C197DF1B59835300749B4E /* TLWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C197DD1B59835300749B4E /* TLWebView.swift */; };
-		22C81A1D1BA72CDA00E47138 /* TLAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C81A1C1BA72CDA00E47138 /* TLAction.swift */; settings = {ASSET_TAGS = (); }; };
-		22C81A1E1BA72CDA00E47138 /* TLAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C81A1C1BA72CDA00E47138 /* TLAction.swift */; settings = {ASSET_TAGS = (); }; };
-		22F1C91F1BB1FD6A008FDFFB /* TLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F1C91E1BB1FD6A008FDFFB /* TLError.swift */; settings = {ASSET_TAGS = (); }; };
-		22F1C9201BB1FD6A008FDFFB /* TLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F1C91E1BB1FD6A008FDFFB /* TLError.swift */; settings = {ASSET_TAGS = (); }; };
+		22C81A1D1BA72CDA00E47138 /* TLAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C81A1C1BA72CDA00E47138 /* TLAction.swift */; };
+		22C81A1E1BA72CDA00E47138 /* TLAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C81A1C1BA72CDA00E47138 /* TLAction.swift */; };
+		22F1C91F1BB1FD6A008FDFFB /* TLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F1C91E1BB1FD6A008FDFFB /* TLError.swift */; };
+		22F1C9201BB1FD6A008FDFFB /* TLError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F1C91E1BB1FD6A008FDFFB /* TLError.swift */; };
+		922872A91C124AFC002A415D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9228729E1C124AFC002A415D /* AppDelegate.swift */; };
+		922872AA1C124AFC002A415D /* ApplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9228729F1C124AFC002A415D /* ApplicationController.swift */; };
+		922872AB1C124AFC002A415D /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922872A01C124AFC002A415D /* AuthenticationController.swift */; };
+		922872AC1C124AFC002A415D /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922872A11C124AFC002A415D /* WebViewController.swift */; };
+		922872AD1C124AFC002A415D /* TurbolinksDemo.js in Resources */ = {isa = PBXBuildFile; fileRef = 922872A21C124AFC002A415D /* TurbolinksDemo.js */; };
+		922872AE1C124AFC002A415D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 922872A31C124AFC002A415D /* Images.xcassets */; };
+		922872B51C124F6A002A415D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 922872B11C124F6A002A415D /* LaunchScreen.xib */; };
+		922872B61C124F6A002A415D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 922872B31C124F6A002A415D /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +75,16 @@
 		22C197DD1B59835300749B4E /* TLWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLWebView.swift; sourceTree = "<group>"; };
 		22C81A1C1BA72CDA00E47138 /* TLAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLAction.swift; sourceTree = "<group>"; };
 		22F1C91E1BB1FD6A008FDFFB /* TLError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TLError.swift; sourceTree = "<group>"; };
+		9228728C1C124ABF002A415D /* TurbolinksDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TurbolinksDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9228729A1C124ABF002A415D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9228729E1C124AFC002A415D /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		9228729F1C124AFC002A415D /* ApplicationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationController.swift; sourceTree = "<group>"; };
+		922872A01C124AFC002A415D /* AuthenticationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationController.swift; sourceTree = "<group>"; };
+		922872A11C124AFC002A415D /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		922872A21C124AFC002A415D /* TurbolinksDemo.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = TurbolinksDemo.js; sourceTree = "<group>"; };
+		922872A31C124AFC002A415D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		922872B21C124F6A002A415D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		922872B41C124F6A002A415D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +103,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		922872891C124ABF002A415D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -92,7 +117,8 @@
 			isa = PBXGroup;
 			children = (
 				1FC167F11B55A14900AA6F43 /* Turbolinks */,
-				1FC167FE1B55A14900AA6F43 /* TurbolinksTests */,
+				9228728D1C124ABF002A415D /* Demo */,
+				1FC167FE1B55A14900AA6F43 /* Tests */,
 				1FC167F01B55A14900AA6F43 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -102,6 +128,7 @@
 			children = (
 				1FC167EF1B55A14900AA6F43 /* Turbolinks.framework */,
 				1FC167FA1B55A14900AA6F43 /* TurbolinksTests.xctest */,
+				9228728C1C124ABF002A415D /* TurbolinksDemo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -131,12 +158,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		1FC167FE1B55A14900AA6F43 /* TurbolinksTests */ = {
+		1FC167FE1B55A14900AA6F43 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				1FC168011B55A14900AA6F43 /* TurbolinksTests.swift */,
 				1FC167FF1B55A14900AA6F43 /* Supporting Files */,
 			);
+			name = Tests;
 			path = TurbolinksTests;
 			sourceTree = "<group>";
 		};
@@ -147,6 +175,23 @@
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
+		};
+		9228728D1C124ABF002A415D /* Demo */ = {
+			isa = PBXGroup;
+			children = (
+				9228729E1C124AFC002A415D /* AppDelegate.swift */,
+				9228729F1C124AFC002A415D /* ApplicationController.swift */,
+				922872A01C124AFC002A415D /* AuthenticationController.swift */,
+				922872A11C124AFC002A415D /* WebViewController.swift */,
+				922872A21C124AFC002A415D /* TurbolinksDemo.js */,
+				922872A31C124AFC002A415D /* Images.xcassets */,
+				922872B11C124F6A002A415D /* LaunchScreen.xib */,
+				922872B31C124F6A002A415D /* Main.storyboard */,
+				9228729A1C124ABF002A415D /* Info.plist */,
+			);
+			name = Demo;
+			path = TurbolinksDemo;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -199,6 +244,23 @@
 			productReference = 1FC167FA1B55A14900AA6F43 /* TurbolinksTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		9228728B1C124ABF002A415D /* TurbolinksDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9228729D1C124ABF002A415D /* Build configuration list for PBXNativeTarget "TurbolinksDemo" */;
+			buildPhases = (
+				922872881C124ABF002A415D /* Sources */,
+				922872891C124ABF002A415D /* Frameworks */,
+				9228728A1C124ABF002A415D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TurbolinksDemo;
+			productName = TurbolinksDemo;
+			productReference = 9228728C1C124ABF002A415D /* TurbolinksDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -206,7 +268,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftMigration = 0700;
-				LastSwiftUpdateCheck = 0700;
+				LastSwiftUpdateCheck = 0710;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = Basecamp;
 				TargetAttributes = {
@@ -216,6 +278,9 @@
 					1FC167F91B55A14900AA6F43 = {
 						CreatedOnToolsVersion = 6.3.2;
 					};
+					9228728B1C124ABF002A415D = {
+						CreatedOnToolsVersion = 7.1.1;
+					};
 				};
 			};
 			buildConfigurationList = 1FC167E91B55A14900AA6F43 /* Build configuration list for PBXProject "Turbolinks" */;
@@ -224,6 +289,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 1FC167E51B55A14900AA6F43;
 			productRefGroup = 1FC167F01B55A14900AA6F43 /* Products */;
@@ -232,6 +298,7 @@
 			targets = (
 				1FC167EE1B55A14900AA6F43 /* Turbolinks */,
 				1FC167F91B55A14900AA6F43 /* TurbolinksTests */,
+				9228728B1C124ABF002A415D /* TurbolinksDemo */,
 			);
 		};
 /* End PBXProject section */
@@ -250,6 +317,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F8FC6B41B55A37400A781C8 /* TLWebView.js in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9228728A1C124ABF002A415D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				922872AD1C124AFC002A415D /* TurbolinksDemo.js in Resources */,
+				922872B51C124F6A002A415D /* LaunchScreen.xib in Resources */,
+				922872AE1C124AFC002A415D /* Images.xcassets in Resources */,
+				922872B61C124F6A002A415D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -285,6 +363,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		922872881C124ABF002A415D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				922872AB1C124AFC002A415D /* AuthenticationController.swift in Sources */,
+				922872AA1C124AFC002A415D /* ApplicationController.swift in Sources */,
+				922872A91C124AFC002A415D /* AppDelegate.swift in Sources */,
+				922872AC1C124AFC002A415D /* WebViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -294,6 +383,25 @@
 			targetProxy = 1FC167FC1B55A14900AA6F43 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		922872B11C124F6A002A415D /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				922872B21C124F6A002A415D /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+		922872B31C124F6A002A415D /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				922872B41C124F6A002A415D /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		1FC168031B55A14900AA6F43 /* Debug */ = {
@@ -455,6 +563,31 @@
 			};
 			name = Release;
 		};
+		9228729B1C124ABF002A415D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = TurbolinksDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.basecamp.TurbolinksDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		9228729C1C124ABF002A415D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = TurbolinksDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.basecamp.TurbolinksDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -481,6 +614,15 @@
 			buildConfigurations = (
 				1FC168091B55A14900AA6F43 /* Debug */,
 				1FC1680A1B55A14900AA6F43 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9228729D1C124ABF002A415D /* Build configuration list for PBXNativeTarget "TurbolinksDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9228729B1C124ABF002A415D /* Debug */,
+				9228729C1C124ABF002A415D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
