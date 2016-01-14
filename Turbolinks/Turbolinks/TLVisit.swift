@@ -165,6 +165,18 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate, TLWebViewPageLoadDelegate 
             finishRequest()
         }
     }
+    
+    func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
+        // Ignore any clicked links before the cold boot finishes navigation
+        if navigationAction.navigationType == .LinkActivated {
+            decisionHandler(.Cancel)
+            if let URL = navigationAction.request.URL {
+                UIApplication.sharedApplication().openURL(URL)
+            }
+        } else {
+            decisionHandler(.Allow)
+        }
+    }
 
     func webView(webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void) {
         if let httpResponse = navigationResponse.response as? NSHTTPURLResponse {
