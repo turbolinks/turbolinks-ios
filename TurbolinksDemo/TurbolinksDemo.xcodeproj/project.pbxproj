@@ -8,31 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		1F35399F1B6FB21A00AA7462 /* ApplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */; };
-		1F3539A11B6FB6ED00AA7462 /* ApplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */; };
 		1F5A34FA1B67FF900029FDF3 /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5A34F91B67FF900029FDF3 /* AuthenticationController.swift */; };
-		1F5A34FB1B67FF900029FDF3 /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5A34F91B67FF900029FDF3 /* AuthenticationController.swift */; };
 		1F8FC6A51B55A32000A781C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */; };
-		1F8FC6A61B55A32000A781C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */; };
 		1F8FC6A81B55A33700A781C8 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6A71B55A33700A781C8 /* WebViewController.swift */; };
-		1F8FC6A91B55A33700A781C8 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6A71B55A33700A781C8 /* WebViewController.swift */; };
 		1F8FC6AC1B55A34500A781C8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AA1B55A34500A781C8 /* Main.storyboard */; };
-		1F8FC6AD1B55A34500A781C8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AA1B55A34500A781C8 /* Main.storyboard */; };
 		1FC168211B55A16C00AA6F43 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FC168201B55A16C00AA6F43 /* Images.xcassets */; };
 		1FC168241B55A16C00AA6F43 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FC168221B55A16C00AA6F43 /* LaunchScreen.xib */; };
-		1FC168301B55A16C00AA6F43 /* TurbolinksDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC1682F1B55A16C00AA6F43 /* TurbolinksDemoTests.swift */; };
 		224605D51B62D1E200973B90 /* TurbolinksDemo.js in Resources */ = {isa = PBXBuildFile; fileRef = 224605D41B62D1E200973B90 /* TurbolinksDemo.js */; };
 		224BE7DF1B58447200909D74 /* Turbolinks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 224BE7DA1B5842FB00909D74 /* Turbolinks.framework */; };
 		224BE7E01B58447200909D74 /* Turbolinks.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 224BE7DA1B5842FB00909D74 /* Turbolinks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1FC1682A1B55A16C00AA6F43 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1FC1680C1B55A16C00AA6F43 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1FC168131B55A16C00AA6F43;
-			remoteInfo = TurbolinksDemo;
-		};
 		224BE7D91B5842FB00909D74 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 224BE7D41B5842FB00909D74 /* Turbolinks.xcodeproj */;
@@ -88,9 +75,6 @@
 		1FC168181B55A16C00AA6F43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1FC168201B55A16C00AA6F43 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		1FC168231B55A16C00AA6F43 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		1FC168291B55A16C00AA6F43 /* TurbolinksDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TurbolinksDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1FC1682E1B55A16C00AA6F43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1FC1682F1B55A16C00AA6F43 /* TurbolinksDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TurbolinksDemoTests.swift; sourceTree = "<group>"; };
 		224605D41B62D1E200973B90 /* TurbolinksDemo.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = TurbolinksDemo.js; sourceTree = "<group>"; };
 		224BE7D41B5842FB00909D74 /* Turbolinks.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Turbolinks.xcodeproj; path = ../Turbolinks/Turbolinks.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -104,13 +88,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1FC168261B55A16C00AA6F43 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -118,7 +95,6 @@
 			isa = PBXGroup;
 			children = (
 				1FC168161B55A16C00AA6F43 /* TurbolinksDemo */,
-				1FC1682C1B55A16C00AA6F43 /* TurbolinksDemoTests */,
 				1FC168151B55A16C00AA6F43 /* Products */,
 				224BE7D41B5842FB00909D74 /* Turbolinks.xcodeproj */,
 			);
@@ -128,7 +104,6 @@
 			isa = PBXGroup;
 			children = (
 				1FC168141B55A16C00AA6F43 /* TurbolinksDemo.app */,
-				1FC168291B55A16C00AA6F43 /* TurbolinksDemoTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -154,23 +129,6 @@
 			isa = PBXGroup;
 			children = (
 				1FC168181B55A16C00AA6F43 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		1FC1682C1B55A16C00AA6F43 /* TurbolinksDemoTests */ = {
-			isa = PBXGroup;
-			children = (
-				1FC1682F1B55A16C00AA6F43 /* TurbolinksDemoTests.swift */,
-				1FC1682D1B55A16C00AA6F43 /* Supporting Files */,
-			);
-			path = TurbolinksDemoTests;
-			sourceTree = "<group>";
-		};
-		1FC1682D1B55A16C00AA6F43 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				1FC1682E1B55A16C00AA6F43 /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -207,24 +165,6 @@
 			productReference = 1FC168141B55A16C00AA6F43 /* TurbolinksDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		1FC168281B55A16C00AA6F43 /* TurbolinksDemoTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1FC168361B55A16C00AA6F43 /* Build configuration list for PBXNativeTarget "TurbolinksDemoTests" */;
-			buildPhases = (
-				1FC168251B55A16C00AA6F43 /* Sources */,
-				1FC168261B55A16C00AA6F43 /* Frameworks */,
-				1FC168271B55A16C00AA6F43 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				1FC1682B1B55A16C00AA6F43 /* PBXTargetDependency */,
-			);
-			name = TurbolinksDemoTests;
-			productName = TurbolinksDemoTests;
-			productReference = 1FC168291B55A16C00AA6F43 /* TurbolinksDemoTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -238,10 +178,6 @@
 				TargetAttributes = {
 					1FC168131B55A16C00AA6F43 = {
 						CreatedOnToolsVersion = 6.3.2;
-					};
-					1FC168281B55A16C00AA6F43 = {
-						CreatedOnToolsVersion = 6.3.2;
-						TestTargetID = 1FC168131B55A16C00AA6F43;
 					};
 				};
 			};
@@ -265,7 +201,6 @@
 			projectRoot = "";
 			targets = (
 				1FC168131B55A16C00AA6F43 /* TurbolinksDemo */,
-				1FC168281B55A16C00AA6F43 /* TurbolinksDemoTests */,
 			);
 		};
 /* End PBXProject section */
@@ -299,14 +234,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1FC168271B55A16C00AA6F43 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1F8FC6AD1B55A34500A781C8 /* Main.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -321,26 +248,9 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1FC168251B55A16C00AA6F43 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1F8FC6A61B55A32000A781C8 /* AppDelegate.swift in Sources */,
-				1F5A34FB1B67FF900029FDF3 /* AuthenticationController.swift in Sources */,
-				1F8FC6A91B55A33700A781C8 /* WebViewController.swift in Sources */,
-				1FC168301B55A16C00AA6F43 /* TurbolinksDemoTests.swift in Sources */,
-				1F3539A11B6FB6ED00AA7462 /* ApplicationController.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1FC1682B1B55A16C00AA6F43 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1FC168131B55A16C00AA6F43 /* TurbolinksDemo */;
-			targetProxy = 1FC1682A1B55A16C00AA6F43 /* PBXContainerItemProxy */;
-		};
 		224BE7DE1B58432D00909D74 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Turbolinks;
@@ -410,7 +320,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -448,7 +358,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -461,7 +371,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = TurbolinksDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.basecamp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -476,47 +386,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = TurbolinksDemo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.basecamp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "TurbolinksDemo/TurbolinksDemo-Bridging-Header.h";
-			};
-			name = Release;
-		};
-		1FC168371B55A16C00AA6F43 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = TurbolinksDemoTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.basecamp.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TurbolinksDemo.app/TurbolinksDemo";
-			};
-			name = Debug;
-		};
-		1FC168381B55A16C00AA6F43 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = TurbolinksDemoTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.basecamp.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TurbolinksDemo.app/TurbolinksDemo";
 			};
 			name = Release;
 		};
@@ -537,15 +411,6 @@
 			buildConfigurations = (
 				1FC168341B55A16C00AA6F43 /* Debug */,
 				1FC168351B55A16C00AA6F43 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		1FC168361B55A16C00AA6F43 /* Build configuration list for PBXNativeTarget "TurbolinksDemoTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1FC168371B55A16C00AA6F43 /* Debug */,
-				1FC168381B55A16C00AA6F43 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
