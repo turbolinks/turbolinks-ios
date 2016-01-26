@@ -234,7 +234,11 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
 
     override private func startVisit() {
         webView.visitDelegate = self
-        webView.visitLocation(location, withAction: action, restorationIdentifier: restorationIdentifier)
+        if action == .Restore {
+            webView.goBack()
+        } else {
+            webView.visitLocation(location, withAction: action, restorationIdentifier: restorationIdentifier)
+        }
     }
 
     override private func cancelVisit() {

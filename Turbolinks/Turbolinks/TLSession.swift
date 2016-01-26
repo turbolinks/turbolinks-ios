@@ -209,7 +209,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
                 // Navigating forward - complete navigation early
                 completeNavigationForCurrentVisit()
             } else if visitable !== topmostVisit.visitable {
-                // Navigating backward
+                // Go back in the web view
                 visitVisitable(visitable, action: .Restore)
             }
         }
