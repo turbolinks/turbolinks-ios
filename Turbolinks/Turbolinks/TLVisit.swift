@@ -8,9 +8,8 @@ protocol TLVisitDelegate: class {
     func visitDidComplete(visit: TLVisit)
     func visitDidFail(visit: TLVisit)
 
-    func visitDidRestoreSnapshot(visit: TLVisit)
     func visitWillLoadResponse(visit: TLVisit)
-    func visitDidLoadResponse(visit: TLVisit)
+    func visitDidRender(visit: TLVisit)
 
     func visitRequestDidStart(visit: TLVisit)
     func visit(visit: TLVisit, requestDidFailWithError error: NSError)
@@ -34,7 +33,7 @@ class TLVisit: NSObject {
     var state: TLVisitState
 
     var location: NSURL
-    var hasSnapshot: Bool = false
+    var hasCachedSnapshot: Bool = false
     var restorationIdentifier: String?
 
     override var description: String {
@@ -220,7 +219,7 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate, TLWebViewPageLoadDelegate 
 
     func webView(webView: TLWebView, didLoadPageWithRestorationIdentifier restorationIdentifier: String) {
         self.restorationIdentifier = restorationIdentifier
-        delegate?.visitDidLoadResponse(self)
+        delegate?.visitDidRender(self)
         complete()
     }
 }
@@ -248,25 +247,18 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
 
     // MARK: TLWebViewVisitDelegate
 
-    func webView(webView: TLWebView, didStartVisitWithIdentifier identifier: String, hasSnapshot: Bool) {
+    func webView(webView: TLWebView, didStartVisitWithIdentifier identifier: String, hasCachedSnapshot: Bool) {
         self.identifier = identifier
-        self.hasSnapshot = hasSnapshot
+        self.hasCachedSnapshot = hasCachedSnapshot
 
         delegate?.visitDidStart(self)
         webView.issueRequestForVisitWithIdentifier(identifier)
 
         afterNavigationCompletion {
             self.webView.changeHistoryForVisitWithIdentifier(identifier)
-            self.webView.restoreSnapshotForVisitWithIdentifier(identifier)
+            self.webView.loadCachedSnapshotForVisitWithIdentifier(identifier)
         }
     }
-
-    func webView(webView: TLWebView, didRestoreSnapshotForVisitWithIdentifier identifier: String) {
-        if identifier == self.identifier {
-            delegate?.visitDidRestoreSnapshot(self)
-        }
-    }
-
 
     func webView(webView: TLWebView, didStartRequestForVisitWithIdentifier identifier: String) {
         if identifier == self.identifier {
@@ -303,9 +295,9 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
         }
     }
 
-    func webView(webView: TLWebView, didLoadResponseForVisitWithIdentifier identifier: String) {
+    func webView(webView: TLWebView, didRenderForVisitWithIdentifier identifier: String) {
         if identifier == self.identifier {
-            delegate?.visitDidLoadResponse(self)
+            delegate?.visitDidRender(self)
         }
     }
 

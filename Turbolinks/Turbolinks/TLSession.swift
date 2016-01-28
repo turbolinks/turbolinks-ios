@@ -134,7 +134,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     func visitDidInitializeWebView(visit: TLVisit) {
         initialized = true
         delegate?.sessionDidInitializeWebView(self)
-        visit.visitable.didLoadResponse?()
+        visit.visitable.didRender?()
     }
 
     func visitWillStart(visit: TLVisit) {
@@ -143,15 +143,9 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
     }
    
     func visitDidStart(visit: TLVisit) {
-        if !visit.hasSnapshot {
+        if !visit.hasCachedSnapshot {
             visit.visitable.showActivityIndicator()
         }
-    }
-
-    func visitDidRestoreSnapshot(visit: TLVisit) {
-        visit.visitable.hideScreenshot()
-        visit.visitable.hideActivityIndicator()
-        visit.visitable.didRestoreSnapshot?()
     }
 
     func visitWillLoadResponse(visit: TLVisit) {
@@ -159,10 +153,10 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         visit.visitable.showScreenshot()
     }
 
-    func visitDidLoadResponse(visit: TLVisit) {
+    func visitDidRender(visit: TLVisit) {
         visit.visitable.hideScreenshot()
         visit.visitable.hideActivityIndicator()
-        visit.visitable.didLoadResponse?()
+        visit.visitable.didRender?()
     }
 
     func visitDidComplete(visit: TLVisit) {

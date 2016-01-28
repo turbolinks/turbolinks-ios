@@ -5,12 +5,11 @@ enum TLScriptMessageName: String {
     case ErrorRaised = "errorRaised"
     case VisitProposed = "visitProposed"
     case VisitStarted = "visitStarted"
-    case VisitSnapshotRestored = "visitSnapshotRestored"
     case VisitRequestStarted = "visitRequestStarted"
     case VisitRequestCompleted = "visitRequestCompleted"
     case VisitRequestFailed = "visitRequestFailed"
     case VisitRequestFinished = "visitRequestFinished"
-    case VisitResponseLoaded = "visitResponseLoaded"
+    case VisitRendered = "visitRendered"
     case VisitCompleted = "visitCompleted"
     case PageInvalidated = "pageInvalidated"
 }

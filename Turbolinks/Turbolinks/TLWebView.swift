@@ -11,13 +11,12 @@ protocol TLWebViewPageLoadDelegate: class {
 }
 
 protocol TLWebViewVisitDelegate: class {
-    func webView(webView: TLWebView, didStartVisitWithIdentifier identifier: String, hasSnapshot: Bool)
-    func webView(webView: TLWebView, didRestoreSnapshotForVisitWithIdentifier identifier: String)
+    func webView(webView: TLWebView, didStartVisitWithIdentifier identifier: String, hasCachedSnapshot: Bool)
     func webView(webView: TLWebView, didStartRequestForVisitWithIdentifier identifier: String)
     func webView(webView: TLWebView, didCompleteRequestForVisitWithIdentifier identifier: String)
     func webView(webView: TLWebView, didFailRequestForVisitWithIdentifier identifier: String, statusCode: Int)
     func webView(webView: TLWebView, didFinishRequestForVisitWithIdentifier identifier: String)
-    func webView(webView: TLWebView, didLoadResponseForVisitWithIdentifier identifier: String)
+    func webView(webView: TLWebView, didRenderForVisitWithIdentifier identifier: String)
     func webView(webView: TLWebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String)
 }
 
@@ -51,8 +50,8 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         callJavaScriptFunction("webView.changeHistoryForVisitWithIdentifier", withArguments: [identifier])
     }
 
-    func restoreSnapshotForVisitWithIdentifier(identifier: String) {
-        callJavaScriptFunction("webView.restoreSnapshotForVisitWithIdentifier", withArguments: [identifier])
+    func loadCachedSnapshotForVisitWithIdentifier(identifier: String) {
+        callJavaScriptFunction("webView.loadCachedSnapshotForVisitWithIdentifier", withArguments: [identifier])
     }
 
     func loadResponseForVisitWithIdentifier(identifier: String) {
@@ -78,9 +77,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
             case .PageInvalidated:
                 delegate?.webViewDidInvalidatePage(self)
             case .VisitStarted:
-                visitDelegate?.webView(self, didStartVisitWithIdentifier: message.identifier!, hasSnapshot: message.data["hasSnapshot"] as! Bool)
-            case .VisitSnapshotRestored:
-                visitDelegate?.webView(self, didRestoreSnapshotForVisitWithIdentifier: message.identifier!)
+                visitDelegate?.webView(self, didStartVisitWithIdentifier: message.identifier!, hasCachedSnapshot: message.data["hasCachedSnapshot"] as! Bool)
             case .VisitRequestStarted:
                 visitDelegate?.webView(self, didStartRequestForVisitWithIdentifier: message.identifier!)
             case .VisitRequestCompleted:
@@ -89,8 +86,8 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
                 visitDelegate?.webView(self, didFailRequestForVisitWithIdentifier: message.identifier!, statusCode: message.data["statusCode"] as! Int)
             case .VisitRequestFinished:
                 visitDelegate?.webView(self, didFinishRequestForVisitWithIdentifier: message.identifier!)
-            case .VisitResponseLoaded:
-                visitDelegate?.webView(self, didLoadResponseForVisitWithIdentifier: message.identifier!)
+            case .VisitRendered:
+                visitDelegate?.webView(self, didRenderForVisitWithIdentifier: message.identifier!)
             case .VisitCompleted:
                 visitDelegate?.webView(self, didCompleteVisitWithIdentifier: message.identifier!, restorationIdentifier: message.restorationIdentifier!)
             }

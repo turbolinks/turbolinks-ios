@@ -29,11 +29,7 @@ class WebViewController: UIViewController, TLVisitable {
 
     // MARK: Visitable Lifecycle
 
-    func didRestoreSnapshot() {
-        updateTitle()
-    }
-
-    func didLoadResponse() {
+    func didRender() {
         updateTitle()
     }
 

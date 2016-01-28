@@ -32,9 +32,9 @@ TLWebView.prototype = {
         }
     },
 
-    restoreSnapshotForVisitWithIdentifier: function(identifier) {
+    loadCachedSnapshotForVisitWithIdentifier: function(identifier) {
         if (identifier == this.currentVisit.identifier) {
-            this.currentVisit.restoreSnapshot()
+            this.currentVisit.loadCachedSnapshot()
         }
     },
 
@@ -58,7 +58,7 @@ TLWebView.prototype = {
 
     visitStarted: function(visit) {
         this.currentVisit = visit
-        this.postMessage("visitStarted", { identifier: visit.identifier, hasSnapshot: visit.hasSnapshot() })
+        this.postMessage("visitStarted", { identifier: visit.identifier, hasCachedSnapshot: visit.hasCachedSnapshot() })
     },
 
     visitRequestStarted: function(visit) {
@@ -77,12 +77,8 @@ TLWebView.prototype = {
         this.postMessage("visitRequestFinished", { identifier: visit.identifier })
     },
 
-    visitSnapshotRestored: function(visit) {
-        this.postMessageAfterNextRepaint("visitSnapshotRestored", { identifier: visit.identifier })
-    },
-
-    visitResponseLoaded: function(visit) {
-        this.postMessageAfterNextRepaint("visitResponseLoaded", { identifier: visit.identifier })
+    visitRendered: function(visit) {
+        this.postMessageAfterNextRepaint("visitRendered", { identifier: visit.identifier })
     },
 
     visitCompleted: function(visit) {

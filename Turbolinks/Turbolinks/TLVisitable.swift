@@ -26,6 +26,5 @@ import WebKit
     func willRefresh()
     func didRefresh()
 
-    optional func didRestoreSnapshot()
-    optional func didLoadResponse()
+    optional func didRender()
 }
