@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+    <title><%= @title %></title>
+    <script src="/turbolinks.js"></script>
+    <style>
+      body { font-family: -apple-system; font-size: 18px }
+      a { color: rgb(0, 122, 255) }
+    </style>
+  </head>
+  <body>
+    <%= yield %>
+    <footer>
+      Rendered at <%= Time.now %>
+    </footer>
+  </body>
+</html>
