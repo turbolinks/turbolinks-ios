@@ -11,6 +11,9 @@ View the demo app provided to see how to use it in practice (more documentation 
 
 **CocoaPods**
 
-```pod 'Turbolinks', :git => 'https://github.com/basecamp/turbolinks-ios.git'```
+```
+use_frameworks!
+pod 'Turbolinks', :git => 'https://github.com/basecamp/turbolinks-ios.git'
+```
 
 You can also install it manually by building Turbolinks.framework and linking to your project
