@@ -12,38 +12,23 @@
 		1F8FC6A51B55A32000A781C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */; };
 		1F8FC6A81B55A33700A781C8 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6A71B55A33700A781C8 /* WebViewController.swift */; };
 		1F8FC6AC1B55A34500A781C8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AA1B55A34500A781C8 /* Main.storyboard */; };
-		1FC168211B55A16C00AA6F43 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1FC168201B55A16C00AA6F43 /* Images.xcassets */; };
 		1FC168241B55A16C00AA6F43 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FC168221B55A16C00AA6F43 /* LaunchScreen.xib */; };
-		224605D51B62D1E200973B90 /* TurbolinksDemo.js in Resources */ = {isa = PBXBuildFile; fileRef = 224605D41B62D1E200973B90 /* TurbolinksDemo.js */; };
-		224BE7DF1B58447200909D74 /* Turbolinks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 224BE7DA1B5842FB00909D74 /* Turbolinks.framework */; };
-		224BE7E01B58447200909D74 /* Turbolinks.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 224BE7DA1B5842FB00909D74 /* Turbolinks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		22CB5D901C62981700F24EA7 /* Turbolinks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22CB5D8D1C62980000F24EA7 /* Turbolinks.framework */; };
+		22CB5D911C62982800F24EA7 /* Turbolinks.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 22CB5D8D1C62980000F24EA7 /* Turbolinks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		22CB5D961C6299AB00F24EA7 /* TurbolinksDemo.js in Resources */ = {isa = PBXBuildFile; fileRef = 22CB5D951C6299AB00F24EA7 /* TurbolinksDemo.js */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		224BE7D91B5842FB00909D74 /* PBXContainerItemProxy */ = {
+		22CB5D8C1C62980000F24EA7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 224BE7D41B5842FB00909D74 /* Turbolinks.xcodeproj */;
+			containerPortal = 22CB5D881C62980000F24EA7 /* Turbolinks.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 1FC167EF1B55A14900AA6F43;
 			remoteInfo = Turbolinks;
 		};
-		224BE7DB1B5842FB00909D74 /* PBXContainerItemProxy */ = {
+		22CB5D8E1C62980900F24EA7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 224BE7D41B5842FB00909D74 /* Turbolinks.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1FC167FA1B55A14900AA6F43;
-			remoteInfo = TurbolinksTests;
-		};
-		224BE7DD1B58432D00909D74 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 224BE7D41B5842FB00909D74 /* Turbolinks.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 1FC167EE1B55A14900AA6F43;
-			remoteInfo = Turbolinks;
-		};
-		224BE7E11B58447200909D74 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 224BE7D41B5842FB00909D74 /* Turbolinks.xcodeproj */;
+			containerPortal = 22CB5D881C62980000F24EA7 /* Turbolinks.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 1FC167EE1B55A14900AA6F43;
 			remoteInfo = Turbolinks;
@@ -57,7 +42,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				224BE7E01B58447200909D74 /* Turbolinks.framework in Embed Frameworks */,
+				22CB5D911C62982800F24EA7 /* Turbolinks.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -67,16 +52,14 @@
 /* Begin PBXFileReference section */
 		1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationController.swift; sourceTree = "<group>"; };
 		1F5A34F91B67FF900029FDF3 /* AuthenticationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationController.swift; sourceTree = "<group>"; };
-		1F8FC6A31B55A31F00A781C8 /* TurbolinksDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TurbolinksDemo-Bridging-Header.h"; sourceTree = "<group>"; };
 		1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1F8FC6A71B55A33700A781C8 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		1F8FC6AB1B55A34500A781C8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1FC168141B55A16C00AA6F43 /* TurbolinksDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TurbolinksDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FC168181B55A16C00AA6F43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1FC168201B55A16C00AA6F43 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		1FC168231B55A16C00AA6F43 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		224605D41B62D1E200973B90 /* TurbolinksDemo.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = TurbolinksDemo.js; sourceTree = "<group>"; };
-		224BE7D41B5842FB00909D74 /* Turbolinks.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Turbolinks.xcodeproj; path = ../Turbolinks/Turbolinks.xcodeproj; sourceTree = "<group>"; };
+		22CB5D881C62980000F24EA7 /* Turbolinks.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Turbolinks.xcodeproj; sourceTree = "<group>"; };
+		22CB5D951C6299AB00F24EA7 /* TurbolinksDemo.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = TurbolinksDemo.js; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,7 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				224BE7DF1B58447200909D74 /* Turbolinks.framework in Frameworks */,
+				22CB5D901C62981700F24EA7 /* Turbolinks.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,7 +79,7 @@
 			children = (
 				1FC168161B55A16C00AA6F43 /* TurbolinksDemo */,
 				1FC168151B55A16C00AA6F43 /* Products */,
-				224BE7D41B5842FB00909D74 /* Turbolinks.xcodeproj */,
+				22CB5D881C62980000F24EA7 /* Turbolinks.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -115,12 +98,10 @@
 				1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */,
 				1F5A34F91B67FF900029FDF3 /* AuthenticationController.swift */,
 				1F8FC6A71B55A33700A781C8 /* WebViewController.swift */,
-				224605D41B62D1E200973B90 /* TurbolinksDemo.js */,
-				1FC168201B55A16C00AA6F43 /* Images.xcassets */,
+				22CB5D951C6299AB00F24EA7 /* TurbolinksDemo.js */,
 				1F8FC6AA1B55A34500A781C8 /* Main.storyboard */,
 				1FC168221B55A16C00AA6F43 /* LaunchScreen.xib */,
 				1FC168171B55A16C00AA6F43 /* Supporting Files */,
-				1F8FC6A31B55A31F00A781C8 /* TurbolinksDemo-Bridging-Header.h */,
 			);
 			path = TurbolinksDemo;
 			sourceTree = "<group>";
@@ -133,11 +114,10 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		224BE7D51B5842FB00909D74 /* Products */ = {
+		22CB5D891C62980000F24EA7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				224BE7DA1B5842FB00909D74 /* Turbolinks.framework */,
-				224BE7DC1B5842FB00909D74 /* TurbolinksTests.xctest */,
+				22CB5D8D1C62980000F24EA7 /* Turbolinks.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -157,8 +137,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				224BE7DE1B58432D00909D74 /* PBXTargetDependency */,
-				224BE7E21B58447200909D74 /* PBXTargetDependency */,
+				22CB5D8F1C62980900F24EA7 /* PBXTargetDependency */,
 			);
 			name = TurbolinksDemo;
 			productName = TurbolinksDemo;
@@ -194,8 +173,8 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 224BE7D51B5842FB00909D74 /* Products */;
-					ProjectRef = 224BE7D41B5842FB00909D74 /* Turbolinks.xcodeproj */;
+					ProductGroup = 22CB5D891C62980000F24EA7 /* Products */;
+					ProjectRef = 22CB5D881C62980000F24EA7 /* Turbolinks.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -206,18 +185,11 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		224BE7DA1B5842FB00909D74 /* Turbolinks.framework */ = {
+		22CB5D8D1C62980000F24EA7 /* Turbolinks.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = Turbolinks.framework;
-			remoteRef = 224BE7D91B5842FB00909D74 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		224BE7DC1B5842FB00909D74 /* TurbolinksTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = TurbolinksTests.xctest;
-			remoteRef = 224BE7DB1B5842FB00909D74 /* PBXContainerItemProxy */;
+			remoteRef = 22CB5D8C1C62980000F24EA7 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -227,10 +199,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22CB5D961C6299AB00F24EA7 /* TurbolinksDemo.js in Resources */,
 				1F8FC6AC1B55A34500A781C8 /* Main.storyboard in Resources */,
 				1FC168241B55A16C00AA6F43 /* LaunchScreen.xib in Resources */,
-				224605D51B62D1E200973B90 /* TurbolinksDemo.js in Resources */,
-				1FC168211B55A16C00AA6F43 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -251,15 +222,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		224BE7DE1B58432D00909D74 /* PBXTargetDependency */ = {
+		22CB5D8F1C62980900F24EA7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Turbolinks;
-			targetProxy = 224BE7DD1B58432D00909D74 /* PBXContainerItemProxy */;
-		};
-		224BE7E21B58447200909D74 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Turbolinks;
-			targetProxy = 224BE7E11B58447200909D74 /* PBXContainerItemProxy */;
+			targetProxy = 22CB5D8E1C62980900F24EA7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -368,14 +334,12 @@
 		1FC168341B55A16C00AA6F43 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = TurbolinksDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.basecamp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "TurbolinksDemo/TurbolinksDemo-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -383,14 +347,12 @@
 		1FC168351B55A16C00AA6F43 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				INFOPLIST_FILE = TurbolinksDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.basecamp.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "TurbolinksDemo/TurbolinksDemo-Bridging-Header.h";
 			};
 			name = Release;
 		};

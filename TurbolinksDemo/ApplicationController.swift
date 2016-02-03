@@ -3,7 +3,7 @@ import WebKit
 import Turbolinks
 
 class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDelegate, AuthenticationControllerDelegate {
-    let accountLocation = NSURL(string: "http://localhost:9292/")!
+    let accountLocation = NSURL(string: "http://localhost:9292")!
     let webViewProcessPool = WKProcessPool()
     var mainNavigationController: UINavigationController?
 

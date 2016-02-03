@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:TurbolinksDemo/TurbolinksDemo.xcodeproj">
+      location = "group:TurbolinksDemo.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Turbolinks/Turbolinks.xcodeproj">
+      location = "group:Turbolinks.xcodeproj">
    </FileRef>
 </Workspace>
