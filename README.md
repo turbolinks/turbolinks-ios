@@ -6,9 +6,11 @@ View the demo app provided to see how to use it in practice (more documentation 
 ## Installation
 
 **Carthage**
+
 ```github "basecamp/turbolinks-ios" "master"```
 
 **CocoaPods**
-```pod 'Turbolinks', :git => 'https://github.com/basecamp/turbolinks-ios.git'
+
+```pod 'Turbolinks', :git => 'https://github.com/basecamp/turbolinks-ios.git'```
 
 You can also install it manually by building Turbolinks.framework and linking to your project
