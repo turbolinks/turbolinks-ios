@@ -13,6 +13,11 @@ module TurbolinksDemo
       erb :one, layout: :layout
     end
 
+    get '/two' do
+      @title = 'Page Two'
+      erb :two, layout: :layout
+    end
+
     get '/turbolinks.js' do
       send_file(Turbolinks::Source.asset_path + '/turbolinks.js')
     end
