@@ -51,28 +51,28 @@ class TLVisit: NSObject {
     func start() {
         if state == .Initialized {
             delegate?.visitWillStart(self)
-            self.state = .Started
+            state = .Started
             startVisit()
         }
     }
 
     func cancel() {
         if state == .Started {
-            self.state = .Canceled
+            state = .Canceled
             cancelVisit()
         }
     }
 
     private func complete() {
         if state == .Started {
-            self.state = .Completed
+            state = .Completed
             delegate?.visitDidComplete(self)
         }
     }
 
-    private func fail(callback: (() -> ())? = nil) {
+    private func fail(callback: (() -> Void)? = nil) {
         if state == .Started {
-            self.state = .Failed
+            state = .Failed
             callback?()
             failVisit()
             delegate?.visitDidFail(self)
@@ -86,21 +86,21 @@ class TLVisit: NSObject {
     // MARK: Navigation
 
     private var navigationCompleted = false
-    private var navigationCallback: (() -> ())?
+    private var navigationCallback: (() -> Void)?
 
     func completeNavigation() {
         if state == .Started && !navigationCompleted {
-            self.navigationCompleted = true
+            navigationCompleted = true
             navigationCallback?()
         }
     }
 
-    private func afterNavigationCompletion(callback: () -> ()) {
+    private func afterNavigationCompletion(callback: () -> Void) {
         if navigationCompleted {
             callback()
         } else {
             let previousNavigationCallback = navigationCallback
-            self.navigationCallback = { _ in
+            navigationCallback = { [unowned self] in
                 previousNavigationCallback?()
                 if self.state != .Canceled {
                     callback()
@@ -124,7 +124,7 @@ class TLVisit: NSObject {
 
     private func finishRequest() {
         if requestStarted && !requestFinished {
-            self.requestFinished = true
+            requestFinished = true
             delegate?.visitRequestDidFinish(self)
         }
     }
@@ -254,7 +254,7 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
         delegate?.visitDidStart(self)
         webView.issueRequestForVisitWithIdentifier(identifier)
 
-        afterNavigationCompletion {
+        afterNavigationCompletion { [unowned self] in
             self.webView.changeHistoryForVisitWithIdentifier(identifier)
             self.webView.loadCachedSnapshotForVisitWithIdentifier(identifier)
         }
@@ -268,7 +268,7 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
 
     func webView(webView: TLWebView, didCompleteRequestForVisitWithIdentifier identifier: String) {
         if identifier == self.identifier {
-            afterNavigationCompletion {
+            afterNavigationCompletion { [unowned self] in
                 self.delegate?.visitWillLoadResponse(self)
                 self.webView.loadResponseForVisitWithIdentifier(identifier)
             }
