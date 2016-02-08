@@ -9,7 +9,7 @@ class WebViewController: UIViewController, TLVisitable {
     var viewController: UIViewController { return self }
 
     // MARK: View Lifecycle
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         automaticallyAdjustsScrollViewInsets = false
@@ -74,10 +74,11 @@ class WebViewController: UIViewController, TLVisitable {
 
     // MARK: Activity Indicator
 
-    lazy var activityIndicator: UIActivityIndicatorView = {
+    private lazy var activityIndicator: UIActivityIndicatorView = {
         let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .WhiteLarge)
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         activityIndicator.color = UIColor.grayColor()
+        activityIndicator.hidesWhenStopped = true
         return activityIndicator
     }()
 
@@ -165,7 +166,7 @@ class WebViewController: UIViewController, TLVisitable {
     }
 }
 
-func after(msec: Int, callback: () -> ()) {
+private func after(msec: Int, callback: () -> ()) {
     let time = dispatch_time(DISPATCH_TIME_NOW, Int64(msec) * Int64(NSEC_PER_MSEC))
     dispatch_after(time, dispatch_get_main_queue(), callback)
 }

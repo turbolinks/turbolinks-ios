@@ -74,6 +74,14 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
         let authNavigationController = UINavigationController(rootViewController: authenticationController)
         presentViewController(authNavigationController, animated: true, completion: nil)
     }
+    
+    // MARK: Error Handling
+    
+    private func presentAlertForError(error: NSError) {
+        let alertController = UIAlertController(title: "Error loading page", message: error.localizedDescription, preferredStyle: .Alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+        presentViewController(alertController, animated: true, completion: nil)
+    }
 
     // MARK: TLSessionDelegate
 
@@ -87,10 +95,10 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
 
     func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withError error: NSError) {
         print("ERROR: \(error)")
-        if error.code == TLErrorCode.HTTPFailure.rawValue {
-            if let statusCode = error.userInfo["statusCode"] as? Int where statusCode == 401 {
-                presentAuthenticationController()
-            }
+        if error.code == TLErrorCode.HTTPFailure.rawValue, let statusCode = error.userInfo["statusCode"] as? Int where statusCode == 401 {
+            presentAuthenticationController()
+        } else {
+            presentAlertForError(error)
         }
     }
 
