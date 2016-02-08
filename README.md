@@ -17,3 +17,15 @@ pod 'Turbolinks', :git => 'https://github.com/basecamp/turbolinks-ios.git'
 ```
 
 You can also install it manually by building Turbolinks.framework and linking to your project
+
+## Demo
+
+There is a demo app and server in the repo. You can start the Sinatra demo server by running:
+
+```
+cd TurbolinksDemo/server
+bundle
+rackup
+```
+
+Open `turbolinks-ios.xcworkspace` and run the TurbolinksDemo target.
