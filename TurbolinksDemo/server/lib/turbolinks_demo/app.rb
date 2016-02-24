@@ -18,6 +18,12 @@ module TurbolinksDemo
       erb :two, layout: :layout
     end
 
+    get '/slow' do
+      sleep 2
+      @title = 'Slow Page'
+      erb :slow, layout: :layout
+    end
+
     get '/turbolinks.js' do
       send_file(Turbolinks::Source.asset_path + '/turbolinks.js')
     end
