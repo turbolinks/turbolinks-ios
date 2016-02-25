@@ -101,6 +101,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
             self.presentAuthenticationController()
           }
         } else {
+            session.topmostVisitable?.hideActivityIndicator()
             presentAlertForError(error)
         }
     }
