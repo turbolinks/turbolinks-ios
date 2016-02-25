@@ -29,6 +29,7 @@ module TurbolinksDemo
 
     get '/protected' do
       if cookies[:signed_in]
+        @title = 'Protected'
         erb :protected, layout: :layout
       else
         throw :halt, [ 401, 'Unauthorized' ]
