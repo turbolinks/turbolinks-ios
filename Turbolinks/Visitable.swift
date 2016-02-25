@@ -1,14 +1,14 @@
 import UIKit
 import WebKit
 
-@objc public protocol TLVisitableDelegate: class {
-    func visitableViewWillAppear(visitable: TLVisitable)
-    func visitableViewDidAppear(visitable: TLVisitable)
-    func visitableDidRequestRefresh(visitable: TLVisitable)
+@objc public protocol VisitableDelegate: class {
+    func visitableViewWillAppear(visitable: Visitable)
+    func visitableViewDidAppear(visitable: Visitable)
+    func visitableDidRequestRefresh(visitable: Visitable)
 }
 
-@objc public protocol TLVisitable: class {
-    weak var visitableDelegate: TLVisitableDelegate? { get set }
+@objc public protocol Visitable: class {
+    weak var visitableDelegate: VisitableDelegate? { get set }
 
     var location: NSURL? { get set }
     var viewController: UIViewController { get }

@@ -1,6 +1,6 @@
 import WebKit
 
-enum TLScriptMessageName: String {
+enum ScriptMessageName: String {
     case PageLoaded = "pageLoaded"
     case ErrorRaised = "errorRaised"
     case VisitProposed = "visitProposed"
@@ -14,22 +14,22 @@ enum TLScriptMessageName: String {
     case PageInvalidated = "pageInvalidated"
 }
 
-class TLScriptMessage {
-    static func parse(message: WKScriptMessage) -> TLScriptMessage? {
+class ScriptMessage {
+    static func parse(message: WKScriptMessage) -> ScriptMessage? {
         if let body = message.body as? [String: AnyObject] {
             if let rawName = body["name"] as? String, let data = body["data"] as? [String: AnyObject] {
-                if let name = TLScriptMessageName(rawValue: rawName) {
-                    return TLScriptMessage(name: name, data: data)
+                if let name = ScriptMessageName(rawValue: rawName) {
+                    return ScriptMessage(name: name, data: data)
                 }
             }
         }
         return nil
     }
 
-    let name: TLScriptMessageName
+    let name: ScriptMessageName
     let data: [String: AnyObject]
 
-    init(name: TLScriptMessageName, data: [String: AnyObject]) {
+    init(name: ScriptMessageName, data: [String: AnyObject]) {
         self.name = name
         self.data = data
     }
@@ -49,9 +49,9 @@ class TLScriptMessage {
         return nil
     }
 
-    var action: TLAction? {
+    var action: Action? {
         if let actionString = data["action"] as? String {
-            return TLAction(rawValue: actionString)
+            return Action(rawValue: actionString)
         }
         return nil
     }
