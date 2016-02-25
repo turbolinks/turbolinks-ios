@@ -7,7 +7,7 @@ protocol AuthenticationControllerDelegate: class {
 }
 
 class AuthenticationController: UIViewController, WKNavigationDelegate {
-    var accountLocation: NSURL?
+    var location: NSURL?
     weak var delegate: AuthenticationControllerDelegate?
 
     lazy var webView: WKWebView = {
@@ -24,39 +24,24 @@ class AuthenticationController: UIViewController, WKNavigationDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        webView.opaque = false
-        webView.backgroundColor = UIColor(red: 0.96, green: 0.94, blue: 0.90, alpha: 1)
-
         view.addSubview(webView)
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": webView ]))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": webView ]))
 
-        if let newSessionLocation = accountLocation?.URLByAppendingPathComponent("session/new") {
-            webView.loadRequest(NSURLRequest(URL: newSessionLocation))
+        if let URL = location {
+            webView.loadRequest(NSURLRequest(URL: URL))
         }
     }
 
     // MARK: WKNavigationDelegate
 
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
-        if let URL = navigationAction.request.URL, accountLocation = self.accountLocation {
-            // Comparing only the last two host components to accommodate beta subdomains
-            if tld(URL) == tld(accountLocation) && URL.path == accountLocation.path {
-                decisionHandler(.Cancel)
-                delegate?.authenticationControllerDidAuthenticate(self)
-                return
-            }
+        if let URL = navigationAction.request.URL where URL != location {
+            decisionHandler(.Cancel)
+            delegate?.authenticationControllerDidAuthenticate(self)
+            return
         }
 
         decisionHandler(.Allow)
-    }
-}
-
-func tld(URL: NSURL, length: Int = 2) -> String? {
-    if let host = URL.host {
-        let hostComponents = host.characters.split { $0 == "." }.map { String($0) }
-        return hostComponents.suffix(length).joinWithSeparator(".")
-    } else {
-        return nil
     }
 }

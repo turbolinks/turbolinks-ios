@@ -1,8 +1,11 @@
 require 'sinatra'
+require 'sinatra/cookies'
 require 'turbolinks/source'
 
 module TurbolinksDemo
   class App < Sinatra::Base
+    helpers Sinatra::Cookies
+
     get '/' do
       @title = 'Demo'
       erb :index, layout: :layout
@@ -22,6 +25,24 @@ module TurbolinksDemo
       sleep 2
       @title = 'Slow Page'
       erb :slow, layout: :layout
+    end
+
+    get '/protected' do
+      if cookies[:signed_in]
+        erb :protected, layout: :layout
+      else
+        throw :halt, [ 401, 'Unauthorized' ]
+      end
+    end
+
+    get '/sign-in' do
+      @title = 'Sign in'
+      erb :sign_in, layout: :layout
+    end
+
+    post '/sign-in' do
+      cookies[:signed_in] = true
+      redirect to('/')
     end
 
     get '/turbolinks.js' do

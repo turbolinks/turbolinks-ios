@@ -3,7 +3,7 @@ import WebKit
 import Turbolinks
 
 class ApplicationController: UIViewController, WKNavigationDelegate, SessionDelegate, AuthenticationControllerDelegate {
-    let accountLocation = NSURL(string: "http://localhost:9292")!
+    let location = NSURL(string: "http://localhost:9292")!
     let webViewProcessPool = WKProcessPool()
     var mainNavigationController: UINavigationController?
 
@@ -31,7 +31,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
     override func viewDidLoad() {
         super.viewDidLoad()
         installMainNavigationController()
-        presentVisitableForSession(session, atLocation: accountLocation, withAction: .Advance)
+        presentVisitableForSession(session, atLocation: location)
     }
 
     func installMainNavigationController() {
@@ -42,7 +42,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
         mainNavigationController.didMoveToParentViewController(self)
     }
 
-    private func presentVisitableForSession(session: Session, atLocation location: NSURL, withAction action: Action) {
+    private func presentVisitableForSession(session: Session, atLocation location: NSURL, withAction action: Action = .Advance) {
         if let navigationController = mainNavigationController {
             let visitable = visitableForSession(session, atLocation: location)
             let viewController = visitable.viewController
@@ -67,16 +67,16 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
 
     func presentAuthenticationController() {
         let authenticationController = AuthenticationController()
-        authenticationController.accountLocation = accountLocation
         authenticationController.delegate = self
+        authenticationController.location = location.URLByAppendingPathComponent("sign-in")
         authenticationController.title = "Sign in"
 
         let authNavigationController = UINavigationController(rootViewController: authenticationController)
         presentViewController(authNavigationController, animated: true, completion: nil)
     }
-    
+
     // MARK: Error Handling
-    
+
     private func presentAlertForError(error: NSError) {
         let alertController = UIAlertController(title: "Error loading page", message: error.localizedDescription, preferredStyle: .Alert)
         alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
