@@ -96,7 +96,10 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
     func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
         print("ERROR: \(error)")
         if error.code == ErrorCode.HTTPFailure.rawValue, let statusCode = error.userInfo["statusCode"] as? Int where statusCode == 401 {
-            presentAuthenticationController()
+          // Wait for the navigation controller's animation to complete before presenting
+          after(500) {
+            self.presentAuthenticationController()
+          }
         } else {
             presentAlertForError(error)
         }
@@ -130,4 +133,9 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
             UIApplication.sharedApplication().openURL(URL)
         }
     }
+}
+
+private func after(msec: Int, callback: () -> ()) {
+    let time = dispatch_time(DISPATCH_TIME_NOW, Int64(msec) * Int64(NSEC_PER_MSEC))
+    dispatch_after(time, dispatch_get_main_queue(), callback)
 }
