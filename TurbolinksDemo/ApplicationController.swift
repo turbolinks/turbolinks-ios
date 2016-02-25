@@ -2,7 +2,7 @@ import UIKit
 import WebKit
 import Turbolinks
 
-class ApplicationController: UIViewController, WKNavigationDelegate, SessionDelegate, AuthenticationControllerDelegate {
+class ApplicationController: UIViewController, WKNavigationDelegate, Turbolinks.SessionDelegate, AuthenticationControllerDelegate {
     let location = NSURL(string: "http://localhost:9292")!
     let webViewProcessPool = WKProcessPool()
     var mainNavigationController: UINavigationController?
@@ -42,7 +42,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
         mainNavigationController.didMoveToParentViewController(self)
     }
 
-    private func presentVisitableForSession(session: Session, atLocation location: NSURL, withAction action: Action = .Advance) {
+    private func presentVisitableForSession(session: Turbolinks.Session, atLocation location: NSURL, withAction action: Turbolinks.Action = .Advance) {
         if let navigationController = mainNavigationController {
             let visitable = visitableForSession(session, atLocation: location)
             let viewController = visitable.viewController
@@ -58,7 +58,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
         }
     }
 
-    private func visitableForSession(session: Session, atLocation location: NSURL) -> Visitable {
+    private func visitableForSession(session: Turbolinks.Session, atLocation location: NSURL) -> Turbolinks.Visitable {
         let visitable = WebViewController()
         visitable.location = location
         visitable.visitableDelegate = session
@@ -83,9 +83,9 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
         presentViewController(alertController, animated: true, completion: nil)
     }
 
-    // MARK: SessionDelegate
+    // MARK: Turbolinks.SessionDelegate
 
-    func session(session: Session, didProposeVisitToLocation location: NSURL, withAction action: Action) {
+    func session(session: Turbolinks.Session, didProposeVisitToLocation location: NSURL, withAction action: Turbolinks.Action) {
         presentVisitableForSession(session, atLocation: location, withAction: action)
     }
 
@@ -93,9 +93,9 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
         application.networkActivityIndicatorVisible = true
     }
 
-    func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
+    func session(session: Turbolinks.Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
         print("ERROR: \(error)")
-        if error.code == ErrorCode.HTTPFailure.rawValue, let statusCode = error.userInfo["statusCode"] as? Int where statusCode == 401 {
+        if error.code == Turbolinks.ErrorCode.HTTPFailure.rawValue, let statusCode = error.userInfo["statusCode"] as? Int where statusCode == 401 {
           // Wait for the navigation controller's animation to complete before presenting
           after(500) {
             self.presentAuthenticationController()
@@ -106,11 +106,11 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
         }
     }
 
-    func sessionDidFinishRequest(session: Session) {
+    func sessionDidFinishRequest(session: Turbolinks.Session) {
         application.networkActivityIndicatorVisible = false
     }
 
-    func sessionDidInitializeWebView(session: Session) {
+    func sessionDidInitializeWebView(session: Turbolinks.Session) {
         session.webView.navigationDelegate = self
     }
 
