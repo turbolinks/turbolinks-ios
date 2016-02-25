@@ -1,22 +1,22 @@
 import WebKit
 
-protocol TLVisitDelegate: class {
-    func visitDidInitializeWebView(visit: TLVisit)
+protocol VisitDelegate: class {
+    func visitDidInitializeWebView(visit: Visit)
 
-    func visitWillStart(visit: TLVisit)
-    func visitDidStart(visit: TLVisit)
-    func visitDidComplete(visit: TLVisit)
-    func visitDidFail(visit: TLVisit)
+    func visitWillStart(visit: Visit)
+    func visitDidStart(visit: Visit)
+    func visitDidComplete(visit: Visit)
+    func visitDidFail(visit: Visit)
 
-    func visitWillLoadResponse(visit: TLVisit)
-    func visitDidRender(visit: TLVisit)
+    func visitWillLoadResponse(visit: Visit)
+    func visitDidRender(visit: Visit)
 
-    func visitRequestDidStart(visit: TLVisit)
-    func visit(visit: TLVisit, requestDidFailWithError error: NSError)
-    func visitRequestDidFinish(visit: TLVisit)
+    func visitRequestDidStart(visit: Visit)
+    func visit(visit: Visit, requestDidFailWithError error: NSError)
+    func visitRequestDidFinish(visit: Visit)
 }
 
-enum TLVisitState: String {
+enum VisitState: String {
     case Initialized = "Initialized"
     case Started = "Started"
     case Canceled = "Canceled"
@@ -24,13 +24,13 @@ enum TLVisitState: String {
     case Completed = "Completed"
 }
 
-class TLVisit: NSObject {
-    weak var delegate: TLVisitDelegate?
+class Visit: NSObject {
+    weak var delegate: VisitDelegate?
 
-    var visitable: TLVisitable
-    var action: TLAction
-    var webView: TLWebView
-    var state: TLVisitState
+    var visitable: Visitable
+    var action: Action
+    var webView: WebView
+    var state: VisitState
 
     var location: NSURL
     var hasCachedSnapshot: Bool = false
@@ -40,7 +40,7 @@ class TLVisit: NSObject {
         return "<\(self.dynamicType): state=\(state.rawValue) location=\(location)>"
     }
 
-    init(visitable: TLVisitable, action: TLAction, webView: TLWebView) {
+    init(visitable: Visitable, action: Action, webView: WebView) {
         self.visitable = visitable
         self.location = visitable.location!
         self.action = action
@@ -130,7 +130,7 @@ class TLVisit: NSObject {
     }
 }
 
-class TLColdBootVisit: TLVisit, WKNavigationDelegate, TLWebViewPageLoadDelegate {
+class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
     private var navigation: WKNavigation?
 
     override private func startVisit() {
@@ -184,14 +184,14 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate, TLWebViewPageLoadDelegate 
             } else {
                 decisionHandler(.Cancel)
                 fail {
-                    let error = TLError(code: .HTTPFailure, statusCode: httpResponse.statusCode)
+                    let error = Error(code: .HTTPFailure, statusCode: httpResponse.statusCode)
                     self.delegate?.visit(self, requestDidFailWithError: error)
                 }
             }
         } else {
             decisionHandler(.Cancel)
             fail {
-                let error = TLError(code: .NetworkFailure, localizedDescription: "An unknown error occurred")
+                let error = Error(code: .NetworkFailure, localizedDescription: "An unknown error occurred")
                 self.delegate?.visit(self, requestDidFailWithError: error)
             }
         }
@@ -200,7 +200,7 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate, TLWebViewPageLoadDelegate 
     func webView(webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError originalError: NSError) {
         if navigation === self.navigation {
             fail {
-                let error = TLError(code: .NetworkFailure, error: originalError)
+                let error = Error(code: .NetworkFailure, error: originalError)
                 self.delegate?.visit(self, requestDidFailWithError: error)
             }
         }
@@ -209,22 +209,22 @@ class TLColdBootVisit: TLVisit, WKNavigationDelegate, TLWebViewPageLoadDelegate 
     func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError originalError: NSError) {
         if navigation === self.navigation {
             fail {
-                let error = TLError(code: .NetworkFailure, error: originalError)
+                let error = Error(code: .NetworkFailure, error: originalError)
                 self.delegate?.visit(self, requestDidFailWithError: error)
             }
         }
     }
 
-    // MARK: TLWebViewPageLoadDelegate
+    // MARK: WebViewPageLoadDelegate
 
-    func webView(webView: TLWebView, didLoadPageWithRestorationIdentifier restorationIdentifier: String) {
+    func webView(webView: WebView, didLoadPageWithRestorationIdentifier restorationIdentifier: String) {
         self.restorationIdentifier = restorationIdentifier
         delegate?.visitDidRender(self)
         complete()
     }
 }
 
-class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
+class JavaScriptVisit: Visit, WebViewVisitDelegate {
     private var identifier = "(pending)"
 
     override var description: String {
@@ -245,9 +245,9 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
         finishRequest()
     }
 
-    // MARK: TLWebViewVisitDelegate
+    // MARK: WebViewVisitDelegate
 
-    func webView(webView: TLWebView, didStartVisitWithIdentifier identifier: String, hasCachedSnapshot: Bool) {
+    func webView(webView: WebView, didStartVisitWithIdentifier identifier: String, hasCachedSnapshot: Bool) {
         self.identifier = identifier
         self.hasCachedSnapshot = hasCachedSnapshot
 
@@ -260,13 +260,13 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
         }
     }
 
-    func webView(webView: TLWebView, didStartRequestForVisitWithIdentifier identifier: String) {
+    func webView(webView: WebView, didStartRequestForVisitWithIdentifier identifier: String) {
         if identifier == self.identifier {
             startRequest()
         }
     }
 
-    func webView(webView: TLWebView, didCompleteRequestForVisitWithIdentifier identifier: String) {
+    func webView(webView: WebView, didCompleteRequestForVisitWithIdentifier identifier: String) {
         if identifier == self.identifier {
             afterNavigationCompletion { [unowned self] in
                 self.delegate?.visitWillLoadResponse(self)
@@ -275,33 +275,33 @@ class TLJavaScriptVisit: TLVisit, TLWebViewVisitDelegate {
         }
     }
 
-    func webView(webView: TLWebView, didFailRequestForVisitWithIdentifier identifier: String, statusCode: Int) {
+    func webView(webView: WebView, didFailRequestForVisitWithIdentifier identifier: String, statusCode: Int) {
         if identifier == self.identifier {
             fail {
                 let error: NSError
                 if statusCode == 0 {
-                    error = TLError(code: .NetworkFailure, localizedDescription: "A network error occurred.")
+                    error = Error(code: .NetworkFailure, localizedDescription: "A network error occurred.")
                 } else {
-                    error = TLError(code: .HTTPFailure, statusCode: statusCode)
+                    error = Error(code: .HTTPFailure, statusCode: statusCode)
                 }
                 self.delegate?.visit(self, requestDidFailWithError: error)
             }
         }
     }
 
-    func webView(webView: TLWebView, didFinishRequestForVisitWithIdentifier identifier: String) {
+    func webView(webView: WebView, didFinishRequestForVisitWithIdentifier identifier: String) {
         if identifier == self.identifier {
             finishRequest()
         }
     }
 
-    func webView(webView: TLWebView, didRenderForVisitWithIdentifier identifier: String) {
+    func webView(webView: WebView, didRenderForVisitWithIdentifier identifier: String) {
         if identifier == self.identifier {
             delegate?.visitDidRender(self)
         }
     }
 
-    func webView(webView: TLWebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String) {
+    func webView(webView: WebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String) {
         if identifier == self.identifier {
             self.restorationIdentifier = restorationIdentifier
             complete()

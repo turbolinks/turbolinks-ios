@@ -1,35 +1,35 @@
 import WebKit
 
-protocol TLWebViewDelegate: class {
-    func webView(webView: TLWebView, didProposeVisitToLocation location: NSURL, withAction action: TLAction)
-    func webViewDidInvalidatePage(webView: TLWebView)
-    func webView(webView: TLWebView, didFailJavaScriptEvaluationWithError error: NSError)
+protocol WebViewDelegate: class {
+    func webView(webView: WebView, didProposeVisitToLocation location: NSURL, withAction action: Action)
+    func webViewDidInvalidatePage(webView: WebView)
+    func webView(webView: WebView, didFailJavaScriptEvaluationWithError error: NSError)
 }
 
-protocol TLWebViewPageLoadDelegate: class {
-    func webView(webView: TLWebView, didLoadPageWithRestorationIdentifier restorationIdentifier: String)
+protocol WebViewPageLoadDelegate: class {
+    func webView(webView: WebView, didLoadPageWithRestorationIdentifier restorationIdentifier: String)
 }
 
-protocol TLWebViewVisitDelegate: class {
-    func webView(webView: TLWebView, didStartVisitWithIdentifier identifier: String, hasCachedSnapshot: Bool)
-    func webView(webView: TLWebView, didStartRequestForVisitWithIdentifier identifier: String)
-    func webView(webView: TLWebView, didCompleteRequestForVisitWithIdentifier identifier: String)
-    func webView(webView: TLWebView, didFailRequestForVisitWithIdentifier identifier: String, statusCode: Int)
-    func webView(webView: TLWebView, didFinishRequestForVisitWithIdentifier identifier: String)
-    func webView(webView: TLWebView, didRenderForVisitWithIdentifier identifier: String)
-    func webView(webView: TLWebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String)
+protocol WebViewVisitDelegate: class {
+    func webView(webView: WebView, didStartVisitWithIdentifier identifier: String, hasCachedSnapshot: Bool)
+    func webView(webView: WebView, didStartRequestForVisitWithIdentifier identifier: String)
+    func webView(webView: WebView, didCompleteRequestForVisitWithIdentifier identifier: String)
+    func webView(webView: WebView, didFailRequestForVisitWithIdentifier identifier: String, statusCode: Int)
+    func webView(webView: WebView, didFinishRequestForVisitWithIdentifier identifier: String)
+    func webView(webView: WebView, didRenderForVisitWithIdentifier identifier: String)
+    func webView(webView: WebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String)
 }
 
-class TLWebView: WKWebView, WKScriptMessageHandler {
-    weak var delegate: TLWebViewDelegate?
-    weak var pageLoadDelegate: TLWebViewPageLoadDelegate?
-    weak var visitDelegate: TLWebViewVisitDelegate?
+class WebView: WKWebView, WKScriptMessageHandler {
+    weak var delegate: WebViewDelegate?
+    weak var pageLoadDelegate: WebViewPageLoadDelegate?
+    weak var visitDelegate: WebViewVisitDelegate?
 
     init(configuration: WKWebViewConfiguration) {
         super.init(frame: CGRectZero, configuration: configuration)
 
         let bundle = NSBundle(forClass: self.dynamicType)
-        let source = try! String(contentsOfURL: bundle.URLForResource("TLWebView", withExtension: "js")!, encoding: NSUTF8StringEncoding)
+        let source = try! String(contentsOfURL: bundle.URLForResource("WebView", withExtension: "js")!, encoding: NSUTF8StringEncoding)
         let userScript = WKUserScript(source: source, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
         configuration.userContentController.addUserScript(userScript)
         configuration.userContentController.addScriptMessageHandler(self, name: "turbolinks")
@@ -38,7 +38,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
         scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
     }
 
-    func visitLocation(location: NSURL, withAction action: TLAction, restorationIdentifier: String?) {
+    func visitLocation(location: NSURL, withAction action: Action, restorationIdentifier: String?) {
         callJavaScriptFunction("webView.visitLocationWithActionAndRestorationIdentifier", withArguments: [location.absoluteString, action.rawValue, restorationIdentifier])
     }
 
@@ -65,7 +65,7 @@ class TLWebView: WKWebView, WKScriptMessageHandler {
     // MARK: WKScriptMessageHandler
 
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
-        if let message = TLScriptMessage.parse(message) {
+        if let message = ScriptMessage.parse(message) {
             switch message.name {
             case .PageLoaded:
                 pageLoadDelegate?.webView(self, didLoadPageWithRestorationIdentifier: message.restorationIdentifier!)

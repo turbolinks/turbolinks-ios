@@ -2,7 +2,7 @@ import UIKit
 import WebKit
 import Turbolinks
 
-class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDelegate, AuthenticationControllerDelegate {
+class ApplicationController: UIViewController, WKNavigationDelegate, SessionDelegate, AuthenticationControllerDelegate {
     let accountLocation = NSURL(string: "http://localhost:9292")!
     let webViewProcessPool = WKProcessPool()
     var mainNavigationController: UINavigationController?
@@ -22,8 +22,8 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
         return configuration
     }()
 
-    lazy var session: TLSession = {
-        let session = TLSession(webViewConfiguration: self.webViewConfiguration)
+    lazy var session: Session = {
+        let session = Session(webViewConfiguration: self.webViewConfiguration)
         session.delegate = self
         return session
     }()
@@ -42,7 +42,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
         mainNavigationController.didMoveToParentViewController(self)
     }
 
-    private func presentVisitableForSession(session: TLSession, atLocation location: NSURL, withAction action: TLAction) {
+    private func presentVisitableForSession(session: Session, atLocation location: NSURL, withAction action: Action) {
         if let navigationController = mainNavigationController {
             let visitable = visitableForSession(session, atLocation: location)
             let viewController = visitable.viewController
@@ -58,7 +58,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
         }
     }
 
-    private func visitableForSession(session: TLSession, atLocation location: NSURL) -> TLVisitable {
+    private func visitableForSession(session: Session, atLocation location: NSURL) -> Visitable {
         let visitable = WebViewController()
         visitable.location = location
         visitable.visitableDelegate = session
@@ -83,30 +83,30 @@ class ApplicationController: UIViewController, WKNavigationDelegate, TLSessionDe
         presentViewController(alertController, animated: true, completion: nil)
     }
 
-    // MARK: TLSessionDelegate
+    // MARK: SessionDelegate
 
-    func session(session: TLSession, didProposeVisitToLocation location: NSURL, withAction action: TLAction) {
+    func session(session: Session, didProposeVisitToLocation location: NSURL, withAction action: Action) {
         presentVisitableForSession(session, atLocation: location, withAction: action)
     }
 
-    func sessionDidStartRequest(session: TLSession) {
+    func sessionDidStartRequest(session: Session) {
         application.networkActivityIndicatorVisible = true
     }
 
-    func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withError error: NSError) {
+    func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
         print("ERROR: \(error)")
-        if error.code == TLErrorCode.HTTPFailure.rawValue, let statusCode = error.userInfo["statusCode"] as? Int where statusCode == 401 {
+        if error.code == ErrorCode.HTTPFailure.rawValue, let statusCode = error.userInfo["statusCode"] as? Int where statusCode == 401 {
             presentAuthenticationController()
         } else {
             presentAlertForError(error)
         }
     }
 
-    func sessionDidFinishRequest(session: TLSession) {
+    func sessionDidFinishRequest(session: Session) {
         application.networkActivityIndicatorVisible = false
     }
 
-    func sessionDidInitializeWebView(session: TLSession) {
+    func sessionDidInitializeWebView(session: Session) {
         session.webView.navigationDelegate = self
     }
 

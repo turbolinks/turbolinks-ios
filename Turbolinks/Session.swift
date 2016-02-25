@@ -1,54 +1,54 @@
 import UIKit
 import WebKit
 
-public protocol TLSessionDelegate: class {
-    func sessionDidInitializeWebView(session: TLSession)
-    func session(session: TLSession, didProposeVisitToLocation location: NSURL, withAction action: TLAction)
+public protocol SessionDelegate: class {
+    func sessionDidInitializeWebView(session: Session)
+    func session(session: Session, didProposeVisitToLocation location: NSURL, withAction action: Action)
     
-    func sessionDidStartRequest(session: TLSession)
-    func session(session: TLSession, didFailRequestForVisitable visitable: TLVisitable, withError error: NSError)
-    func sessionDidFinishRequest(session: TLSession)
+    func sessionDidStartRequest(session: Session)
+    func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)
+    func sessionDidFinishRequest(session: Session)
 }
 
-public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitableDelegate {
-    public weak var delegate: TLSessionDelegate?
+public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegate {
+    public weak var delegate: SessionDelegate?
 
     public var webView: WKWebView {
         return self._webView
     }
 
-    var _webView: TLWebView
+    var _webView: WebView
     var initialized: Bool = false
     var refreshing: Bool = false
 
     public init(webViewConfiguration: WKWebViewConfiguration) {
-        self._webView = TLWebView(configuration: webViewConfiguration)
+        self._webView = WebView(configuration: webViewConfiguration)
         super.init()
         _webView.delegate = self
     }
 
     // MARK: Visiting
 
-    private var currentVisit: TLVisit?
-    private var topmostVisit: TLVisit?
+    private var currentVisit: Visit?
+    private var topmostVisit: Visit?
 
-    public var topmostVisitable: TLVisitable? {
+    public var topmostVisitable: Visitable? {
         return topmostVisit?.visitable
     }
 
-    public func visit(visitable: TLVisitable) {
+    public func visit(visitable: Visitable) {
         visitVisitable(visitable, action: .Advance)
     }
     
-    func visitVisitable(visitable: TLVisitable, action: TLAction) {
+    func visitVisitable(visitable: Visitable, action: Action) {
         if visitable.location != nil {
-            let visit: TLVisit
+            let visit: Visit
 
             if initialized {
-                visit = TLJavaScriptVisit(visitable: visitable, action: action, webView: _webView)
+                visit = JavaScriptVisit(visitable: visitable, action: action, webView: _webView)
                 visit.restorationIdentifier = restorationIdentifierForVisitable(visitable)
             } else {
-                visit = TLColdBootVisit(visitable: visitable, action: action, webView: _webView)
+                visit = ColdBootVisit(visitable: visitable, action: action, webView: _webView)
             }
 
             currentVisit?.cancel()
@@ -69,9 +69,9 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     // MARK: Visitable activation
 
-    private var activatedVisitable: TLVisitable?
+    private var activatedVisitable: Visitable?
 
-    func activateVisitable(visitable: TLVisitable) {
+    func activateVisitable(visitable: Visitable) {
         if visitable !== activatedVisitable {
             if let activatedVisitable = self.activatedVisitable {
                 deactivateVisitable(activatedVisitable, showScreenshot: true)
@@ -82,7 +82,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
-    func deactivateVisitable(visitable: TLVisitable, showScreenshot: Bool = false) {
+    func deactivateVisitable(visitable: Visitable, showScreenshot: Bool = false) {
         if visitable === activatedVisitable {
             if showScreenshot {
                 visitable.updateScreenshot()
@@ -98,21 +98,21 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
 
     private var visitableRestorationIdentifiers = NSMapTable(keyOptions: .WeakMemory, valueOptions: .StrongMemory)
 
-    func restorationIdentifierForVisitable(visitable: TLVisitable) -> String? {
+    func restorationIdentifierForVisitable(visitable: Visitable) -> String? {
         return visitableRestorationIdentifiers.objectForKey(visitable) as? String
     }
 
-    func storeRestorationIdentifier(restorationIdentifier: String, forVisitable visitable: TLVisitable) {
+    func storeRestorationIdentifier(restorationIdentifier: String, forVisitable visitable: Visitable) {
         visitableRestorationIdentifiers.setObject(restorationIdentifier, forKey: visitable)
     }
 
-    // MARK: TLWebViewDelegate
+    // MARK: WebViewDelegate
 
-    func webView(webView: TLWebView, didProposeVisitToLocation location: NSURL, withAction action: TLAction) {
+    func webView(webView: WebView, didProposeVisitToLocation location: NSURL, withAction action: Action) {
         delegate?.session(self, didProposeVisitToLocation: location, withAction: action)
     }
 
-    func webViewDidInvalidatePage(webView: TLWebView) {
+    func webViewDidInvalidatePage(webView: WebView) {
         if let visitable = topmostVisitable {
             visitable.updateScreenshot()
             visitable.showScreenshot()
@@ -121,7 +121,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
-    func webView(webView: TLWebView, didFailJavaScriptEvaluationWithError error: NSError) {
+    func webView(webView: WebView, didFailJavaScriptEvaluationWithError error: NSError) {
         if let currentVisit = self.currentVisit where initialized {
             self.initialized = false
             currentVisit.cancel()
@@ -129,37 +129,37 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
-    // MARK: TLVisitDelegate
+    // MARK: VisitDelegate
 
-    func visitDidInitializeWebView(visit: TLVisit) {
+    func visitDidInitializeWebView(visit: Visit) {
         initialized = true
         delegate?.sessionDidInitializeWebView(self)
         visit.visitable.didRender?()
     }
 
-    func visitWillStart(visit: TLVisit) {
+    func visitWillStart(visit: Visit) {
         visit.visitable.showScreenshot()
         activateVisitable(visit.visitable)
     }
    
-    func visitDidStart(visit: TLVisit) {
+    func visitDidStart(visit: Visit) {
         if !visit.hasCachedSnapshot {
             visit.visitable.showActivityIndicator()
         }
     }
 
-    func visitWillLoadResponse(visit: TLVisit) {
+    func visitWillLoadResponse(visit: Visit) {
         visit.visitable.updateScreenshot()
         visit.visitable.showScreenshot()
     }
 
-    func visitDidRender(visit: TLVisit) {
+    func visitDidRender(visit: Visit) {
         visit.visitable.hideScreenshot()
         visit.visitable.hideActivityIndicator()
         visit.visitable.didRender?()
     }
 
-    func visitDidComplete(visit: TLVisit) {
+    func visitDidComplete(visit: Visit) {
         if let restorationIdentifier = visit.restorationIdentifier {
             storeRestorationIdentifier(restorationIdentifier, forVisitable: visit.visitable)
         }
@@ -170,27 +170,27 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
-    func visitDidFail(visit: TLVisit) {
+    func visitDidFail(visit: Visit) {
         deactivateVisitable(visit.visitable)
     }
 
-    // MARK: TLVisitDelegate networking
+    // MARK: VisitDelegate networking
 
-    func visitRequestDidStart(visit: TLVisit) {
+    func visitRequestDidStart(visit: Visit) {
         delegate?.sessionDidStartRequest(self)
     }
 
-    func visitRequestDidFinish(visit: TLVisit) {
+    func visitRequestDidFinish(visit: Visit) {
         delegate?.sessionDidFinishRequest(self)
     }
 
-    func visit(visit: TLVisit, requestDidFailWithError error: NSError) {
+    func visit(visit: Visit, requestDidFailWithError error: NSError) {
         delegate?.session(self, didFailRequestForVisitable: visit.visitable, withError: error)
     }
 
-    // MARK: TLVisitableDelegate
+    // MARK: VisitableDelegate
 
-    public func visitableViewWillAppear(visitable: TLVisitable) {
+    public func visitableViewWillAppear(visitable: Visitable) {
         if let topmostVisit = self.topmostVisit, currentVisit = self.currentVisit {
             if visitable === topmostVisit.visitable && visitable.viewController.isMovingToParentViewController() {
                 // Back swipe gesture canceled
@@ -209,7 +209,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
     
-    public func visitableViewDidAppear(visitable: TLVisitable) {
+    public func visitableViewDidAppear(visitable: Visitable) {
         if visitable === currentVisit?.visitable {
             // Appearing after successful navigation
             completeNavigationForCurrentVisit()
@@ -224,7 +224,7 @@ public class TLSession: NSObject, TLWebViewDelegate, TLVisitDelegate, TLVisitabl
         }
     }
 
-    public func visitableDidRequestRefresh(visitable: TLVisitable) {
+    public func visitableDidRequestRefresh(visitable: Visitable) {
         if visitable === topmostVisitable {
             refreshing = true
             visitable.willRefresh()
