@@ -3,7 +3,7 @@ import WebKit
 import Turbolinks
 
 class ApplicationController: UIViewController, WKNavigationDelegate, SessionDelegate, AuthenticationControllerDelegate {
-    let location = NSURL(string: "http://localhost:9292")!
+    let URL = NSURL(string: "http://localhost:9292")!
     let webViewProcessPool = WKProcessPool()
     var mainNavigationController: UINavigationController?
 
@@ -31,7 +31,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
     override func viewDidLoad() {
         super.viewDidLoad()
         installMainNavigationController()
-        presentVisitableForSession(session, atLocation: location)
+        presentVisitableForSession(session, URL: URL)
     }
 
     func installMainNavigationController() {
@@ -42,9 +42,9 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
         mainNavigationController.didMoveToParentViewController(self)
     }
 
-    private func presentVisitableForSession(session: Session, atLocation location: NSURL, withAction action: Action = .Advance) {
+    private func presentVisitableForSession(session: Session, URL: NSURL, action: Action = .Advance) {
         if let navigationController = mainNavigationController {
-            let visitable = visitableForSession(session, atLocation: location)
+            let visitable = visitableForSession(session, URL: URL)
             let viewController = visitable.viewController
 
             if action == .Advance {
@@ -58,9 +58,9 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
         }
     }
 
-    private func visitableForSession(session: Session, atLocation location: NSURL) -> Visitable {
+    private func visitableForSession(session: Session, URL: NSURL) -> Visitable {
         let visitable = WebViewController()
-        visitable.location = location
+        visitable.URL = URL
         visitable.visitableDelegate = session
         return visitable
     }
@@ -68,7 +68,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
     func presentAuthenticationController() {
         let authenticationController = AuthenticationController()
         authenticationController.delegate = self
-        authenticationController.location = location.URLByAppendingPathComponent("sign-in")
+        authenticationController.URL = URL.URLByAppendingPathComponent("sign-in")
         authenticationController.title = "Sign in"
 
         let authNavigationController = UINavigationController(rootViewController: authenticationController)
@@ -85,8 +85,8 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
 
     // MARK: SessionDelegate
 
-    func session(session: Session, didProposeVisitToLocation location: NSURL, withAction action: Action) {
-        presentVisitableForSession(session, atLocation: location, withAction: action)
+    func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action) {
+        presentVisitableForSession(session, URL: URL, action: action)
     }
 
     func sessionDidStartRequest(session: Session) {

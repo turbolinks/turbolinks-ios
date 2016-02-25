@@ -10,7 +10,7 @@ import WebKit
 @objc public protocol Visitable: class {
     weak var visitableDelegate: VisitableDelegate? { get set }
 
-    var location: NSURL? { get set }
+    var URL: NSURL? { get set }
     var viewController: UIViewController { get }
 
     func activateWebView(webView: WKWebView)

@@ -7,7 +7,7 @@ protocol AuthenticationControllerDelegate: class {
 }
 
 class AuthenticationController: UIViewController, WKNavigationDelegate {
-    var location: NSURL?
+    var URL: NSURL?
     weak var delegate: AuthenticationControllerDelegate?
 
     lazy var webView: WKWebView = {
@@ -28,7 +28,7 @@ class AuthenticationController: UIViewController, WKNavigationDelegate {
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": webView ]))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": webView ]))
 
-        if let URL = location {
+        if let URL = self.URL {
             webView.loadRequest(NSURLRequest(URL: URL))
         }
     }
@@ -36,7 +36,7 @@ class AuthenticationController: UIViewController, WKNavigationDelegate {
     // MARK: WKNavigationDelegate
 
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
-        if let URL = navigationAction.request.URL where URL != location {
+        if let URL = navigationAction.request.URL where URL != self.URL {
             decisionHandler(.Cancel)
             delegate?.authenticationControllerDidAuthenticate(self)
             return

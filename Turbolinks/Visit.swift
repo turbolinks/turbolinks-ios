@@ -42,7 +42,7 @@ class Visit: NSObject {
 
     init(visitable: Visitable, action: Action, webView: WebView) {
         self.visitable = visitable
-        self.location = visitable.location!
+        self.location = visitable.URL!
         self.action = action
         self.webView = webView
         self.state = .Initialized

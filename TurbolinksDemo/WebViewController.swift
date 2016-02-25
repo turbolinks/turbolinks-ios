@@ -5,7 +5,7 @@ import Turbolinks
 class WebViewController: UIViewController, Visitable {
     weak var visitableDelegate: VisitableDelegate?
 
-    var location: NSURL?
+    var URL: NSURL?
     var viewController: UIViewController { return self }
 
     // MARK: View Lifecycle

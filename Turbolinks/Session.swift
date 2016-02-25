@@ -3,7 +3,7 @@ import WebKit
 
 public protocol SessionDelegate: class {
     func sessionDidInitializeWebView(session: Session)
-    func session(session: Session, didProposeVisitToLocation location: NSURL, withAction action: Action)
+    func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action)
     
     func sessionDidStartRequest(session: Session)
     func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)
@@ -41,7 +41,7 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
     }
     
     func visitVisitable(visitable: Visitable, action: Action) {
-        if visitable.location != nil {
+        if visitable.URL != nil {
             let visit: Visit
 
             if initialized {
@@ -109,7 +109,7 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
     // MARK: WebViewDelegate
 
     func webView(webView: WebView, didProposeVisitToLocation location: NSURL, withAction action: Action) {
-        delegate?.session(self, didProposeVisitToLocation: location, withAction: action)
+        delegate?.session(self, didProposeVisitToURL: location, withAction: action)
     }
 
     func webViewDidInvalidatePage(webView: WebView) {
