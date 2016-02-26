@@ -14,7 +14,7 @@ public class Session: NSObject {
     public weak var delegate: SessionDelegate?
 
     public var webView: WKWebView {
-        return self._webView
+        return _webView
     }
 
     private var _webView: WebView
@@ -196,13 +196,13 @@ extension Session: VisitableDelegate {
     }
 
     public func visitableViewDidAppear(visitable: Visitable) {
-        if visitable === currentVisit?.visitable {
+        if let currentVisit = self.currentVisit where visitable === currentVisit.visitable {
             // Appearing after successful navigation
             completeNavigationForCurrentVisit()
-            if currentVisit!.state != .Failed {
+            if currentVisit.state != .Failed {
                 activateVisitable(visitable)
             }
-        } else if visitable === topmostVisit?.visitable && topmostVisit?.state == .Completed {
+        } else if let topmostVisit = self.topmostVisit where visitable === topmostVisit.visitable && topmostVisit.state == .Completed {
             // Reappearing after canceled navigation
             visitable.hideVisitableScreenshot()
             visitable.hideVisitableActivityIndicator()

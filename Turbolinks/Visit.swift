@@ -109,7 +109,6 @@ class Visit: NSObject {
         }
     }
 
-
     // MARK: Request state
 
     private var requestStarted = false
