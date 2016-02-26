@@ -45,7 +45,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
     private func presentVisitableForSession(session: Session, URL: NSURL, action: Action = .Advance) {
         if let navigationController = mainNavigationController {
             let visitable = visitableForSession(session, URL: URL)
-            let viewController = visitable.viewController
+            let viewController = visitable.visitableViewController
 
             if action == .Advance {
                 navigationController.pushViewController(viewController, animated: true)
@@ -60,7 +60,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
 
     private func visitableForSession(session: Session, URL: NSURL) -> Visitable {
         let visitable = WebViewController()
-        visitable.URL = URL
+        visitable.visitableURL = URL
         visitable.visitableDelegate = session
         return visitable
     }
@@ -101,7 +101,7 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
             self.presentAuthenticationController()
           }
         } else {
-            session.topmostVisitable?.hideActivityIndicator()
+            session.topmostVisitable?.hideVisitableActivityIndicator()
             presentAlertForError(error)
         }
     }

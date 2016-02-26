@@ -5,8 +5,8 @@ import Turbolinks
 class WebViewController: UIViewController, Visitable {
     weak var visitableDelegate: VisitableDelegate?
 
-    var URL: NSURL?
-    var viewController: UIViewController { return self }
+    var visitableURL: NSURL?
+    var visitableViewController: UIViewController { return self }
 
     // MARK: View Lifecycle
     
@@ -29,11 +29,7 @@ class WebViewController: UIViewController, Visitable {
 
     // MARK: Visitable Lifecycle
 
-    func didRender() {
-        updateTitle()
-    }
-
-    private func updateTitle() {
+    func visitableDidRender() {
         title = webView?.title
     }
 
@@ -41,7 +37,7 @@ class WebViewController: UIViewController, Visitable {
 
     var webView: WKWebView?
 
-    func activateWebView(webView: WKWebView) {
+    func activateVisitableWebView(webView: WKWebView) {
         self.webView = webView
 
         view.addSubview(webView)
@@ -52,7 +48,7 @@ class WebViewController: UIViewController, Visitable {
         installRefreshControl()
     }
 
-    func deactivateWebView() {
+    func deactivateVisitableWebView() {
         removeRefreshControl()
         webView?.removeFromSuperview()
         webView = nil
@@ -88,14 +84,14 @@ class WebViewController: UIViewController, Visitable {
         view.addConstraint(NSLayoutConstraint(item: activityIndicator, attribute: .CenterY, relatedBy: .Equal, toItem: view, attribute: .CenterY, multiplier: 1, constant: 0))
     }
 
-    func showActivityIndicator() {
+    func showVisitableActivityIndicator() {
         if !refreshing {
             activityIndicator.startAnimating()
             view.bringSubviewToFront(activityIndicator)
         }
     }
 
-    func hideActivityIndicator() {
+    func hideVisitableActivityIndicator() {
         activityIndicator.stopAnimating()
     }
 
@@ -108,25 +104,25 @@ class WebViewController: UIViewController, Visitable {
         return screenshotView
     }()
     
-    private var screenshotVisible: Bool {
+    private var showingScreenshot: Bool {
         return screenshotView.superview == view
     }
 
-    func updateScreenshot() {
-        if !screenshotVisible {
+    func updateVisitableScreenshot() {
+        if !showingScreenshot {
             self.screenshotView = view.snapshotViewAfterScreenUpdates(false)
         }
     }
 
-    func showScreenshot() {
-        if !screenshotVisible && !refreshing {
+    func showVisitableScreenshot() {
+        if !showingScreenshot && !refreshing {
             view.addSubview(screenshotView)
             view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": screenshotView ]))
             view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": screenshotView ]))
         }
     }
 
-    func hideScreenshot() {
+    func hideVisitableScreenshot() {
         screenshotView.removeFromSuperview()
     }
 
@@ -155,11 +151,11 @@ class WebViewController: UIViewController, Visitable {
         visitableDelegate?.visitableDidRequestRefresh(self)
     }
 
-    func willRefresh() {
+    func visitableWillRefresh() {
         refreshControl.beginRefreshing()
     }
 
-    func didRefresh() {
+    func visitableDidRefresh() {
         after(50) {
             self.refreshControl.endRefreshing()
         }
