@@ -20,7 +20,7 @@ protocol WebViewVisitDelegate: class {
     func webView(webView: WebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String)
 }
 
-class WebView: WKWebView, WKScriptMessageHandler {
+class WebView: WKWebView {
     weak var delegate: WebViewDelegate?
     weak var pageLoadDelegate: WebViewPageLoadDelegate?
     weak var visitDelegate: WebViewVisitDelegate?
@@ -62,72 +62,42 @@ class WebView: WKWebView, WKScriptMessageHandler {
         callJavaScriptFunction("webView.cancelVisitWithIdentifier", withArguments: [identifier])
     }
 
-    // MARK: WKScriptMessageHandler
-
-    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
-        if let message = ScriptMessage.parse(message) {
-            switch message.name {
-            case .PageLoaded:
-                pageLoadDelegate?.webView(self, didLoadPageWithRestorationIdentifier: message.restorationIdentifier!)
-            case .ErrorRaised:
-                let error = message.data["error"] as? String
-                NSLog("JavaScript error: %@", error ?? "<unknown error>")
-            case .VisitProposed:
-                delegate?.webView(self, didProposeVisitToLocation: message.location!, withAction: message.action!)
-            case .PageInvalidated:
-                delegate?.webViewDidInvalidatePage(self)
-            case .VisitStarted:
-                visitDelegate?.webView(self, didStartVisitWithIdentifier: message.identifier!, hasCachedSnapshot: message.data["hasCachedSnapshot"] as! Bool)
-            case .VisitRequestStarted:
-                visitDelegate?.webView(self, didStartRequestForVisitWithIdentifier: message.identifier!)
-            case .VisitRequestCompleted:
-                visitDelegate?.webView(self, didCompleteRequestForVisitWithIdentifier: message.identifier!)
-            case .VisitRequestFailed:
-                visitDelegate?.webView(self, didFailRequestForVisitWithIdentifier: message.identifier!, statusCode: message.data["statusCode"] as! Int)
-            case .VisitRequestFinished:
-                visitDelegate?.webView(self, didFinishRequestForVisitWithIdentifier: message.identifier!)
-            case .VisitRendered:
-                visitDelegate?.webView(self, didRenderForVisitWithIdentifier: message.identifier!)
-            case .VisitCompleted:
-                visitDelegate?.webView(self, didCompleteVisitWithIdentifier: message.identifier!, restorationIdentifier: message.restorationIdentifier!)
-            }
-        }
-    }
-
     // MARK: JavaScript Evaluation
 
     private func callJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject?] = [], completionHandler: ((AnyObject?) -> ())? = nil) {
-        if let script = scriptForCallingJavaScriptFunction(functionExpression, withArguments: arguments) {
-            evaluateJavaScript(script) { (result, error) in
-                if let result = result as? Dictionary<String, AnyObject> {
-                    if let error = result["error"] as? String, stack = result["stack"] as? String {
-                        NSLog("Error evaluating JavaScript function `%@': %@\n%@", functionExpression, error, stack)
-                    } else {
-                        completionHandler?(result["value"])
-                    }
-                } else if let error = error {
-                    self.delegate?.webView(self, didFailJavaScriptEvaluationWithError: error)
-                }
-            }
-        } else {
+        guard let script = scriptForCallingJavaScriptFunction(functionExpression, withArguments: arguments) else {
             NSLog("Error encoding arguments for JavaScript function `%@'", functionExpression)
+            return
+        }
+        
+        evaluateJavaScript(script) { (result, error) in
+            if let result = result as? [String: AnyObject] {
+                if let error = result["error"] as? String, stack = result["stack"] as? String {
+                    NSLog("Error evaluating JavaScript function `%@': %@\n%@", functionExpression, error, stack)
+                } else {
+                    completionHandler?(result["value"])
+                }
+            } else if let error = error {
+                self.delegate?.webView(self, didFailJavaScriptEvaluationWithError: error)
+            }
         }
     }
 
     private func scriptForCallingJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject?]) -> String? {
-        if let encodedArguments = encodeJavaScriptArguments(arguments) {
-            return
-                "(function(result) {\n" +
-                "  try {\n" +
-                "    result.value = " + functionExpression + "(" + encodedArguments + ")\n" +
-                "  } catch (error) {\n" +
-                "    result.error = error.toString()\n" +
-                "    result.stack = error.stack\n" +
-                "  }\n" +
-                "  return result\n" +
-                "})({})"
+        guard let encodedArguments = encodeJavaScriptArguments(arguments) else {
+            return nil
         }
-        return nil
+
+        return
+            "(function(result) {\n" +
+            "  try {\n" +
+            "    result.value = " + functionExpression + "(" + encodedArguments + ")\n" +
+            "  } catch (error) {\n" +
+            "    result.error = error.toString()\n" +
+            "    result.stack = error.stack\n" +
+            "  }\n" +
+            "  return result\n" +
+            "})({})"
     }
 
     private func encodeJavaScriptArguments(arguments: [AnyObject?]) -> String? {
@@ -137,6 +107,41 @@ class WebView: WKWebView, WKScriptMessageHandler {
             string = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
                 return string[Range(start: string.startIndex.successor(), end: string.endIndex.predecessor())]
         }
+        
         return nil
+    }
+}
+
+extension WebView: WKScriptMessageHandler {
+    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+        guard let message = ScriptMessage.parse(message) else {
+            return
+        }
+        
+        switch message.name {
+        case .PageLoaded:
+            pageLoadDelegate?.webView(self, didLoadPageWithRestorationIdentifier: message.restorationIdentifier!)
+        case .ErrorRaised:
+            let error = message.data["error"] as? String
+            NSLog("JavaScript error: %@", error ?? "<unknown error>")
+        case .VisitProposed:
+            delegate?.webView(self, didProposeVisitToLocation: message.location!, withAction: message.action!)
+        case .PageInvalidated:
+            delegate?.webViewDidInvalidatePage(self)
+        case .VisitStarted:
+            visitDelegate?.webView(self, didStartVisitWithIdentifier: message.identifier!, hasCachedSnapshot: message.data["hasCachedSnapshot"] as! Bool)
+        case .VisitRequestStarted:
+            visitDelegate?.webView(self, didStartRequestForVisitWithIdentifier: message.identifier!)
+        case .VisitRequestCompleted:
+            visitDelegate?.webView(self, didCompleteRequestForVisitWithIdentifier: message.identifier!)
+        case .VisitRequestFailed:
+            visitDelegate?.webView(self, didFailRequestForVisitWithIdentifier: message.identifier!, statusCode: message.data["statusCode"] as! Int)
+        case .VisitRequestFinished:
+            visitDelegate?.webView(self, didFinishRequestForVisitWithIdentifier: message.identifier!)
+        case .VisitRendered:
+            visitDelegate?.webView(self, didRenderForVisitWithIdentifier: message.identifier!)
+        case .VisitCompleted:
+            visitDelegate?.webView(self, didCompleteVisitWithIdentifier: message.identifier!, restorationIdentifier: message.restorationIdentifier!)
+        }
     }
 }
