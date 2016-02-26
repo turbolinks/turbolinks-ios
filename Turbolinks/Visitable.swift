@@ -11,7 +11,6 @@ import WebKit
     weak var visitableDelegate: VisitableDelegate? { get set }
 
     var visitableURL: NSURL? { get set }
-    var visitableViewController: UIViewController { get }
 
     func activateVisitableWebView(webView: WKWebView)
     func deactivateVisitableWebView()
@@ -27,4 +26,10 @@ import WebKit
     func visitableDidRefresh()
 
     optional func visitableDidRender()
+}
+
+public extension Visitable {
+    var visitableViewController: UIViewController {
+        return self as! UIViewController
+    }
 }
