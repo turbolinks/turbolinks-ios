@@ -6,7 +6,6 @@ class WebViewController: UIViewController, Visitable {
     weak var visitableDelegate: VisitableDelegate?
 
     var visitableURL: NSURL?
-    var visitableViewController: UIViewController { return self }
 
     // MARK: View Lifecycle
     
