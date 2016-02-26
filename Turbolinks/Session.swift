@@ -166,7 +166,7 @@ extension Session: VisitDelegate {
 
         if refreshing {
             refreshing = false
-            visit.visitable.visitableDidRefresh()
+            visit.visitable.visitableDidRefresh?()
         }
     }
 
@@ -215,7 +215,7 @@ extension Session: VisitableDelegate {
     public func visitableDidRequestRefresh(visitable: Visitable) {
         if visitable === topmostVisitable {
             refreshing = true
-            visitable.visitableWillRefresh()
+            visitable.visitableWillRefresh?()
             reload()
         }
     }

@@ -23,8 +23,8 @@ import WebKit
     func showVisitableScreenshot()
     func hideVisitableScreenshot()
 
-    func visitableWillRefresh()
-    func visitableDidRefresh()
+    optional func visitableWillRefresh()
+    optional func visitableDidRefresh()
 
     optional func visitableDidRender()
 }
