@@ -15,17 +15,6 @@ enum ScriptMessageName: String {
 }
 
 class ScriptMessage {
-    static func parse(message: WKScriptMessage) -> ScriptMessage? {
-        if let body = message.body as? [String: AnyObject] {
-            if let rawName = body["name"] as? String, let data = body["data"] as? [String: AnyObject] {
-                if let name = ScriptMessageName(rawValue: rawName) {
-                    return ScriptMessage(name: name, data: data)
-                }
-            }
-        }
-        return nil
-    }
-
     let name: ScriptMessageName
     let data: [String: AnyObject]
 
@@ -46,6 +35,7 @@ class ScriptMessage {
         if let locationString = data["location"] as? String {
             return NSURL(string: locationString)
         }
+        
         return nil
     }
 
@@ -53,6 +43,17 @@ class ScriptMessage {
         if let actionString = data["action"] as? String {
             return Action(rawValue: actionString)
         }
+        
         return nil
+    }
+    
+    static func parse(message: WKScriptMessage) -> ScriptMessage? {
+        guard let body = message.body as? [String: AnyObject],
+            rawName = body["name"] as? String, name = ScriptMessageName(rawValue: rawName),
+            data = body["data"] as? [String: AnyObject] else {
+                return nil
+        }
+        
+        return ScriptMessage(name: name, data: data)
     }
 }

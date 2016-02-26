@@ -110,7 +110,7 @@ class WebViewController: UIViewController, Visitable {
 
     func updateVisitableScreenshot() {
         if !showingScreenshot {
-            self.screenshotView = view.snapshotViewAfterScreenUpdates(false)
+            screenshotView = view.snapshotViewAfterScreenUpdates(false)
         }
     }
 

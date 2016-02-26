@@ -10,19 +10,19 @@ public protocol SessionDelegate: class {
     func sessionDidFinishRequest(session: Session)
 }
 
-public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegate {
+public class Session: NSObject {
     public weak var delegate: SessionDelegate?
 
     public var webView: WKWebView {
-        return self._webView
+        return _webView
     }
 
-    var _webView: WebView
-    var initialized: Bool = false
-    var refreshing: Bool = false
+    private var _webView: WebView
+    private var initialized = false
+    private var refreshing = false
 
     public init(webViewConfiguration: WKWebViewConfiguration) {
-        self._webView = WebView(configuration: webViewConfiguration)
+        _webView = WebView(configuration: webViewConfiguration)
         super.init()
         _webView.delegate = self
     }
@@ -40,23 +40,25 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
         visitVisitable(visitable, action: .Advance)
     }
     
-    func visitVisitable(visitable: Visitable, action: Action) {
-        if visitable.visitableURL != nil {
-            let visit: Visit
-
-            if initialized {
-                visit = JavaScriptVisit(visitable: visitable, action: action, webView: _webView)
-                visit.restorationIdentifier = restorationIdentifierForVisitable(visitable)
-            } else {
-                visit = ColdBootVisit(visitable: visitable, action: action, webView: _webView)
-            }
-
-            currentVisit?.cancel()
-            currentVisit = visit
-
-            visit.delegate = self
-            visit.start()
+    private func visitVisitable(visitable: Visitable, action: Action) {
+        guard visitable.visitableURL != nil else {
+            return
         }
+
+        let visit: Visit
+
+        if initialized {
+            visit = JavaScriptVisit(visitable: visitable, action: action, webView: _webView)
+            visit.restorationIdentifier = restorationIdentifierForVisitable(visitable)
+        } else {
+            visit = ColdBootVisit(visitable: visitable, action: action, webView: _webView)
+        }
+
+        currentVisit?.cancel()
+        currentVisit = visit
+
+        visit.delegate = self
+        visit.start()
     }
 
     public func reload() {
@@ -71,7 +73,7 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
 
     private var activatedVisitable: Visitable?
 
-    func activateVisitable(visitable: Visitable) {
+    private func activateVisitable(visitable: Visitable) {
         if visitable !== activatedVisitable {
             if let activatedVisitable = self.activatedVisitable {
                 deactivateVisitable(activatedVisitable, showScreenshot: true)
@@ -82,7 +84,7 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
         }
     }
 
-    func deactivateVisitable(visitable: Visitable, showScreenshot: Bool = false) {
+    private func deactivateVisitable(visitable: Visitable, showScreenshot: Bool = false) {
         if visitable === activatedVisitable {
             if showScreenshot {
                 visitable.updateVisitableScreenshot()
@@ -98,38 +100,34 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
 
     private var visitableRestorationIdentifiers = NSMapTable(keyOptions: .WeakMemory, valueOptions: .StrongMemory)
 
-    func restorationIdentifierForVisitable(visitable: Visitable) -> String? {
+    private func restorationIdentifierForVisitable(visitable: Visitable) -> String? {
         return visitableRestorationIdentifiers.objectForKey(visitable) as? String
     }
 
-    func storeRestorationIdentifier(restorationIdentifier: String, forVisitable visitable: Visitable) {
+    private func storeRestorationIdentifier(restorationIdentifier: String, forVisitable visitable: Visitable) {
         visitableRestorationIdentifiers.setObject(restorationIdentifier, forKey: visitable)
     }
 
-    // MARK: WebViewDelegate
-
-    func webView(webView: WebView, didProposeVisitToLocation location: NSURL, withAction action: Action) {
-        delegate?.session(self, didProposeVisitToURL: location, withAction: action)
-    }
-
-    func webViewDidInvalidatePage(webView: WebView) {
-        if let visitable = topmostVisitable {
-            visitable.updateVisitableScreenshot()
-            visitable.showVisitableScreenshot()
-            visitable.showVisitableActivityIndicator()
-            reload()
+    private func completeNavigationForCurrentVisit() {
+        if let visit = currentVisit {
+            topmostVisit = visit
+            visit.completeNavigation()
         }
     }
+}
 
-    func webView(webView: WebView, didFailJavaScriptEvaluationWithError error: NSError) {
-        if let currentVisit = self.currentVisit where initialized {
-            self.initialized = false
-            currentVisit.cancel()
-            visit(currentVisit.visitable)
-        }
+extension Session: VisitDelegate {
+    func visitRequestDidStart(visit: Visit) {
+        delegate?.sessionDidStartRequest(self)
     }
 
-    // MARK: VisitDelegate
+    func visitRequestDidFinish(visit: Visit) {
+        delegate?.sessionDidFinishRequest(self)
+    }
+
+    func visit(visit: Visit, requestDidFailWithError error: NSError) {
+        delegate?.session(self, didFailRequestForVisitable: visit.visitable, withError: error)
+    }
 
     func visitDidInitializeWebView(visit: Visit) {
         initialized = true
@@ -141,7 +139,7 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
         visit.visitable.showVisitableScreenshot()
         activateVisitable(visit.visitable)
     }
-   
+
     func visitDidStart(visit: Visit) {
         if !visit.hasCachedSnapshot {
             visit.visitable.showVisitableActivityIndicator()
@@ -173,50 +171,38 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
     func visitDidFail(visit: Visit) {
         deactivateVisitable(visit.visitable)
     }
+}
 
-    // MARK: VisitDelegate networking
-
-    func visitRequestDidStart(visit: Visit) {
-        delegate?.sessionDidStartRequest(self)
-    }
-
-    func visitRequestDidFinish(visit: Visit) {
-        delegate?.sessionDidFinishRequest(self)
-    }
-
-    func visit(visit: Visit, requestDidFailWithError error: NSError) {
-        delegate?.session(self, didFailRequestForVisitable: visit.visitable, withError: error)
-    }
-
-    // MARK: VisitableDelegate
-
+extension Session: VisitableDelegate {
     public func visitableViewWillAppear(visitable: Visitable) {
-        if let topmostVisit = self.topmostVisit, currentVisit = self.currentVisit {
-            if visitable === topmostVisit.visitable && visitable.visitableViewController.isMovingToParentViewController() {
-                // Back swipe gesture canceled
-                if topmostVisit.state == .Completed {
-                    currentVisit.cancel()
-                } else {
-                    visitVisitable(visitable, action: .Advance)
-                }
-            } else if visitable === currentVisit.visitable && currentVisit.state == .Started {
-                // Navigating forward - complete navigation early
-                completeNavigationForCurrentVisit()
-            } else if visitable !== topmostVisit.visitable {
-                // Navigating backward
-                visitVisitable(visitable, action: .Restore)
+        guard let topmostVisit = self.topmostVisit, currentVisit = self.currentVisit else {
+            return
+        }
+
+        if visitable === topmostVisit.visitable && visitable.visitableViewController.isMovingToParentViewController() {
+            // Back swipe gesture canceled
+            if topmostVisit.state == .Completed {
+                currentVisit.cancel()
+            } else {
+                visitVisitable(visitable, action: .Advance)
             }
+        } else if visitable === currentVisit.visitable && currentVisit.state == .Started {
+            // Navigating forward - complete navigation early
+            completeNavigationForCurrentVisit()
+        } else if visitable !== topmostVisit.visitable {
+            // Navigating backward
+            visitVisitable(visitable, action: .Restore)
         }
     }
-    
+
     public func visitableViewDidAppear(visitable: Visitable) {
-        if visitable === currentVisit?.visitable {
+        if let currentVisit = self.currentVisit where visitable === currentVisit.visitable {
             // Appearing after successful navigation
             completeNavigationForCurrentVisit()
-            if currentVisit!.state != .Failed {
+            if currentVisit.state != .Failed {
                 activateVisitable(visitable)
             }
-        } else if visitable === topmostVisit?.visitable && topmostVisit?.state == .Completed {
+        } else if let topmostVisit = self.topmostVisit where visitable === topmostVisit.visitable && topmostVisit.state == .Completed {
             // Reappearing after canceled navigation
             visitable.hideVisitableScreenshot()
             visitable.hideVisitableActivityIndicator()
@@ -231,11 +217,27 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
             reload()
         }
     }
+}
 
-    private func completeNavigationForCurrentVisit() {
-        if let visit = currentVisit {
-            topmostVisit = visit
-            visit.completeNavigation()
+extension Session: WebViewDelegate {
+    func webView(webView: WebView, didProposeVisitToLocation location: NSURL, withAction action: Action) {
+        delegate?.session(self, didProposeVisitToURL: location, withAction: action)
+    }
+    
+    func webViewDidInvalidatePage(webView: WebView) {
+        if let visitable = topmostVisitable {
+            visitable.updateVisitableScreenshot()
+            visitable.showVisitableScreenshot()
+            visitable.showVisitableActivityIndicator()
+            reload()
+        }
+    }
+    
+    func webView(webView: WebView, didFailJavaScriptEvaluationWithError error: NSError) {
+        if let currentVisit = self.currentVisit where initialized {
+            initialized = false
+            currentVisit.cancel()
+            visit(currentVisit.visitable)
         }
     }
 }

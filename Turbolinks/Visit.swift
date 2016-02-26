@@ -16,12 +16,12 @@ protocol VisitDelegate: class {
     func visitRequestDidFinish(visit: Visit)
 }
 
-enum VisitState: String {
-    case Initialized = "Initialized"
-    case Started = "Started"
-    case Canceled = "Canceled"
-    case Failed = "Failed"
-    case Completed = "Completed"
+enum VisitState {
+    case Initialized
+    case Started
+    case Canceled
+    case Failed
+    case Completed
 }
 
 class Visit: NSObject {
@@ -37,7 +37,7 @@ class Visit: NSObject {
     var restorationIdentifier: String?
 
     override var description: String {
-        return "<\(self.dynamicType): state=\(state.rawValue) location=\(location)>"
+        return "<\(self.dynamicType): state=\(state) location=\(location)>"
     }
 
     init(visitable: Visitable, action: Action, webView: WebView) {
@@ -108,7 +108,6 @@ class Visit: NSObject {
             }
         }
     }
-
 
     // MARK: Request state
 
@@ -228,7 +227,7 @@ class JavaScriptVisit: Visit, WebViewVisitDelegate {
     private var identifier = "(pending)"
 
     override var description: String {
-        return "<\(self.dynamicType) \(identifier): state=\(state.rawValue) location=\(location)>"
+        return "<\(self.dynamicType) \(identifier): state=\(state) location=\(location)>"
     }
 
     override private func startVisit() {
