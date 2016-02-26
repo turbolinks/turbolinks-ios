@@ -15,16 +15,6 @@ enum ScriptMessageName: String {
 }
 
 class ScriptMessage {
-    static func parse(message: WKScriptMessage) -> ScriptMessage? {
-        guard let body = message.body as? [String: AnyObject],
-            rawName = body["name"] as? String, name = ScriptMessageName(rawValue: rawName),
-            data = body["data"] as? [String: AnyObject] else {
-            return nil
-        }
-        
-        return ScriptMessage(name: name, data: data)
-    }
-
     let name: ScriptMessageName
     let data: [String: AnyObject]
 
@@ -55,5 +45,15 @@ class ScriptMessage {
         }
         
         return nil
+    }
+    
+    static func parse(message: WKScriptMessage) -> ScriptMessage? {
+        guard let body = message.body as? [String: AnyObject],
+            rawName = body["name"] as? String, name = ScriptMessageName(rawValue: rawName),
+            data = body["data"] as? [String: AnyObject] else {
+                return nil
+        }
+        
+        return ScriptMessage(name: name, data: data)
     }
 }

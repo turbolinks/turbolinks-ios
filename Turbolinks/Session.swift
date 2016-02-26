@@ -18,11 +18,11 @@ public class Session: NSObject {
     }
 
     private var _webView: WebView
-    private var initialized: Bool = false
-    private var refreshing: Bool = false
+    private var initialized = false
+    private var refreshing = false
 
     public init(webViewConfiguration: WKWebViewConfiguration) {
-        self._webView = WebView(configuration: webViewConfiguration)
+        _webView = WebView(configuration: webViewConfiguration)
         super.init()
         _webView.delegate = self
     }
@@ -235,7 +235,7 @@ extension Session: WebViewDelegate {
     
     func webView(webView: WebView, didFailJavaScriptEvaluationWithError error: NSError) {
         if let currentVisit = self.currentVisit where initialized {
-            self.initialized = false
+            initialized = false
             currentVisit.cancel()
             visit(currentVisit.visitable)
         }
