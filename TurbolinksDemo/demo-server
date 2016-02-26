@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -e
+
+find-writable-gem-home() {
+  IFS=":"
+  local path
+  local paths=( "$(gem env home)" $(gem env paths) )
+  IFS=" "
+
+  for path in "${paths[@]}"; do
+    if [ -w "$path" ]; then
+      echo "$path"
+      return
+    fi
+  done
+}
+
+find-bundle-executable() {
+  gem contents bundler | grep "/exe/bundle$" | head -n 1
+}
+
+warn() {
+  echo "$1" >&2
+}
+
+error() {
+  warn "$1"
+  exit 1
+}
+
+warn "Starting the demo server (press ^C to exit)..." >&2
+
+export GEM_HOME="$(find-writable-gem-home)"
+[ -n "$GEM_HOME" ] || error "Please install Ruby and Bundler first"
+
+BUNDLE="$(find-bundle-executable)"
+if [ ! -x "$BUNDLE" ]; then
+  warn "Installing Bundler..."
+  gem install bundler >/dev/null 2>&1 || error "Error installing Bundler"
+  BUNDLE="$(find-bundle-executable)"
+fi
+
+cd "$(dirname "$0")/server"
+
+if ! "$BUNDLE" check >/dev/null 2>&1; then
+  warn "Installing dependencies..."
+  "$BUNDLE" install >/dev/null 2>&1 || error "Error running \`bundle install\`"
+fi
+
+exec "$BUNDLE" exec rackup
