@@ -45,6 +45,8 @@ public class Session: NSObject {
             return
         }
 
+        visitable.visitableDelegate = self
+
         let visit: Visit
 
         if initialized {

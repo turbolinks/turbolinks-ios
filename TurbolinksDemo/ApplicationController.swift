@@ -61,7 +61,6 @@ class ApplicationController: UIViewController, WKNavigationDelegate, SessionDele
     private func visitableForSession(session: Session, URL: NSURL) -> Visitable {
         let visitable = WebViewController()
         visitable.visitableURL = URL
-        visitable.visitableDelegate = session
         return visitable
     }
 
