@@ -41,7 +41,7 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
     }
     
     func visitVisitable(visitable: Visitable, action: Action) {
-        if visitable.URL != nil {
+        if visitable.visitableURL != nil {
             let visit: Visit
 
             if initialized {
@@ -77,7 +77,7 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
                 deactivateVisitable(activatedVisitable, showScreenshot: true)
             }
 
-            visitable.activateWebView(webView)
+            visitable.activateVisitableWebView(webView)
             activatedVisitable = visitable
         }
     }
@@ -85,11 +85,11 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
     func deactivateVisitable(visitable: Visitable, showScreenshot: Bool = false) {
         if visitable === activatedVisitable {
             if showScreenshot {
-                visitable.updateScreenshot()
-                visitable.showScreenshot()
+                visitable.updateVisitableScreenshot()
+                visitable.showVisitableScreenshot()
             }
 
-            visitable.deactivateWebView()
+            visitable.deactivateVisitableWebView()
             activatedVisitable = nil
         }
     }
@@ -114,9 +114,9 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
 
     func webViewDidInvalidatePage(webView: WebView) {
         if let visitable = topmostVisitable {
-            visitable.updateScreenshot()
-            visitable.showScreenshot()
-            visitable.showActivityIndicator()
+            visitable.updateVisitableScreenshot()
+            visitable.showVisitableScreenshot()
+            visitable.showVisitableActivityIndicator()
             reload()
         }
     }
@@ -134,29 +134,29 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
     func visitDidInitializeWebView(visit: Visit) {
         initialized = true
         delegate?.sessionDidInitializeWebView(self)
-        visit.visitable.didRender?()
+        visit.visitable.visitableDidRender?()
     }
 
     func visitWillStart(visit: Visit) {
-        visit.visitable.showScreenshot()
+        visit.visitable.showVisitableScreenshot()
         activateVisitable(visit.visitable)
     }
    
     func visitDidStart(visit: Visit) {
         if !visit.hasCachedSnapshot {
-            visit.visitable.showActivityIndicator()
+            visit.visitable.showVisitableActivityIndicator()
         }
     }
 
     func visitWillLoadResponse(visit: Visit) {
-        visit.visitable.updateScreenshot()
-        visit.visitable.showScreenshot()
+        visit.visitable.updateVisitableScreenshot()
+        visit.visitable.showVisitableScreenshot()
     }
 
     func visitDidRender(visit: Visit) {
-        visit.visitable.hideScreenshot()
-        visit.visitable.hideActivityIndicator()
-        visit.visitable.didRender?()
+        visit.visitable.hideVisitableScreenshot()
+        visit.visitable.hideVisitableActivityIndicator()
+        visit.visitable.visitableDidRender?()
     }
 
     func visitDidComplete(visit: Visit) {
@@ -166,7 +166,7 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
 
         if refreshing {
             refreshing = false
-            visit.visitable.didRefresh()
+            visit.visitable.visitableDidRefresh()
         }
     }
 
@@ -192,7 +192,7 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
 
     public func visitableViewWillAppear(visitable: Visitable) {
         if let topmostVisit = self.topmostVisit, currentVisit = self.currentVisit {
-            if visitable === topmostVisit.visitable && visitable.viewController.isMovingToParentViewController() {
+            if visitable === topmostVisit.visitable && visitable.visitableViewController.isMovingToParentViewController() {
                 // Back swipe gesture canceled
                 if topmostVisit.state == .Completed {
                     currentVisit.cancel()
@@ -218,8 +218,8 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
             }
         } else if visitable === topmostVisit?.visitable && topmostVisit?.state == .Completed {
             // Reappearing after canceled navigation
-            visitable.hideScreenshot()
-            visitable.hideActivityIndicator()
+            visitable.hideVisitableScreenshot()
+            visitable.hideVisitableActivityIndicator()
             activateVisitable(visitable)
         }
     }
@@ -227,7 +227,7 @@ public class Session: NSObject, WebViewDelegate, VisitDelegate, VisitableDelegat
     public func visitableDidRequestRefresh(visitable: Visitable) {
         if visitable === topmostVisitable {
             refreshing = true
-            visitable.willRefresh()
+            visitable.visitableWillRefresh()
             reload()
         }
     }

@@ -10,21 +10,21 @@ import WebKit
 @objc public protocol Visitable: class {
     weak var visitableDelegate: VisitableDelegate? { get set }
 
-    var URL: NSURL? { get set }
-    var viewController: UIViewController { get }
+    var visitableURL: NSURL? { get set }
+    var visitableViewController: UIViewController { get }
 
-    func activateWebView(webView: WKWebView)
-    func deactivateWebView()
+    func activateVisitableWebView(webView: WKWebView)
+    func deactivateVisitableWebView()
 
-    func showActivityIndicator()
-    func hideActivityIndicator()
+    func showVisitableActivityIndicator()
+    func hideVisitableActivityIndicator()
 
-    func updateScreenshot()
-    func showScreenshot()
-    func hideScreenshot()
+    func updateVisitableScreenshot()
+    func showVisitableScreenshot()
+    func hideVisitableScreenshot()
 
-    func willRefresh()
-    func didRefresh()
+    func visitableWillRefresh()
+    func visitableDidRefresh()
 
-    optional func didRender()
+    optional func visitableDidRender()
 }
