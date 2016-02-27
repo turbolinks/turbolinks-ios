@@ -16,6 +16,7 @@
 		22CB5D901C62981700F24EA7 /* Turbolinks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22CB5D8D1C62980000F24EA7 /* Turbolinks.framework */; };
 		22CB5D911C62982800F24EA7 /* Turbolinks.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 22CB5D8D1C62980000F24EA7 /* Turbolinks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		22CB5D961C6299AB00F24EA7 /* TurbolinksDemo.js in Resources */ = {isa = PBXBuildFile; fileRef = 22CB5D951C6299AB00F24EA7 /* TurbolinksDemo.js */; };
+		92DF45171C81149B0064E606 /* NumbersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92DF45161C81149B0064E606 /* NumbersViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +33,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 1FC167EE1B55A14900AA6F43;
 			remoteInfo = Turbolinks;
+		};
+		92DF45191C81149C0064E606 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 22CB5D881C62980000F24EA7 /* Turbolinks.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 92DF45071C80F7970064E606;
+			remoteInfo = Tests;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -60,6 +68,7 @@
 		1FC168231B55A16C00AA6F43 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		22CB5D881C62980000F24EA7 /* Turbolinks.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Turbolinks.xcodeproj; sourceTree = "<group>"; };
 		22CB5D951C6299AB00F24EA7 /* TurbolinksDemo.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = TurbolinksDemo.js; sourceTree = "<group>"; };
+		92DF45161C81149B0064E606 /* NumbersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumbersViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +111,7 @@
 				1F8FC6AA1B55A34500A781C8 /* Main.storyboard */,
 				1FC168221B55A16C00AA6F43 /* LaunchScreen.xib */,
 				1FC168171B55A16C00AA6F43 /* Supporting Files */,
+				92DF45161C81149B0064E606 /* NumbersViewController.swift */,
 			);
 			path = TurbolinksDemo;
 			sourceTree = "<group>";
@@ -118,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				22CB5D8D1C62980000F24EA7 /* Turbolinks.framework */,
+				92DF451A1C81149C0064E606 /* Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -192,6 +203,13 @@
 			remoteRef = 22CB5D8C1C62980000F24EA7 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		92DF451A1C81149C0064E606 /* Tests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = Tests.xctest;
+			remoteRef = 92DF45191C81149C0064E606 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -213,6 +231,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F5A34FA1B67FF900029FDF3 /* AuthenticationController.swift in Sources */,
+				92DF45171C81149B0064E606 /* NumbersViewController.swift in Sources */,
 				1F8FC6A51B55A32000A781C8 /* AppDelegate.swift in Sources */,
 				1F35399F1B6FB21A00AA7462 /* ApplicationController.swift in Sources */,
 				1F8FC6A81B55A33700A781C8 /* WebViewController.swift in Sources */,
