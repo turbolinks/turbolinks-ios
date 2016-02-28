@@ -5,10 +5,7 @@ class TurbolinksViewController: UIViewController, Visitable {
     weak var visitableDelegate: VisitableDelegate?
 
     var visitableURL: NSURL?
-
-
-    // MARK: Visitable
-
+    
     func activateVisitableWebView(webView: WKWebView) {
         turbolinksView.activateWebView(webView)
     }
@@ -37,6 +34,11 @@ class TurbolinksViewController: UIViewController, Visitable {
         turbolinksView.hideScreenshot()
     }
 
+    func visitableDidRender() {
+        title = turbolinksView.webView?.title
+    }
+
+    
     // MARK: View Lifecycle
 
     override func viewDidLoad() {
