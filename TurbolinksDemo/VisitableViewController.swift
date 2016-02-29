@@ -1,72 +1,72 @@
 import WebKit
 import Turbolinks
 
-class TurbolinksViewController: UIViewController, Visitable, TurbolinksViewDelegate {
+class VisitableViewController: UIViewController, Visitable, VisitableViewDelegate {
     weak var visitableDelegate: VisitableDelegate?
 
     var visitableURL: NSURL?
     
     func activateVisitableWebView(webView: WKWebView) {
-        turbolinksView.activateWebView(webView)
+        visitableView.activateWebView(webView)
     }
 
     func deactivateVisitableWebView() {
-        turbolinksView.deactivateWebView()
+        visitableView.deactivateWebView()
     }
 
     func showVisitableActivityIndicator() {
-        turbolinksView.showActivityIndicator()
+        visitableView.showActivityIndicator()
     }
 
     func hideVisitableActivityIndicator() {
-        turbolinksView.hideActivityIndicator()
+        visitableView.hideActivityIndicator()
     }
 
     func updateVisitableScreenshot() {
-        turbolinksView.updateScreenshot()
+        visitableView.updateScreenshot()
     }
 
     func showVisitableScreenshot() {
-        turbolinksView.showScreenshot()
+        visitableView.showScreenshot()
     }
 
     func hideVisitableScreenshot() {
-        turbolinksView.hideScreenshot()
+        visitableView.hideScreenshot()
     }
 
     func visitableDidRender() {
-        title = turbolinksView.webView?.title
+        title = visitableView.webView?.title
     }
 
     func visitableWillRefresh() {
-        turbolinksView.refreshControl.beginRefreshing()
+        visitableView.refreshControl.beginRefreshing()
     }
 
     func visitableDidRefresh() {
-        turbolinksView.refreshControl.endRefreshing()
+        visitableView.refreshControl.endRefreshing()
     }
 
 
-    // MARK: Turbolinks View Delegate
+    // MARK: Visitable View Delegate
 
-    func turbolinksViewDidRequestRefresh(turbolinksView: TurbolinksView) {
+    func visitableViewDidRequestRefresh(visitableView: VisitableView) {
         visitableDelegate?.visitableDidRequestRefresh(self)
     }
    
 
-    // MARK: Turbolinks View
+    // MARK: Visitable View
 
-    lazy var turbolinksView: TurbolinksView = {
-        let view = TurbolinksView(frame: CGRectZero)
+    lazy var visitableView: VisitableView = {
+        let view = VisitableView(frame: CGRectZero)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    func installTurbolinksView() {
-        turbolinksView.delegate = self
-        view.addSubview(turbolinksView)
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": turbolinksView ]))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": turbolinksView ]))
+    func installVisitableView() {
+        visitableView.delegate = self
+        view.addSubview(visitableView)
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": visitableView ]))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": visitableView ]))
     }
 
 
@@ -76,7 +76,7 @@ class TurbolinksViewController: UIViewController, Visitable, TurbolinksViewDeleg
         super.viewDidLoad()
         automaticallyAdjustsScrollViewInsets = true
         view.backgroundColor = UIColor.whiteColor()
-        installTurbolinksView()
+        installVisitableView()
     }
 
     override func viewWillAppear(animated: Bool) {

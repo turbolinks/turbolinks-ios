@@ -1,11 +1,11 @@
 import WebKit
 
-@objc public protocol TurbolinksViewDelegate {
-    optional func turbolinksViewDidRequestRefresh(turbolinksView: TurbolinksView)
+@objc public protocol VisitableViewDelegate {
+    optional func visitableViewDidRequestRefresh(visitableView: VisitableView)
 }
 
-public class TurbolinksView: UIView {
-    public weak var delegate: TurbolinksViewDelegate?
+public class VisitableView: UIView {
+    public weak var delegate: VisitableViewDelegate?
    
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -81,7 +81,7 @@ public class TurbolinksView: UIView {
     }
 
     func requestRefresh() {
-        delegate?.turbolinksViewDidRequestRefresh?(self)
+        delegate?.visitableViewDidRequestRefresh?(self)
     }
 
 

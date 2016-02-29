@@ -47,7 +47,7 @@ class ApplicationController: UINavigationController {
     }
 
     private func visitableForSession(session: Session, URL: NSURL) -> Visitable {
-        let visitable = TurbolinksViewController()
+        let visitable = VisitableViewController()
         visitable.visitableURL = URL
         return visitable
     }
