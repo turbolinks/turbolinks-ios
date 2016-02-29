@@ -19,7 +19,7 @@ extension Visitable {
     }
 
     func activateVisitableWebView(webView: WKWebView) {
-        visitableView.activateWebView(webView)
+        visitableView.activateWebView(webView, forVisitable: self)
     }
 
     func deactivateVisitableWebView() {
@@ -52,5 +52,9 @@ extension Visitable {
 
     func visitableDidRefresh() {
         visitableView.refreshControl.endRefreshing()
+    }
+
+    func visitableViewDidRequestRefresh() {
+        visitableDelegate?.visitableDidRequestRefresh(self)
     }
 }

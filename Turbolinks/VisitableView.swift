@@ -1,12 +1,6 @@
 import WebKit
 
-@objc public protocol VisitableViewDelegate {
-    optional func visitableViewDidRequestRefresh(visitableView: VisitableView)
-}
-
 public class VisitableView: UIView {
-    public weak var delegate: VisitableViewDelegate?
-   
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         initialize()
@@ -26,9 +20,11 @@ public class VisitableView: UIView {
     // MARK: Web View
 
     public var webView: WKWebView?
+    var visitable: Visitable?
 
-    public func activateWebView(webView: WKWebView) {
+    public func activateWebView(webView: WKWebView, forVisitable visitable: Visitable) {
         self.webView = webView
+        self.visitable = visitable
         addSubview(webView)
         addFillConstraintsForSubview(webView)
         updateWebViewScrollViewInsets()
@@ -40,6 +36,7 @@ public class VisitableView: UIView {
         removeRefreshControl()
         webView?.removeFromSuperview()
         webView = nil
+        visitable = nil
     }
 
     func showOrHideWebView() {
@@ -81,7 +78,7 @@ public class VisitableView: UIView {
     }
 
     func requestRefresh() {
-        delegate?.visitableViewDidRequestRefresh?(self)
+        visitable?.visitableViewDidRequestRefresh()
     }
 
 

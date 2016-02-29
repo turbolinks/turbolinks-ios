@@ -1,18 +1,12 @@
 import WebKit
 
-public class VisitableViewController: UIViewController, Visitable, VisitableViewDelegate {
+public class VisitableViewController: UIViewController, Visitable {
     public weak var visitableDelegate: VisitableDelegate?
 
     public var visitableURL: NSURL!
 
     public func visitableDidRender() {
         title = visitableView.webView?.title
-    }
-
-    // MARK: Visitable View Delegate
-
-    public func visitableViewDidRequestRefresh(visitableView: VisitableView) {
-        visitableDelegate?.visitableDidRequestRefresh(self)
     }
 
 
@@ -25,7 +19,6 @@ public class VisitableViewController: UIViewController, Visitable, VisitableView
     }()
 
     func installVisitableView() {
-        visitableView.delegate = self
         view.addSubview(visitableView)
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": visitableView ]))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": visitableView ]))
