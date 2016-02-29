@@ -15,11 +15,11 @@ class TurbolinksViewController: UIViewController, Visitable, TurbolinksViewDeleg
     }
 
     func showVisitableActivityIndicator() {
-
+        turbolinksView.showActivityIndicator()
     }
 
     func hideVisitableActivityIndicator() {
-
+        turbolinksView.hideActivityIndicator()
     }
 
     func updateVisitableScreenshot() {

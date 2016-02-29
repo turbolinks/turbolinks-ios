@@ -19,6 +19,7 @@ public class TurbolinksView: UIView {
 
     func initialize() {
         installHiddenScrollView()
+        installActivityIndicatorView()
     }
 
 
@@ -81,6 +82,33 @@ public class TurbolinksView: UIView {
 
     func requestRefresh() {
         delegate?.turbolinksViewDidRequestRefresh?(self)
+    }
+
+
+    // MARK: Activity Indicator
+
+    public lazy var activityIndicatorView: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(activityIndicatorStyle: .White)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.color = UIColor.grayColor()
+        view.hidesWhenStopped = true
+        return view
+    }()
+
+    func installActivityIndicatorView() {
+        addSubview(activityIndicatorView)
+        addFillConstraintsForSubview(activityIndicatorView)
+    }
+
+    public func showActivityIndicator() {
+        if !refreshing {
+            activityIndicatorView.startAnimating()
+            bringSubviewToFront(activityIndicatorView)
+        }
+    }
+
+    public func hideActivityIndicator() {
+        activityIndicatorView.stopAnimating()
     }
 
 
