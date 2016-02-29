@@ -1,7 +1,7 @@
 import WebKit
 import Turbolinks
 
-class TurbolinksViewController: UIViewController, Visitable {
+class TurbolinksViewController: UIViewController, Visitable, TurbolinksViewDelegate {
     weak var visitableDelegate: VisitableDelegate?
 
     var visitableURL: NSURL?
@@ -38,7 +38,38 @@ class TurbolinksViewController: UIViewController, Visitable {
         title = turbolinksView.webView?.title
     }
 
-    
+    func visitableWillRefresh() {
+        turbolinksView.refreshControl.beginRefreshing()
+    }
+
+    func visitableDidRefresh() {
+        turbolinksView.refreshControl.endRefreshing()
+    }
+
+
+    // MARK: Turbolinks View Delegate
+
+    func turbolinksViewDidRequestRefresh(turbolinksView: TurbolinksView) {
+        visitableDelegate?.visitableDidRequestRefresh(self)
+    }
+   
+
+    // MARK: Turbolinks View
+
+    lazy var turbolinksView: TurbolinksView = {
+        let view = TurbolinksView(frame: CGRectZero)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    func installTurbolinksView() {
+        turbolinksView.delegate = self
+        view.addSubview(turbolinksView)
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": turbolinksView ]))
+        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": turbolinksView ]))
+    }
+
+
     // MARK: View Lifecycle
 
     override func viewDidLoad() {
@@ -56,20 +87,5 @@ class TurbolinksViewController: UIViewController, Visitable {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         visitableDelegate?.visitableViewDidAppear(self)
-    }
-
-
-    // MARK: Turbolinks View
-
-    lazy var turbolinksView: TurbolinksView = {
-        let view = TurbolinksView(frame: CGRectZero)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-
-    func installTurbolinksView() {
-        view.addSubview(turbolinksView)
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": turbolinksView ]))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": turbolinksView ]))
     }
 }
