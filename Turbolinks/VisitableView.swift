@@ -11,7 +11,7 @@ public class VisitableView: UIView {
         initialize()
     }
 
-    func initialize() {
+    private func initialize() {
         installHiddenScrollView()
         installActivityIndicatorView()
     }
@@ -20,7 +20,7 @@ public class VisitableView: UIView {
     // MARK: Web View
 
     public var webView: WKWebView?
-    var visitable: Visitable?
+    private weak var visitable: Visitable?
 
     public func activateWebView(webView: WKWebView, forVisitable visitable: Visitable) {
         self.webView = webView
@@ -39,8 +39,8 @@ public class VisitableView: UIView {
         visitable = nil
     }
 
-    func showOrHideWebView() {
-        webView?.hidden = showingScreenshot
+    private func showOrHideWebView() {
+        webView?.hidden = isShowingScreenshot
     }
 
 
@@ -48,7 +48,7 @@ public class VisitableView: UIView {
 
     public lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: "requestRefresh", forControlEvents: .ValueChanged)
+        refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
         return refreshControl
     }()
 
@@ -62,22 +62,22 @@ public class VisitableView: UIView {
         }
     }
 
-    var refreshing: Bool {
+    public var isRefreshing: Bool {
         return refreshControl.refreshing
     }
 
-    func installRefreshControl() {
+    private func installRefreshControl() {
         if let scrollView = webView?.scrollView where allowsPullToRefresh {
             scrollView.addSubview(refreshControl)
         }
     }
 
-    func removeRefreshControl() {
+    private func removeRefreshControl() {
         refreshControl.endRefreshing()
         refreshControl.removeFromSuperview()
     }
 
-    func requestRefresh() {
+    public func refresh() {
         visitable?.visitableViewDidRequestRefresh()
     }
 
@@ -92,13 +92,13 @@ public class VisitableView: UIView {
         return view
     }()
 
-    func installActivityIndicatorView() {
+    private func installActivityIndicatorView() {
         addSubview(activityIndicatorView)
         addFillConstraintsForSubview(activityIndicatorView)
     }
 
     public func showActivityIndicator() {
-        if !refreshing {
+        if !isRefreshing {
             activityIndicatorView.startAnimating()
             bringSubviewToFront(activityIndicatorView)
         }
@@ -111,24 +111,24 @@ public class VisitableView: UIView {
 
     // MARK: Screenshots
 
-    lazy var screenshotView: UIView = {
+    public lazy var screenshotView: UIView = {
         let view = UIView(frame: CGRectZero)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    var showingScreenshot: Bool {
+    public var isShowingScreenshot: Bool {
         return screenshotView.superview == self
     }
 
     public func updateScreenshot() {
-        if let webView = self.webView where !showingScreenshot {
+        if let webView = self.webView where !isShowingScreenshot {
             screenshotView = webView.snapshotViewAfterScreenUpdates(false)
         }
     }
 
     public func showScreenshot() {
-        if !showingScreenshot && !refreshing {
+        if !isShowingScreenshot && !isRefreshing {
             addSubview(screenshotView)
             addFillConstraintsForSubview(screenshotView)
             bringSubviewToFront(screenshotView)
@@ -144,14 +144,14 @@ public class VisitableView: UIView {
 
     // MARK: Hidden Scroll View
 
-    var hiddenScrollView: UIScrollView = {
+    private var hiddenScrollView: UIScrollView = {
         let scrollView = UIScrollView(frame: CGRectZero)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.scrollsToTop = false
         return scrollView
     }()
 
-    func installHiddenScrollView() {
+    private func installHiddenScrollView() {
         insertSubview(hiddenScrollView, atIndex: 0)
         addFillConstraintsForSubview(hiddenScrollView)
     }
@@ -163,15 +163,15 @@ public class VisitableView: UIView {
         updateWebViewScrollViewInsets()
     }
 
-    func updateWebViewScrollViewInsets() {
+    private func updateWebViewScrollViewInsets() {
         let adjustedInsets = hiddenScrollView.contentInset
-        if let scrollView = webView?.scrollView where scrollView.contentInset.top != adjustedInsets.top && adjustedInsets.top != 0 && !refreshing {
+        if let scrollView = webView?.scrollView where scrollView.contentInset.top != adjustedInsets.top && adjustedInsets.top != 0 && !isRefreshing {
             scrollView.scrollIndicatorInsets = adjustedInsets
             scrollView.contentInset = adjustedInsets
         }
     }
 
-    func addFillConstraintsForSubview(view: UIView) {
+    private func addFillConstraintsForSubview(view: UIView) {
         addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": view ]))
         addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": view ]))
     }

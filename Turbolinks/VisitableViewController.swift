@@ -18,7 +18,7 @@ public class VisitableViewController: UIViewController, Visitable {
         return view
     }()
 
-    func installVisitableView() {
+    private func installVisitableView() {
         view.addSubview(visitableView)
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": visitableView ]))
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": visitableView ]))
