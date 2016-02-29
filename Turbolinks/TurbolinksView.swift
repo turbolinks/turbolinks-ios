@@ -76,6 +76,7 @@ public class TurbolinksView: UIView {
     var hiddenScrollView: UIScrollView = {
         let scrollView = UIScrollView(frame: CGRectZero)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.scrollsToTop = false
         return scrollView
     }()
 
