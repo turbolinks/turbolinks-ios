@@ -1,58 +1,57 @@
 import WebKit
-import Turbolinks
 
-class VisitableViewController: UIViewController, Visitable, VisitableViewDelegate {
-    weak var visitableDelegate: VisitableDelegate?
+public class VisitableViewController: UIViewController, Visitable, VisitableViewDelegate {
+    public weak var visitableDelegate: VisitableDelegate?
 
-    var visitableURL: NSURL?
-    
-    func activateVisitableWebView(webView: WKWebView) {
+    public var visitableURL: NSURL?
+
+    public func activateVisitableWebView(webView: WKWebView) {
         visitableView.activateWebView(webView)
     }
 
-    func deactivateVisitableWebView() {
+    public func deactivateVisitableWebView() {
         visitableView.deactivateWebView()
     }
 
-    func showVisitableActivityIndicator() {
+    public func showVisitableActivityIndicator() {
         visitableView.showActivityIndicator()
     }
 
-    func hideVisitableActivityIndicator() {
+    public func hideVisitableActivityIndicator() {
         visitableView.hideActivityIndicator()
     }
 
-    func updateVisitableScreenshot() {
+    public func updateVisitableScreenshot() {
         visitableView.updateScreenshot()
     }
 
-    func showVisitableScreenshot() {
+    public func showVisitableScreenshot() {
         visitableView.showScreenshot()
     }
 
-    func hideVisitableScreenshot() {
+    public func hideVisitableScreenshot() {
         visitableView.hideScreenshot()
     }
 
-    func visitableDidRender() {
+    public func visitableDidRender() {
         title = visitableView.webView?.title
     }
 
-    func visitableWillRefresh() {
+    public func visitableWillRefresh() {
         visitableView.refreshControl.beginRefreshing()
     }
 
-    func visitableDidRefresh() {
+    public func visitableDidRefresh() {
         visitableView.refreshControl.endRefreshing()
     }
 
 
     // MARK: Visitable View Delegate
 
-    func visitableViewDidRequestRefresh(visitableView: VisitableView) {
+    public func visitableViewDidRequestRefresh(visitableView: VisitableView) {
         visitableDelegate?.visitableDidRequestRefresh(self)
     }
-   
+
 
     // MARK: Visitable View
 
@@ -72,19 +71,19 @@ class VisitableViewController: UIViewController, Visitable, VisitableViewDelegat
 
     // MARK: View Lifecycle
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         automaticallyAdjustsScrollViewInsets = true
         view.backgroundColor = UIColor.whiteColor()
         installVisitableView()
     }
 
-    override func viewWillAppear(animated: Bool) {
+    public override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         visitableDelegate?.visitableViewWillAppear(self)
     }
 
-    override func viewDidAppear(animated: Bool) {
+    public override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         visitableDelegate?.visitableViewDidAppear(self)
     }

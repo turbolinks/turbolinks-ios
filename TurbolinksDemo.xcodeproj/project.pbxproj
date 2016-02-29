@@ -12,7 +12,6 @@
 		1F8FC6A51B55A32000A781C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */; };
 		1F8FC6AC1B55A34500A781C8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AA1B55A34500A781C8 /* Main.storyboard */; };
 		1FC168241B55A16C00AA6F43 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FC168221B55A16C00AA6F43 /* LaunchScreen.xib */; };
-		2286D7311C82139200E34B1D /* VisitableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2286D7301C82139200E34B1D /* VisitableViewController.swift */; };
 		22CB5D901C62981700F24EA7 /* Turbolinks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22CB5D8D1C62980000F24EA7 /* Turbolinks.framework */; };
 		22CB5D911C62982800F24EA7 /* Turbolinks.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 22CB5D8D1C62980000F24EA7 /* Turbolinks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		22CB5D961C6299AB00F24EA7 /* TurbolinksDemo.js in Resources */ = {isa = PBXBuildFile; fileRef = 22CB5D951C6299AB00F24EA7 /* TurbolinksDemo.js */; };
@@ -65,7 +64,6 @@
 		1FC168141B55A16C00AA6F43 /* TurbolinksDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TurbolinksDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FC168181B55A16C00AA6F43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1FC168231B55A16C00AA6F43 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		2286D7301C82139200E34B1D /* VisitableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisitableViewController.swift; sourceTree = "<group>"; };
 		22CB5D881C62980000F24EA7 /* Turbolinks.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Turbolinks.xcodeproj; sourceTree = "<group>"; };
 		22CB5D951C6299AB00F24EA7 /* TurbolinksDemo.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = TurbolinksDemo.js; sourceTree = "<group>"; };
 		92DF45161C81149B0064E606 /* NumbersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumbersViewController.swift; sourceTree = "<group>"; };
@@ -106,7 +104,6 @@
 				1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */,
 				1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */,
 				1F5A34F91B67FF900029FDF3 /* AuthenticationController.swift */,
-				2286D7301C82139200E34B1D /* VisitableViewController.swift */,
 				22CB5D951C6299AB00F24EA7 /* TurbolinksDemo.js */,
 				1F8FC6AA1B55A34500A781C8 /* Main.storyboard */,
 				1FC168221B55A16C00AA6F43 /* LaunchScreen.xib */,
@@ -231,7 +228,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F5A34FA1B67FF900029FDF3 /* AuthenticationController.swift in Sources */,
-				2286D7311C82139200E34B1D /* VisitableViewController.swift in Sources */,
 				92DF45171C81149B0064E606 /* NumbersViewController.swift in Sources */,
 				1F8FC6A51B55A32000A781C8 /* AppDelegate.swift in Sources */,
 				1F35399F1B6FB21A00AA7462 /* ApplicationController.swift in Sources */,
