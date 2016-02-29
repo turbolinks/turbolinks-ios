@@ -3,48 +3,11 @@ import WebKit
 public class VisitableViewController: UIViewController, Visitable, VisitableViewDelegate {
     public weak var visitableDelegate: VisitableDelegate?
 
-    public var visitableURL: NSURL?
-
-    public func activateVisitableWebView(webView: WKWebView) {
-        visitableView.activateWebView(webView)
-    }
-
-    public func deactivateVisitableWebView() {
-        visitableView.deactivateWebView()
-    }
-
-    public func showVisitableActivityIndicator() {
-        visitableView.showActivityIndicator()
-    }
-
-    public func hideVisitableActivityIndicator() {
-        visitableView.hideActivityIndicator()
-    }
-
-    public func updateVisitableScreenshot() {
-        visitableView.updateScreenshot()
-    }
-
-    public func showVisitableScreenshot() {
-        visitableView.showScreenshot()
-    }
-
-    public func hideVisitableScreenshot() {
-        visitableView.hideScreenshot()
-    }
+    public var visitableURL: NSURL!
 
     public func visitableDidRender() {
         title = visitableView.webView?.title
     }
-
-    public func visitableWillRefresh() {
-        visitableView.refreshControl.beginRefreshing()
-    }
-
-    public func visitableDidRefresh() {
-        visitableView.refreshControl.endRefreshing()
-    }
-
 
     // MARK: Visitable View Delegate
 
@@ -55,7 +18,7 @@ public class VisitableViewController: UIViewController, Visitable, VisitableView
 
     // MARK: Visitable View
 
-    lazy var visitableView: VisitableView = {
+    public lazy var visitableView: VisitableView = {
         let view = VisitableView(frame: CGRectZero)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view

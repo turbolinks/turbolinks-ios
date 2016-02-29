@@ -34,7 +34,7 @@ class ApplicationController: UINavigationController {
 
     private func presentVisitableForSession(session: Session, URL: NSURL, action: Action = .Advance) {
         let visitable = visitableForSession(session, URL: URL)
-        let viewController = visitable.visitableViewController
+        let viewController = visitable as! UIViewController
         
         if action == .Advance {
             pushViewController(viewController, animated: true)
@@ -97,7 +97,7 @@ extension ApplicationController: SessionDelegate {
                 self.presentAuthenticationController()
             }
         } else {
-            session.topmostVisitable?.hideVisitableActivityIndicator()
+            session.topmostVisitable?.visitableView.hideActivityIndicator()
             presentAlertForError(error)
         }
     }
