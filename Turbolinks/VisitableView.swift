@@ -160,6 +160,7 @@ public class VisitableView: UIView {
     // MARK: Layout
 
     override public func layoutSubviews() {
+        super.layoutSubviews()
         updateWebViewScrollViewInsets()
     }
 
