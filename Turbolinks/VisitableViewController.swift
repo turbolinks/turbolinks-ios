@@ -29,7 +29,6 @@ public class VisitableViewController: UIViewController, Visitable {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        automaticallyAdjustsScrollViewInsets = true
         view.backgroundColor = UIColor.whiteColor()
         installVisitableView()
     }
