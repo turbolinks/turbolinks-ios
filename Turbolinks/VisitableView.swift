@@ -111,32 +111,48 @@ public class VisitableView: UIView {
 
     // MARK: Screenshots
 
-    public lazy var screenshotView: UIView = {
+    private lazy var screenshotContainerView: UIView = {
         let view = UIView(frame: CGRectZero)
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = self.backgroundColor
         return view
     }()
+    
+    private var screenshotView: UIView?
 
-    public var isShowingScreenshot: Bool {
-        return screenshotView.superview == self
+    var isShowingScreenshot: Bool {
+        return screenshotContainerView.superview != nil
     }
 
     public func updateScreenshot() {
         if let webView = self.webView where !isShowingScreenshot {
-            screenshotView = webView.snapshotViewAfterScreenUpdates(false)
+            screenshotView?.removeFromSuperview()
+            
+            let screenshot = webView.snapshotViewAfterScreenUpdates(false)
+            screenshot.translatesAutoresizingMaskIntoConstraints = false
+            screenshotContainerView.addSubview(screenshot)
+            
+            NSLayoutConstraint.activateConstraints([
+                screenshot.centerXAnchor.constraintEqualToAnchor(screenshotContainerView.centerXAnchor),
+                screenshot.topAnchor.constraintEqualToAnchor(screenshotContainerView.topAnchor),
+                screenshot.widthAnchor.constraintEqualToConstant(screenshot.bounds.size.width),
+                screenshot.heightAnchor.constraintEqualToConstant(screenshot.bounds.size.height)
+            ])
+
+            screenshotView = screenshot
         }
     }
 
     public func showScreenshot() {
         if !isShowingScreenshot && !isRefreshing {
-            addSubview(screenshotView)
-            addFillConstraintsForSubview(screenshotView)
+            addSubview(screenshotContainerView)
+            addFillConstraintsForSubview(screenshotContainerView)
             showOrHideWebView()
         }
     }
 
     public func hideScreenshot() {
-        screenshotView.removeFromSuperview()
+        screenshotContainerView.removeFromSuperview()
         showOrHideWebView()
     }
 
