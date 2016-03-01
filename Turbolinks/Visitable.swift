@@ -1,4 +1,3 @@
-import UIKit
 import WebKit
 
 @objc public protocol VisitableDelegate: class {
@@ -9,27 +8,53 @@ import WebKit
 
 @objc public protocol Visitable: class {
     weak var visitableDelegate: VisitableDelegate? { get set }
-
-    var visitableURL: NSURL? { get set }
-
-    func activateVisitableWebView(webView: WKWebView)
-    func deactivateVisitableWebView()
-
-    func showVisitableActivityIndicator()
-    func hideVisitableActivityIndicator()
-
-    func updateVisitableScreenshot()
-    func showVisitableScreenshot()
-    func hideVisitableScreenshot()
-
-    optional func visitableWillRefresh()
-    optional func visitableDidRefresh()
-
+    var visitableURL: NSURL! { get }
+    var visitableView: VisitableView! { get }
     optional func visitableDidRender()
 }
 
-public extension Visitable {
+extension Visitable {
     var visitableViewController: UIViewController {
         return self as! UIViewController
+    }
+
+    func activateVisitableWebView(webView: WKWebView) {
+        visitableView.activateWebView(webView, forVisitable: self)
+    }
+
+    func deactivateVisitableWebView() {
+        visitableView.deactivateWebView()
+    }
+
+    func showVisitableActivityIndicator() {
+        visitableView.showActivityIndicator()
+    }
+
+    func hideVisitableActivityIndicator() {
+        visitableView.hideActivityIndicator()
+    }
+
+    func updateVisitableScreenshot() {
+        visitableView.updateScreenshot()
+    }
+
+    func showVisitableScreenshot() {
+        visitableView.showScreenshot()
+    }
+
+    func hideVisitableScreenshot() {
+        visitableView.hideScreenshot()
+    }
+
+    func visitableWillRefresh() {
+        visitableView.refreshControl.beginRefreshing()
+    }
+
+    func visitableDidRefresh() {
+        visitableView.refreshControl.endRefreshing()
+    }
+
+    func visitableViewDidRequestRefresh() {
+        visitableDelegate?.visitableDidRequestRefresh(self)
     }
 }

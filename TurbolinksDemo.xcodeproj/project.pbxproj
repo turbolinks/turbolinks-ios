@@ -10,7 +10,6 @@
 		1F35399F1B6FB21A00AA7462 /* ApplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */; };
 		1F5A34FA1B67FF900029FDF3 /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5A34F91B67FF900029FDF3 /* AuthenticationController.swift */; };
 		1F8FC6A51B55A32000A781C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */; };
-		1F8FC6A81B55A33700A781C8 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6A71B55A33700A781C8 /* WebViewController.swift */; };
 		1F8FC6AC1B55A34500A781C8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AA1B55A34500A781C8 /* Main.storyboard */; };
 		1FC168241B55A16C00AA6F43 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FC168221B55A16C00AA6F43 /* LaunchScreen.xib */; };
 		22CB5D901C62981700F24EA7 /* Turbolinks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22CB5D8D1C62980000F24EA7 /* Turbolinks.framework */; };
@@ -61,7 +60,6 @@
 		1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationController.swift; sourceTree = "<group>"; };
 		1F5A34F91B67FF900029FDF3 /* AuthenticationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticationController.swift; sourceTree = "<group>"; };
 		1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		1F8FC6A71B55A33700A781C8 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		1F8FC6AB1B55A34500A781C8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1FC168141B55A16C00AA6F43 /* TurbolinksDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TurbolinksDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FC168181B55A16C00AA6F43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -106,7 +104,6 @@
 				1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */,
 				1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */,
 				1F5A34F91B67FF900029FDF3 /* AuthenticationController.swift */,
-				1F8FC6A71B55A33700A781C8 /* WebViewController.swift */,
 				22CB5D951C6299AB00F24EA7 /* TurbolinksDemo.js */,
 				1F8FC6AA1B55A34500A781C8 /* Main.storyboard */,
 				1FC168221B55A16C00AA6F43 /* LaunchScreen.xib */,
@@ -234,7 +231,6 @@
 				92DF45171C81149B0064E606 /* NumbersViewController.swift in Sources */,
 				1F8FC6A51B55A32000A781C8 /* AppDelegate.swift in Sources */,
 				1F35399F1B6FB21A00AA7462 /* ApplicationController.swift in Sources */,
-				1F8FC6A81B55A33700A781C8 /* WebViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
