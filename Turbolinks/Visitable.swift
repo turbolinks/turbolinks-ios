@@ -1,3 +1,4 @@
+import UIKit
 import WebKit
 
 @objc public protocol VisitableDelegate: class {
@@ -14,7 +15,7 @@ import WebKit
 }
 
 extension Visitable {
-    var visitableViewController: UIViewController {
+    public var visitableViewController: UIViewController {
         return self as! UIViewController
     }
 
