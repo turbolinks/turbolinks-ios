@@ -131,7 +131,6 @@ public class VisitableView: UIView {
         if !isShowingScreenshot && !isRefreshing {
             addSubview(screenshotView)
             addFillConstraintsForSubview(screenshotView)
-            bringSubviewToFront(screenshotView)
             showOrHideWebView()
         }
     }
