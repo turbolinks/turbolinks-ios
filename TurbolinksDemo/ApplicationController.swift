@@ -18,6 +18,7 @@ class ApplicationController: UINavigationController {
         let configuration = WKWebViewConfiguration()
         configuration.userContentController.addUserScript(userScript)
         configuration.processPool = self.webViewProcessPool
+        configuration.applicationNameForUserAgent = "TurbolinksDemo"
         return configuration
     }()
 

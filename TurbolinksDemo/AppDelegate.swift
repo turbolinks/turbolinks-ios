@@ -5,13 +5,10 @@ import Turbolinks
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-    let userAgent = "TurbolinksDemo"
 
     // MARK: UIApplicationDelegate
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        NSUserDefaults.standardUserDefaults().registerDefaults(["UserAgent": userAgent])
-        
         return true
     }
 
