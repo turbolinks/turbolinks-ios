@@ -156,6 +156,10 @@ public class VisitableView: UIView {
         showOrHideWebView()
     }
 
+    public func clearScreenshot() {
+        screenshotView?.removeFromSuperview()
+    }
+
 
     // MARK: Hidden Scroll View
 

@@ -166,7 +166,8 @@ extension Session: VisitDelegate {
     }
 
     func visitDidFail(visit: Visit) {
-        deactivateVisitable(visit.visitable)
+        visit.visitable.clearVisitableScreenshot()
+        visit.visitable.showVisitableScreenshot()
     }
 
     func visitDidFinish(visit: Visit) {

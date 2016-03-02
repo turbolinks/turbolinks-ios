@@ -47,6 +47,10 @@ extension Visitable {
         visitableView.hideScreenshot()
     }
 
+    func clearVisitableScreenshot() {
+        visitableView.clearScreenshot()
+    }
+
     func visitableWillRefresh() {
         visitableView.refreshControl.beginRefreshing()
     }
