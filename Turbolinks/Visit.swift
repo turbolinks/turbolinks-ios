@@ -7,6 +7,7 @@ protocol VisitDelegate: class {
     func visitDidStart(visit: Visit)
     func visitDidComplete(visit: Visit)
     func visitDidFail(visit: Visit)
+    func visitDidFinish(visit: Visit)
 
     func visitWillLoadResponse(visit: Visit)
     func visitDidRender(visit: Visit)
@@ -67,6 +68,7 @@ class Visit: NSObject {
         if state == .Started {
             state = .Completed
             delegate?.visitDidComplete(self)
+            delegate?.visitDidFinish(self)
         }
     }
 
@@ -76,6 +78,7 @@ class Visit: NSObject {
             callback?()
             failVisit()
             delegate?.visitDidFail(self)
+            delegate?.visitDidFinish(self)
         }
     }
 

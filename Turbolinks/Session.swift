@@ -163,15 +163,17 @@ extension Session: VisitDelegate {
         if let restorationIdentifier = visit.restorationIdentifier {
             storeRestorationIdentifier(restorationIdentifier, forVisitable: visit.visitable)
         }
-
-        if refreshing {
-            refreshing = false
-            visit.visitable.visitableDidRefresh()
-        }
     }
 
     func visitDidFail(visit: Visit) {
         deactivateVisitable(visit.visitable)
+    }
+
+    func visitDidFinish(visit: Visit) {
+        if refreshing {
+            refreshing = false
+            visit.visitable.visitableDidRefresh()
+        }
     }
 }
 
