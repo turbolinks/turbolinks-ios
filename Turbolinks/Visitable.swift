@@ -4,6 +4,7 @@ import WebKit
 @objc public protocol VisitableDelegate: class {
     func visitableViewWillAppear(visitable: Visitable)
     func visitableViewDidAppear(visitable: Visitable)
+    func visitableDidRequestReload(visitable: Visitable)
     func visitableDidRequestRefresh(visitable: Visitable)
 }
 
@@ -57,6 +58,10 @@ extension Visitable {
 
     func visitableDidRefresh() {
         visitableView.refreshControl.endRefreshing()
+    }
+
+    func visitableViewDidRequestReload() {
+        visitableDelegate?.visitableDidRequestReload(self)
     }
 
     func visitableViewDidRequestRefresh() {

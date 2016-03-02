@@ -215,6 +215,12 @@ extension Session: VisitableDelegate {
         }
     }
 
+    public func visitableDidRequestReload(visitable: Visitable) {
+        if visitable === topmostVisitable {
+            reload()
+        }
+    }
+   
     public func visitableDidRequestRefresh(visitable: Visitable) {
         if visitable === topmostVisitable {
             refreshing = true

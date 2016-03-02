@@ -39,6 +39,10 @@ public class VisitableView: UIView {
         visitable = nil
     }
 
+    public func reload() {
+        visitable?.visitableViewDidRequestReload()
+    }
+
     private func showOrHideWebView() {
         webView?.hidden = isShowingScreenshot
     }
@@ -48,7 +52,7 @@ public class VisitableView: UIView {
 
     public lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        refreshControl.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
         return refreshControl
     }()
 
@@ -77,7 +81,7 @@ public class VisitableView: UIView {
         refreshControl.removeFromSuperview()
     }
 
-    public func refresh() {
+    func refresh(sender: AnyObject) {
         visitable?.visitableViewDidRequestRefresh()
     }
 

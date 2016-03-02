@@ -21,7 +21,7 @@ class VisitableViewController: Turbolinks.VisitableViewController {
     }
 
     func retry(sender: AnyObject) {
-        // reload...
+        visitableView.reload()
         errorView.removeFromSuperview()
     }
 }
