@@ -98,7 +98,7 @@ extension ApplicationController: SessionDelegate {
             case 404:
                 visitableViewController.presentError(Error.HTTPNotFoundError)
             default:
-                visitableViewController.presentError(Error(statusCode: statusCode))
+                visitableViewController.presentError(Error(HTTPStatusCode: statusCode))
             }
         case ErrorCode.NetworkFailure.rawValue:
             visitableViewController.presentError(Error.NetworkError)

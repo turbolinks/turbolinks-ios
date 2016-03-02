@@ -112,6 +112,7 @@
 				1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */,
 				1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */,
 				1F5A34F91B67FF900029FDF3 /* AuthenticationController.swift */,
+				2230A7EE1C874108001B4AC1 /* Error.swift */,
 				2230A7EA1C8694EC001B4AC1 /* ErrorView.swift */,
 				92DF45161C81149B0064E606 /* NumbersViewController.swift */,
 				2230A7E81C869396001B4AC1 /* VisitableViewController.swift */,
@@ -120,7 +121,6 @@
 				1FC168221B55A16C00AA6F43 /* LaunchScreen.xib */,
 				1F8FC6AA1B55A34500A781C8 /* Main.storyboard */,
 				1FC168171B55A16C00AA6F43 /* Supporting Files */,
-				2230A7EE1C874108001B4AC1 /* Error.swift */,
 			);
 			path = TurbolinksDemo;
 			sourceTree = "<group>";

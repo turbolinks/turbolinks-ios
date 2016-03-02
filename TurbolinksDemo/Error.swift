@@ -1,7 +1,7 @@
 struct Error {
-    static let HTTPNotFoundError = Error(title: "Page Not Found", message: "Oh no!")
-    static let NetworkError = Error(title: "Can’t Connect", message: "TurbolinksDemo can’t connect to the server. Did you remember to start it?")
-    static let UnknownError = Error(title: "Unknown Error", message: "Try again")
+    static let HTTPNotFoundError = Error(title: "Page Not Found", message: "There doesn’t seem to be anything here.")
+    static let NetworkError = Error(title: "Can’t Connect", message: "TurbolinksDemo can’t connect to the server. Did you remember to start it?\nSee README.md for more instructions.")
+    static let UnknownError = Error(title: "Unknown Error", message: "An unknown error occurred.")
 
     let title: String
     let message: String
@@ -11,8 +11,8 @@ struct Error {
         self.message = message
     }
 
-    init(statusCode: Int) {
+    init(HTTPStatusCode: Int) {
         self.title = "Server Error"
-        self.message = "HTTP \(statusCode)"
+        self.message = "The server returned an HTTP \(HTTPStatusCode) response."
     }
 }
