@@ -2,22 +2,25 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
     <title><%= @title %></title>
     <script src="/turbolinks.js"></script>
     <style>
       * { -webkit-user-select: none }
-      body { font-family: -apple-system; font-size: 18px }
-      input { font-size: 18px }
+      html { -webkit-text-size-adjust: 100% }
+      body { margin: 0; padding: 0 20px }
+      body, input { font: -apple-system-body }
+      h1 { font: -apple-system-headline }
+      footer { font: -apple-system-footnote; color: rgb(128, 128, 128); margin-top: 30px }
       a { color: rgb(0, 122, 255); text-decoration: none }
-      h1 { font-weight: normal; font-size: 28px }
-      footer { color: rgb(128, 128, 128); margin-top: 20px }
+      ul { margin: 0; padding: 0 20px }
+      code span { font-size: 0 }
     </style>
   </head>
   <body>
     <%= yield %>
     <footer>
-      Rendered at <%= Time.now %>
+      Rendered on <%= Time.now.strftime("%Y-%m-%d at %H:%M:%S") %>
     </footer>
   </body>
 </html>
