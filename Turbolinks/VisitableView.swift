@@ -39,10 +39,6 @@ public class VisitableView: UIView {
         visitable = nil
     }
 
-    public func reload() {
-        visitable?.visitableViewDidRequestReload()
-    }
-
     private func showOrHideWebView() {
         webView?.hidden = isShowingScreenshot
     }

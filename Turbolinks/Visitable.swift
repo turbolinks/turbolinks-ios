@@ -20,6 +20,10 @@ extension Visitable {
         return self as! UIViewController
     }
 
+    public func reloadVisitable() {
+        visitableDelegate?.visitableDidRequestReload(self)
+    }
+
     func activateVisitableWebView(webView: WKWebView) {
         visitableView.activateWebView(webView, forVisitable: self)
     }
@@ -58,10 +62,6 @@ extension Visitable {
 
     func visitableDidRefresh() {
         visitableView.refreshControl.endRefreshing()
-    }
-
-    func visitableViewDidRequestReload() {
-        visitableDelegate?.visitableDidRequestReload(self)
     }
 
     func visitableViewDidRequestRefresh() {
