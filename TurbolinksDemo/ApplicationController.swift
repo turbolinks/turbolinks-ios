@@ -48,7 +48,7 @@ class ApplicationController: UINavigationController {
     }
 
     private func visitableForSession(session: Session, URL: NSURL) -> Visitable {
-        let visitable = VisitableViewController()
+        let visitable = DemoViewController()
         visitable.visitableURL = URL
         return visitable
     }
@@ -67,14 +67,6 @@ class ApplicationController: UINavigationController {
         let authNavigationController = UINavigationController(rootViewController: authenticationController)
         presentViewController(authNavigationController, animated: true, completion: nil)
     }
-
-    // MARK: Error Handling
-
-    private func presentAlertForError(error: NSError) {
-        let alertController = UIAlertController(title: "Error loading page", message: error.localizedDescription, preferredStyle: .Alert)
-        alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-        presentViewController(alertController, animated: true, completion: nil)
-    }
 }
 
 extension ApplicationController: SessionDelegate {
@@ -92,14 +84,26 @@ extension ApplicationController: SessionDelegate {
     
     func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
         print("ERROR: \(error)")
-        if error.code == ErrorCode.HTTPFailure.rawValue, let statusCode = error.userInfo["statusCode"] as? Int where statusCode == 401 {
-            // Wait for the navigation controller's animation to complete before presenting
-            after(500) {
-                self.presentAuthenticationController()
+        guard let demoViewController = visitable as? DemoViewController else { return }
+
+        switch error.code {
+        case ErrorCode.HTTPFailure.rawValue:
+            let statusCode = error.userInfo["statusCode"] as! Int
+            switch statusCode {
+            case 401:
+                // Wait for the navigation controller's animation to complete before presenting
+                after(500) {
+                    self.presentAuthenticationController()
+                }
+            case 404:
+                demoViewController.presentError(Error.HTTPNotFoundError)
+            default:
+                demoViewController.presentError(Error(HTTPStatusCode: statusCode))
             }
-        } else {
-            session.topmostVisitable?.visitableView.hideActivityIndicator()
-            presentAlertForError(error)
+        case ErrorCode.NetworkFailure.rawValue:
+            demoViewController.presentError(Error.NetworkError)
+        default:
+            demoViewController.presentError(Error.UnknownError)
         }
     }
     

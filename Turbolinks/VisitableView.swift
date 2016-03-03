@@ -48,7 +48,7 @@ public class VisitableView: UIView {
 
     public lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        refreshControl.addTarget(self, action: "refresh:", forControlEvents: .ValueChanged)
         return refreshControl
     }()
 
@@ -77,7 +77,7 @@ public class VisitableView: UIView {
         refreshControl.removeFromSuperview()
     }
 
-    public func refresh() {
+    func refresh(sender: AnyObject) {
         visitable?.visitableViewDidRequestRefresh()
     }
 
@@ -154,6 +154,10 @@ public class VisitableView: UIView {
     public func hideScreenshot() {
         screenshotContainerView.removeFromSuperview()
         showOrHideWebView()
+    }
+
+    public func clearScreenshot() {
+        screenshotView?.removeFromSuperview()
     }
 
 

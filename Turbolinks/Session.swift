@@ -163,15 +163,18 @@ extension Session: VisitDelegate {
         if let restorationIdentifier = visit.restorationIdentifier {
             storeRestorationIdentifier(restorationIdentifier, forVisitable: visit.visitable)
         }
+    }
 
+    func visitDidFail(visit: Visit) {
+        visit.visitable.clearVisitableScreenshot()
+        visit.visitable.showVisitableScreenshot()
+    }
+
+    func visitDidFinish(visit: Visit) {
         if refreshing {
             refreshing = false
             visit.visitable.visitableDidRefresh()
         }
-    }
-
-    func visitDidFail(visit: Visit) {
-        deactivateVisitable(visit.visitable)
     }
 }
 
@@ -212,6 +215,12 @@ extension Session: VisitableDelegate {
         }
     }
 
+    public func visitableDidRequestReload(visitable: Visitable) {
+        if visitable === topmostVisitable {
+            reload()
+        }
+    }
+   
     public func visitableDidRequestRefresh(visitable: Visitable) {
         if visitable === topmostVisitable {
             refreshing = true

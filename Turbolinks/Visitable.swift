@@ -4,6 +4,7 @@ import WebKit
 @objc public protocol VisitableDelegate: class {
     func visitableViewWillAppear(visitable: Visitable)
     func visitableViewDidAppear(visitable: Visitable)
+    func visitableDidRequestReload(visitable: Visitable)
     func visitableDidRequestRefresh(visitable: Visitable)
 }
 
@@ -17,6 +18,10 @@ import WebKit
 extension Visitable {
     public var visitableViewController: UIViewController {
         return self as! UIViewController
+    }
+
+    public func reloadVisitable() {
+        visitableDelegate?.visitableDidRequestReload(self)
     }
 
     func activateVisitableWebView(webView: WKWebView) {
@@ -45,6 +50,10 @@ extension Visitable {
 
     func hideVisitableScreenshot() {
         visitableView.hideScreenshot()
+    }
+
+    func clearVisitableScreenshot() {
+        visitableView.clearScreenshot()
     }
 
     func visitableWillRefresh() {
