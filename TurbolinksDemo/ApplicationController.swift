@@ -96,14 +96,14 @@ extension ApplicationController: SessionDelegate {
                     self.presentAuthenticationController()
                 }
             case 404:
-                demoViewController.presentError(Error.HTTPNotFoundError)
+                demoViewController.presentError(.HTTPNotFoundError)
             default:
                 demoViewController.presentError(Error(HTTPStatusCode: statusCode))
             }
         case ErrorCode.NetworkFailure.rawValue:
-            demoViewController.presentError(Error.NetworkError)
+            demoViewController.presentError(.NetworkError)
         default:
-            demoViewController.presentError(Error.UnknownError)
+            demoViewController.presentError(.UnknownError)
         }
     }
     
