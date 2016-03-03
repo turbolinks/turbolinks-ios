@@ -41,9 +41,7 @@ public class Session: NSObject {
     }
     
     private func visitVisitable(visitable: Visitable, action: Action) {
-        guard visitable.visitableURL != nil else {
-            return
-        }
+        guard visitable.visitableURL != nil else { return }
 
         visitable.visitableDelegate = self
 
@@ -180,9 +178,7 @@ extension Session: VisitDelegate {
 
 extension Session: VisitableDelegate {
     public func visitableViewWillAppear(visitable: Visitable) {
-        guard let topmostVisit = self.topmostVisit, currentVisit = self.currentVisit else {
-            return
-        }
+        guard let topmostVisit = self.topmostVisit, currentVisit = self.currentVisit else { return }
 
         if visitable === topmostVisit.visitable && visitable.visitableViewController.isMovingToParentViewController() {
             // Back swipe gesture canceled

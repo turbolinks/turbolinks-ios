@@ -84,9 +84,7 @@ class WebView: WKWebView {
     }
 
     private func scriptForCallingJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject?]) -> String? {
-        guard let encodedArguments = encodeJavaScriptArguments(arguments) else {
-            return nil
-        }
+        guard let encodedArguments = encodeJavaScriptArguments(arguments) else { return nil }
 
         return
             "(function(result) {\n" +
@@ -114,9 +112,7 @@ class WebView: WKWebView {
 
 extension WebView: WKScriptMessageHandler {
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
-        guard let message = ScriptMessage.parse(message) else {
-            return
-        }
+        guard let message = ScriptMessage.parse(message) else { return }
         
         switch message.name {
         case .PageLoaded:
