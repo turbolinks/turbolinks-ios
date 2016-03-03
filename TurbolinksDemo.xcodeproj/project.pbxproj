@@ -12,7 +12,7 @@
 		1F8FC6A51B55A32000A781C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */; };
 		1F8FC6AC1B55A34500A781C8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AA1B55A34500A781C8 /* Main.storyboard */; };
 		1FC168241B55A16C00AA6F43 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1FC168221B55A16C00AA6F43 /* LaunchScreen.xib */; };
-		2230A7E91C869396001B4AC1 /* VisitableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2230A7E81C869396001B4AC1 /* VisitableViewController.swift */; };
+		2230A7E91C869396001B4AC1 /* DemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2230A7E81C869396001B4AC1 /* DemoViewController.swift */; };
 		2230A7EB1C8694EC001B4AC1 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2230A7EA1C8694EC001B4AC1 /* ErrorView.swift */; };
 		2230A7ED1C869BD2001B4AC1 /* ErrorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2230A7EC1C869BD2001B4AC1 /* ErrorView.xib */; };
 		2230A7EF1C874108001B4AC1 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2230A7EE1C874108001B4AC1 /* Error.swift */; };
@@ -68,7 +68,7 @@
 		1FC168141B55A16C00AA6F43 /* TurbolinksDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TurbolinksDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FC168181B55A16C00AA6F43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1FC168231B55A16C00AA6F43 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		2230A7E81C869396001B4AC1 /* VisitableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisitableViewController.swift; sourceTree = "<group>"; };
+		2230A7E81C869396001B4AC1 /* DemoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoViewController.swift; sourceTree = "<group>"; };
 		2230A7EA1C8694EC001B4AC1 /* ErrorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		2230A7EC1C869BD2001B4AC1 /* ErrorView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ErrorView.xib; sourceTree = "<group>"; };
 		2230A7EE1C874108001B4AC1 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
@@ -112,10 +112,10 @@
 				1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */,
 				1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */,
 				1F5A34F91B67FF900029FDF3 /* AuthenticationController.swift */,
+				2230A7E81C869396001B4AC1 /* DemoViewController.swift */,
 				2230A7EE1C874108001B4AC1 /* Error.swift */,
 				2230A7EA1C8694EC001B4AC1 /* ErrorView.swift */,
 				92DF45161C81149B0064E606 /* NumbersViewController.swift */,
-				2230A7E81C869396001B4AC1 /* VisitableViewController.swift */,
 				22CB5D951C6299AB00F24EA7 /* TurbolinksDemo.js */,
 				2230A7EC1C869BD2001B4AC1 /* ErrorView.xib */,
 				1FC168221B55A16C00AA6F43 /* LaunchScreen.xib */,
@@ -246,7 +246,7 @@
 				1F8FC6A51B55A32000A781C8 /* AppDelegate.swift in Sources */,
 				1F35399F1B6FB21A00AA7462 /* ApplicationController.swift in Sources */,
 				2230A7EF1C874108001B4AC1 /* Error.swift in Sources */,
-				2230A7E91C869396001B4AC1 /* VisitableViewController.swift in Sources */,
+				2230A7E91C869396001B4AC1 /* DemoViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

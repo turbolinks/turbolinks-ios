@@ -48,7 +48,7 @@ class ApplicationController: UINavigationController {
     }
 
     private func visitableForSession(session: Session, URL: NSURL) -> Visitable {
-        let visitable = VisitableViewController()
+        let visitable = DemoViewController()
         visitable.visitableURL = URL
         return visitable
     }
@@ -84,7 +84,7 @@ extension ApplicationController: SessionDelegate {
     
     func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
         print("ERROR: \(error)")
-        guard let visitableViewController = visitable as? VisitableViewController else { return }
+        guard let demoViewController = visitable as? DemoViewController else { return }
 
         switch error.code {
         case ErrorCode.HTTPFailure.rawValue:
@@ -96,14 +96,14 @@ extension ApplicationController: SessionDelegate {
                     self.presentAuthenticationController()
                 }
             case 404:
-                visitableViewController.presentError(Error.HTTPNotFoundError)
+                demoViewController.presentError(Error.HTTPNotFoundError)
             default:
-                visitableViewController.presentError(Error(HTTPStatusCode: statusCode))
+                demoViewController.presentError(Error(HTTPStatusCode: statusCode))
             }
         case ErrorCode.NetworkFailure.rawValue:
-            visitableViewController.presentError(Error.NetworkError)
+            demoViewController.presentError(Error.NetworkError)
         default:
-            visitableViewController.presentError(Error.UnknownError)
+            demoViewController.presentError(Error.UnknownError)
         }
     }
     

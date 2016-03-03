@@ -1,7 +1,7 @@
 import Turbolinks
 import UIKit
 
-class VisitableViewController: Turbolinks.VisitableViewController {
+class DemoViewController: Turbolinks.VisitableViewController {
     lazy var errorView: ErrorView = {
         let view = NSBundle.mainBundle().loadNibNamed("ErrorView", owner: self, options: nil).first as! ErrorView
         view.translatesAutoresizingMaskIntoConstraints = false
