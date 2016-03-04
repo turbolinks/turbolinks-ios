@@ -4,9 +4,9 @@
 
 ## Features
 
-- **Deliver fast, efficient HTML apps.** Avoid reloading JavaScript and CSS on every page. Save memory by reusing a single web view automatically.
-- **Reuse mobile web views across platforms.** Create your views once, on the server. Deploy to iOS, [Android](https://github.com/turbolinks/turbolinks-android), and mobile browsers simultaneously.
-- **Enhance web views with native UI.** Navigate your web views using native patterns. Easily augment web UI with native controls.
+- **Deliver fast, efficient hybrid apps.** Avoid reloading JavaScript and CSS. Save memory by reusing a single web view.
+- **Reuse mobile web views across platforms.** Create your views once, on the server. Deploy to iOS, [Android](https://github.com/turbolinks/turbolinks-android), and mobile browsers simultaneously. Ship new features without waiting on App Store approval.
+- **Enhance web views with native UI.** Navigate web views using native patterns. Augment web UI with native controls.
 - **Produce large apps with small teams.** Achieve baseline HTML coverage for free. Upgrade to native views as needed.
 
 ## Requirements
