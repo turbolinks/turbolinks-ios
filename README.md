@@ -23,7 +23,7 @@ Add the following to your `Cartfile`:
 
     github "turbolinks/turbolinks-ios" "master"
 
-Then run `carthage install`.
+Then run `carthage update`.
 
 ### Installing with CocoaPods
 
