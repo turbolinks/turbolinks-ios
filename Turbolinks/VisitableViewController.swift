@@ -1,4 +1,4 @@
-import WebKit
+import UIKit
 
 public class VisitableViewController: UIViewController, Visitable {
     public weak var visitableDelegate: VisitableDelegate?
