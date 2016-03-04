@@ -4,14 +4,14 @@
 
 ## Features
 
-- **Deliver fast, efficient hybrid apps.** Avoid reloading JavaScript and CSS. Save memory by reusing a single web view.
-- **Reuse mobile web views across platforms.** Create your views once, on the server. Deploy to iOS, [Android](https://github.com/turbolinks/turbolinks-android), and mobile browsers simultaneously. Ship new features without waiting on App Store approval.
+- **Deliver fast, efficient hybrid apps.** Avoid reloading JavaScript and CSS. Save memory by sharing one WKWebView.
+- **Reuse mobile web views across platforms.** Create your views once, on the server, in HTML. Deploy them to iOS, [Android](https://github.com/turbolinks/turbolinks-android), and mobile browsers simultaneously. Ship new features without waiting on App Store approval.
 - **Enhance web views with native UI.** Navigate web views using native patterns. Augment web UI with native controls.
 - **Produce large apps with small teams.** Achieve baseline HTML coverage for free. Upgrade to native views as needed.
 
 ## Requirements
 
-Turbolinks for iOS is written in Swift 2.1 and requires iOS 9 or higher. Web views are backed by WKWebView for full-speed JavaScript performance.
+Turbolinks for iOS is written in Swift 2.1 and requires iOS 9 or higher. Web views are backed by [WKWebView](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKWebView_Ref/) for full-speed JavaScript performance.
 
 ## Installation
 
