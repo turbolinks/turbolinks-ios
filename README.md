@@ -47,7 +47,9 @@ To start the demo application in the Simulator, open `turbolinks-ios.xcworkspace
 
 # Understanding Turbolinks Concepts
 
-(high-level overview)
+- The session creates and manages a web view
+- You display the web view in your application using VisitableView instances in Visitable controllers
+- When you follow a link in the web view, the session asks your application how to handle it
 
 ## Creating a Session
 
@@ -80,6 +82,7 @@ To start the demo application in the Simulator, open `turbolinks-ios.xcworkspace
 - Present the visitable on the screen
 - Call session.visit(visitable) to load its URL in the web view
 
+
 # Building Your Turbolinks Application
 
 ## Starting and Stopping the Global Network Activity Indicator
@@ -95,6 +98,7 @@ To start the demo application in the Simulator, open `turbolinks-ios.xcworkspace
 ### Sharing a Process Pool with Other Web Views
 
 ### Injecting Custom JavaScript Into the Web View
+
 
 # Contributing to Turbolinks
 
