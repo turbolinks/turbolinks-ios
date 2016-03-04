@@ -1,36 +1,49 @@
 # Turbolinks for iOS
 
-**Build high-fidelity hybrid apps with native navigation and a single shared web view.**
+**Build high-fidelity hybrid apps with native navigation and a single shared web view.** Turbolinks for iOS provides the tooling to wrap your [Turbolinks 5](https://github.com/turbolinks/turbolinks)-enabled web app in a native iOS shell. It manages a single WKWebView instance across multiple view controllers, giving you native navigation UI with all the client-side performance benefits of Turbolinks.
 
-- wraps a Turbolinks 5 web app to avoid reloading on every page
-- shares a single web view across multiple view controllers for performance and memory benefits
-- gives you baseline coverage with web views, and allows you to easily upgrade to native views as necessary
+## Features
 
+- **Deliver fast, efficient HTML apps.** Avoid reloading JavaScript and CSS on every page. Save memory by reusing a single web view automatically.
+- **Reuse mobile web views across platforms.** Create your views once, on the server. Deploy to iOS, [Android](https://github.com/turbolinks/turbolinks-android), and mobile browsers simultaneously.
+- **Enhance web views with native UI.** Navigate your web views using native patterns. Easily augment web UI with native controls.
+- **Produce large apps with small teams.** Achieve baseline HTML coverage for free. Upgrade to native views as needed.
 
-- swift 2
-- ios 9
-- wkwebview
+## Requirements
+
+Turbolinks for iOS is written in Swift 2.1 and requires iOS 9 or higher. Web views are backed by WKWebView for full-speed JavaScript performance.
 
 ## Installation
 
-You can also install Turbolinks manually by building `Turbolinks.framework` and linking it to your project.
+Install Turbolinks manually by building `Turbolinks.framework` and linking it to your project.
 
 ### Installing with Carthage
 
-```github "turbolinks/turbolinks-ios" "master"```
+Add the following to your `Cartfile`:
+
+    github "turbolinks/turbolinks-ios" "master"
+
+Then run `carthage install`.
 
 ### Installing with CocoaPods
 
-```
+Add the following to your `Podfile`:
+
+```ruby
 use_frameworks!
 pod 'Turbolinks', :git => 'https://github.com/turbolinks/turbolinks-ios.git'
 ```
 
+Then run `pod install`.
+
 ## Running the Demo
 
-`TurbolinksDemo/demo-server`
+Turbolinks for iOS includes a demo application to show off features of the framework.
 
-Open `turbolinks-ios.xcworkspace` and run the TurbolinksDemo target.
+The demo includes a simple HTTP server that serves a Turbolinks 5 web app on `localhost` at port 9292. To start the server, run `TurbolinksDemo/demo-server` from the command line.
+
+To start the demo application in the Simulator, open `turbolinks-ios.xcworkspace` and run the TurbolinksDemo target.
+
 
 # Understanding Turbolinks Concepts
 
