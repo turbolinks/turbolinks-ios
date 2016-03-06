@@ -102,20 +102,6 @@ extension ApplicationController: SessionDelegate {
     func sessionDidFinishRequest(session: Session) {
         application.networkActivityIndicatorVisible = false
     }
-    
-    func sessionDidInitializeWebView(session: Session) {
-        session.webView.navigationDelegate = self
-    }
-}
-
-extension ApplicationController: WKNavigationDelegate {
-    func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> ()) {
-        decisionHandler(WKNavigationActionPolicy.Cancel)
-        
-        if let URL = navigationAction.request.URL {
-            UIApplication.sharedApplication().openURL(URL)
-        }
-    }
 }
 
 extension ApplicationController: AuthenticationControllerDelegate {

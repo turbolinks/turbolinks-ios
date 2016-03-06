@@ -2,12 +2,17 @@ import UIKit
 import WebKit
 
 public protocol SessionDelegate: class {
-    func sessionDidInitializeWebView(session: Session)
     func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action)
     
     func sessionDidStartRequest(session: Session)
     func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)
     func sessionDidFinishRequest(session: Session)
+}
+
+public extension SessionDelegate {
+    func sessionDidLoadWebView(session: Session) {
+        session.webView.navigationDelegate = session
+    }
 }
 
 public class Session: NSObject {
@@ -131,7 +136,7 @@ extension Session: VisitDelegate {
 
     func visitDidInitializeWebView(visit: Visit) {
         initialized = true
-        delegate?.sessionDidInitializeWebView(self)
+        delegate?.sessionDidLoadWebView(self)
         visit.visitable.visitableDidRender?()
     }
 
@@ -245,6 +250,16 @@ extension Session: WebViewDelegate {
             initialized = false
             currentVisit.cancel()
             visit(currentVisit.visitable)
+        }
+    }
+}
+
+extension Session: WKNavigationDelegate {
+    public func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> ()) {
+        decisionHandler(WKNavigationActionPolicy.Cancel)
+
+        if let URL = navigationAction.request.URL {
+            UIApplication.sharedApplication().openURL(URL)
         }
     }
 }
