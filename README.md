@@ -53,21 +53,63 @@ To start the demo application in the Simulator, open `turbolinks-ios.xcworkspace
 
 The Session class is the central coordinator in a Turbolinks for iOS application. It creates and manages a single WKWebView instance, and lets its delegate—your application—choose how to handle link taps, present view controllers, and deal with network errors.
 
-To visit a URL, first instantiate a UIViewController that conforms to Turbolinks’ Visitable protocol, then present the view controller, and finally call the Session’s `visit` method. The framework provides a default Visitable implementation called VisitableViewController which you can subclass or use directly in your application.
+To visit a URL, first instantiate a UIViewController that conforms to Turbolinks’ Visitable protocol, then present the view controller, and finally call the Session’s `visit` method. The framework provides a default Visitable implementation called VisitableViewController which you can subclass or use directly.
 
 Each Visitable view controller must provide a VisitableView instance, which acts as a container for the Session’s shared WKWebView. The VisitableView has a pull-to-refresh control and an activity indicator. It also displays a screenshot of its contents when the web view moves to another VisitableView.
 
 When you tap a Turbolinks-enabled link in the web view, the Session asks your application how to handle the link’s URL. Most of the time, your application will visit the URL by creating and presenting a Visitable. But it might also choose to present a native view controller for the URL, or to ignore the URL entirely.
 
-Visitable view controllers must forward their `viewWillAppear` and `viewDidAppear` methods to the Session. The Session uses these hooks to know when it should move the WKWebView from one VisitableView to another, including during complex interactions like iOS’ interactive pop gesture.
+Visitable view controllers must forward their `viewWillAppear` and `viewDidAppear` methods to the Session. The Session uses these hooks to know when it should move the WKWebView from one VisitableView to another.
 
 ## Creating a Session
 
-- Initialize a Turbolinks `Session` with a `WKWebViewConfiguration`
-  - You can customize the configuration before passing it to the session
-  - Changing the configuration after initializing the session has no effect on the web view.
-- Set the session's delegate
-  - The session's delegate should operate at a higher level than the session or visitable. This will typically be your AppDelegate or another top-level object (e.g., an ApplicationController).
+```swift
+import Turbolinks
+
+class ...: ..., SessionDelegate {
+  lazy var session: Session = {
+    let configuration = WKWebViewConfiguration()
+    let session = Session(webViewConfiguration: configuration)
+    session.delegate = self
+    return session
+  }()
+}
+```
+
+To create a Session, first create a [WKWebViewConfiguration](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKWebViewConfiguration_Ref/index.html) and configure it as needed (see [Customizing the Web View Configuration](#customizing-the-web-view-configuration) for details). Then pass this configuration to the Session initializer and set the `delegate` property on the returned instance.
+
+The Session’s delegate should act as a top-level coordinator in your application, and must implement the following methods.
+
+```swift
+func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action)
+```
+
+Turbolinks for iOS calls the `session:didProposeVisitToURL:withAction:` method before every visit, such as when you tap a Turbolinks-enabled link or call `Turbolinks.visit(...)` in your web application. Implement this method to choose how to handle the specified URL and action.
+
+See [Responding to Visit Proposals](#responding-to-visit-proposals) for more details.
+
+```swift
+func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)
+```
+
+Turbolinks calls `session:didFailRequestForVisitable:withError:` when a visit’s network request fails. Use this method to respond to the error by displaying an appropriate message, or by requesting authentication credentials in the case of an authorization failure.
+
+See [Handling Failed Turbolinks Visits](#handling-failed-turbolinks-visits) for more details.
+
+```swift
+func sessionDidStartRequest(session: Session) // (optional)
+func sessionDidFinishRequest(session: Session) // (optional)
+```
+
+Use the `sessionDidStartRequest:` and `sessionDidFinishRequest:` methods to be notified when Turbolinks starts and finishes a network request. For example, you can use this to display the global network activity indicator in your application’s status bar.
+
+```swift
+func sessionDidLoadWebView(session: Session) // (optional)
+```
+
+Turbolinks calls the `sessionDidLoadWebView:` method after every “cold boot,” such as on the initial page load or after pulling to refresh the page.
+
+Implement this method if you want to customize how Turbolinks handles external link taps by setting `session.webView.navigationDelegate` and implementing the WKNavigationDelegate `webView:decidePolicyForNavigationAction:decisionHandler` method.
 
 ## Implementing the Visitable Protocol
 
