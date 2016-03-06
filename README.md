@@ -21,7 +21,9 @@ Install Turbolinks manually by building `Turbolinks.framework` and linking it to
 
 Add the following to your `Cartfile`:
 
-    github "turbolinks/turbolinks-ios" "master"
+```
+github "turbolinks/turbolinks-ios" "master"
+```
 
 Then run `carthage update`.
 
@@ -47,9 +49,17 @@ To start the demo application in the Simulator, open `turbolinks-ios.xcworkspace
 
 # Understanding Turbolinks Concepts
 
-- The session creates and manages a web view
-- You display the web view in your application using VisitableView instances in Visitable controllers
-- When you follow a link in the web view, the session asks your application how to handle it
+**Note:** You should understand how Turbolinks works with web applications in the browser before moving on to Turbolinks for iOS. See the [Turbolinks 5 documentation](https://github.com/turbolinks/turbolinks) for details.
+
+The Session class is the central coordinator in a Turbolinks for iOS application. It creates and manages a single WKWebView instance, and lets its delegate—the application—choose how to handle link taps, present view controllers, and deal with network errors.
+
+To visit a URL, first instantiate a UIViewController that conforms to Turbolinks’ Visitable protocol, then present the view controller, and finally call the Session’s `visit` method.
+
+Each Visitable view controller must provide a VisitableView instance, which acts as a container for the Session’s shared WKWebView. The VisitableView has a pull-to-refresh control and an activity indicator. It also displays a screenshot of its contents when the web view moves to another VisitableView.
+
+When you tap a Turbolinks-enabled link in the web view, the Session asks your application how to handle the link’s URL. Most of the time, your application will visit the URL by creating and presenting a Visitable. But it might also choose to present a native view controller for the URL, or to ignore the URL entirely.
+
+Visitable view controllers must forward their `viewWillAppear` and `viewDidAppear` methods to the Session. The Session uses these hooks to know when it should move the WKWebView from one VisitableView to another, including during complex interactions like iOS’ interactive pop gesture.
 
 ## Creating a Session
 
