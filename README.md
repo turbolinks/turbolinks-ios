@@ -51,9 +51,9 @@ To start the demo application in the Simulator, open `turbolinks-ios.xcworkspace
 
 **Note:** You should understand how Turbolinks works with web applications in the browser before moving on to Turbolinks for iOS. See the [Turbolinks 5 documentation](https://github.com/turbolinks/turbolinks) for details.
 
-The Session class is the central coordinator in a Turbolinks for iOS application. It creates and manages a single WKWebView instance, and lets its delegate—the application—choose how to handle link taps, present view controllers, and deal with network errors.
+The Session class is the central coordinator in a Turbolinks for iOS application. It creates and manages a single WKWebView instance, and lets its delegate—your application—choose how to handle link taps, present view controllers, and deal with network errors.
 
-To visit a URL, first instantiate a UIViewController that conforms to Turbolinks’ Visitable protocol, then present the view controller, and finally call the Session’s `visit` method.
+To visit a URL, first instantiate a UIViewController that conforms to Turbolinks’ Visitable protocol, then present the view controller, and finally call the Session’s `visit` method. The framework provides a default Visitable implementation called VisitableViewController which you can subclass or use directly in your application.
 
 Each Visitable view controller must provide a VisitableView instance, which acts as a container for the Session’s shared WKWebView. The VisitableView has a pull-to-refresh control and an activity indicator. It also displays a screenshot of its contents when the web view moves to another VisitableView.
 
