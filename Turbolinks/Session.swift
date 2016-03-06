@@ -143,7 +143,7 @@ extension Session: VisitDelegate {
     func visitDidInitializeWebView(visit: Visit) {
         initialized = true
         delegate?.sessionDidLoadWebView(self)
-        visit.visitable.visitableDidRender?()
+        visit.visitable.visitableDidRender()
     }
 
     func visitWillStart(visit: Visit) {
@@ -165,7 +165,7 @@ extension Session: VisitDelegate {
     func visitDidRender(visit: Visit) {
         visit.visitable.hideVisitableScreenshot()
         visit.visitable.hideVisitableActivityIndicator()
-        visit.visitable.visitableDidRender?()
+        visit.visitable.visitableDidRender()
     }
 
     func visitDidComplete(visit: Visit) {

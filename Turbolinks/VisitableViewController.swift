@@ -5,14 +5,10 @@ public class VisitableViewController: UIViewController, Visitable {
 
     public var visitableURL: NSURL!
 
-    public func visitableDidRender() {
-        title = visitableView.webView?.title
-    }
-
 
     // MARK: Visitable View
 
-    public lazy var visitableView: VisitableView = {
+    public lazy var visitableView: VisitableView! = {
         let view = VisitableView(frame: CGRectZero)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
