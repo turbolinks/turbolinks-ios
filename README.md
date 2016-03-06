@@ -13,6 +13,8 @@
 
 Turbolinks for iOS is written in Swift 2.1 and requires iOS 9 or higher. Web views are backed by [WKWebView](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKWebView_Ref/) for full-speed JavaScript performance.
 
+**Note:** You should understand how Turbolinks works with web applications in the browser before attempting to use Turbolinks for iOS. See the [Turbolinks 5 documentation](https://github.com/turbolinks/turbolinks) for details.
+
 ## Installation
 
 Install Turbolinks manually by building `Turbolinks.framework` and linking it to your project.
@@ -49,8 +51,6 @@ To start the demo application in the Simulator, open `turbolinks-ios.xcworkspace
 
 # Understanding Turbolinks Concepts
 
-**Note:** You should understand how Turbolinks works with web applications in the browser before moving on to Turbolinks for iOS. See the [Turbolinks 5 documentation](https://github.com/turbolinks/turbolinks) for details.
-
 The Session class is the central coordinator in a Turbolinks for iOS application. It creates and manages a single WKWebView instance, and lets its delegate—your application—choose how to handle link taps, present view controllers, and deal with network errors.
 
 To visit a URL, first instantiate a UIViewController that conforms to Turbolinks’ Visitable protocol, then present the view controller, and finally call the Session’s `visit` method. The framework provides a default Visitable implementation called VisitableViewController which you can subclass or use directly.
@@ -63,20 +63,20 @@ Visitable view controllers must forward their `viewWillAppear` and `viewDidAppea
 
 ## Creating a Session
 
+To create a Session, first create a [WKWebViewConfiguration](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKWebViewConfiguration_Ref/index.html) and configure it as needed (see [Customizing the Web View Configuration](#customizing-the-web-view-configuration) for details). Then pass this configuration to the Session initializer and set the `delegate` property on the returned instance.
+
 ```swift
 import Turbolinks
 
 class ...: ..., SessionDelegate {
-  lazy var session: Session = {
-    let configuration = WKWebViewConfiguration()
-    let session = Session(webViewConfiguration: configuration)
-    session.delegate = self
-    return session
-  }()
+    lazy var session: Session = {
+        let configuration = WKWebViewConfiguration()
+        let session = Session(webViewConfiguration: configuration)
+        session.delegate = self
+        return session
+    }()
 }
 ```
-
-To create a Session, first create a [WKWebViewConfiguration](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKWebViewConfiguration_Ref/index.html) and configure it as needed (see [Customizing the Web View Configuration](#customizing-the-web-view-configuration) for details). Then pass this configuration to the Session initializer and set the `delegate` property on the returned instance.
 
 The Session’s delegate should act as a top-level coordinator in your application, and must implement the following methods.
 
