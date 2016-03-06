@@ -3,15 +3,18 @@ import WebKit
 
 public protocol SessionDelegate: class {
     func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action)
-    
-    func sessionDidStartRequest(session: Session)
     func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)
-    func sessionDidFinishRequest(session: Session)
 }
 
 public extension SessionDelegate {
     func sessionDidLoadWebView(session: Session) {
         session.webView.navigationDelegate = session
+    }
+
+    func sessionDidStartRequest(session: Session) {
+    }
+
+    func sessionDidFinishRequest(session: Session) {
     }
 }
 
