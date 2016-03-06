@@ -2,22 +2,19 @@ import UIKit
 import WebKit
 
 protocol AuthenticationControllerDelegate: class {
-    func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forAuthenticationController authenticationController: AuthenticationController)
     func authenticationControllerDidAuthenticate(authenticationController: AuthenticationController)
 }
 
 class AuthenticationController: UIViewController, WKNavigationDelegate {
     var URL: NSURL?
+    var webViewConfiguration: WKWebViewConfiguration?
     weak var delegate: AuthenticationControllerDelegate?
 
     lazy var webView: WKWebView = {
-        let configuration = WKWebViewConfiguration()
-        self.delegate?.prepareWebViewConfiguration(configuration, forAuthenticationController: self)
-
+        let configuration = self.webViewConfiguration ?? WKWebViewConfiguration()
         let webView = WKWebView(frame: CGRectZero, configuration: configuration)
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.navigationDelegate = self
-
         return webView
     }()
 

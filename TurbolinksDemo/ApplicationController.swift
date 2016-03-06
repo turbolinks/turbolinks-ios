@@ -61,6 +61,7 @@ class ApplicationController: UINavigationController {
     private func presentAuthenticationController() {
         let authenticationController = AuthenticationController()
         authenticationController.delegate = self
+        authenticationController.webViewConfiguration = webViewConfiguration
         authenticationController.URL = URL.URLByAppendingPathComponent("sign-in")
         authenticationController.title = "Sign in"
 
@@ -124,10 +125,6 @@ extension ApplicationController: WKNavigationDelegate {
 }
 
 extension ApplicationController: AuthenticationControllerDelegate {
-    func prepareWebViewConfiguration(configuration: WKWebViewConfiguration, forAuthenticationController authenticationController: AuthenticationController) {
-        configuration.processPool = webViewProcessPool
-    }
-    
     func authenticationControllerDidAuthenticate(authenticationController: AuthenticationController) {
         session.reload()
         dismissViewControllerAnimated(true, completion: nil)
