@@ -96,21 +96,6 @@ Turbolinks calls `session:didFailRequestForVisitable:withError:` when a visit’
 
 See [Handling Failed Turbolinks Visits](#handling-failed-turbolinks-visits) for more details.
 
-```swift
-func sessionDidStartRequest(session: Session) // (optional)
-func sessionDidFinishRequest(session: Session) // (optional)
-```
-
-Use the `sessionDidStartRequest:` and `sessionDidFinishRequest:` methods to be notified when Turbolinks starts and finishes a network request. For example, you can use this to display the global network activity indicator in your application’s status bar.
-
-```swift
-func sessionDidLoadWebView(session: Session) // (optional)
-```
-
-Turbolinks calls the `sessionDidLoadWebView:` method after every “cold boot,” such as on the initial page load or after pulling to refresh the page.
-
-Implement this method if you want to customize how Turbolinks handles external link taps by setting `session.webView.navigationDelegate` and implementing the WKNavigationDelegate `webView:decidePolicyForNavigationAction:decisionHandler` method.
-
 ## Implementing the Visitable Protocol
 
 - Create a `UIViewController` that conforms to the `Visitable` protocol
@@ -139,7 +124,38 @@ Implement this method if you want to customize how Turbolinks handles external l
 
 ## Starting and Stopping the Global Network Activity Indicator
 
-## Responding to Non-Turbolinks Requests from the Web View
+Implement the optional `sessionDidStartRequest:` and `sessionDidFinishRequest:` methods in your application’s Session delegate to show the global network activity indicator in the status bar while Turbolinks issues network requests.
+
+```swift
+func sessionDidStartRequest(session: Session) {
+    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+}
+
+func sessionDidFinishRequest(session: Session) {
+    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+}
+```
+
+Note that the network activity indicator is a shared resource, so your application will need to perform its own reference counting if other background operations update the indicator state.
+
+## Changing How Turbolinks Opens External Links
+
+By default, Turbolinks for iOS opens external links in Safari. You can change this behavior by becoming the WKWebView’s `navigationDelegate` and implementing the [`webView:decidePolicyForNavigationAction:decisionHandler:`](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKNavigationDelegate_Ref/#//apple_ref/occ/intfm/WKNavigationDelegate/webView:decidePolicyForNavigationAction:decisionHandler:) method yourself.
+
+To assign the web view’s `navigationDelegate` property, implement the Session delegate’s optional `sessionDidLoadWebView:` method. Turbolinks calls this method after every “cold boot,” such as on the initial page load and after pulling to refresh the page.
+
+```swift
+func sessionDidLoadWebView(session: Session) {
+    session.webView.navigationDelegate = self
+}
+
+func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> ()) {
+    decisionHandler(WKNavigationActionPolicy.Cancel)
+    // ...
+}
+```
+
+Note that your application _must_ call the navigation delegate’s `decisionHandler` with `WKNavigationActionPolicy.Cancel` to prevent external URLs from loading in the Turbolinks-managed web view.
 
 ## Handling Failed Turbolinks Visits
 
