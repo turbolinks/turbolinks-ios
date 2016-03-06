@@ -73,10 +73,6 @@ extension ApplicationController: SessionDelegate {
         }
     }
     
-    func sessionDidStartRequest(session: Session) {
-        application.networkActivityIndicatorVisible = true
-    }
-    
     func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
         print("ERROR: \(error)")
         guard let demoViewController = visitable as? DemoViewController else { return }
@@ -99,6 +95,10 @@ extension ApplicationController: SessionDelegate {
         }
     }
     
+    func sessionDidStartRequest(session: Session) {
+        application.networkActivityIndicatorVisible = true
+    }
+
     func sessionDidFinishRequest(session: Session) {
         application.networkActivityIndicatorVisible = false
     }

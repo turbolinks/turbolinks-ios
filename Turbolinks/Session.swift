@@ -4,6 +4,9 @@ import WebKit
 public protocol SessionDelegate: class {
     func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action)
     func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)
+    func sessionDidLoadWebView(session: Session)
+    func sessionDidStartRequest(session: Session)
+    func sessionDidFinishRequest(session: Session)
 }
 
 public extension SessionDelegate {
