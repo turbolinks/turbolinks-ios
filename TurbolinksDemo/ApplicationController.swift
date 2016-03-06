@@ -91,10 +91,7 @@ extension ApplicationController: SessionDelegate {
             let statusCode = error.userInfo["statusCode"] as! Int
             switch statusCode {
             case 401:
-                // Wait for the navigation controller's animation to complete before presenting
-                after(500) {
-                    self.presentAuthenticationController()
-                }
+                presentAuthenticationController()
             case 404:
                 demoViewController.presentError(.HTTPNotFoundError)
             default:
