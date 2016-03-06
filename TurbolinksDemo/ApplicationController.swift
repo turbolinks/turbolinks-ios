@@ -74,7 +74,7 @@ extension ApplicationController: SessionDelegate {
     }
     
     func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
-        print("ERROR: \(error)")
+        NSLog("ERROR: %@", error)
         guard let demoViewController = visitable as? DemoViewController else { return }
 
         switch error.code {
