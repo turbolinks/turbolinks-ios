@@ -141,6 +141,20 @@ session.visit(visitable)
 
 ## Setting Visitable Titles
 
+By default, Turbolinks for iOS sets your Visitable view controller’s `title` property to the page’s `<title>`.
+
+If you want to customize the title or pull it from another element on the page, you can implement the `visitableDidRender` method on your Visitable:
+
+```swift
+func visitableDidRender() {
+    title = formatTitle(visitableView.webView?.title)
+}
+
+func formatTitle(title: String) -> String {
+    // ...
+}
+```
+
 ## Starting and Stopping the Global Network Activity Indicator
 
 Implement the optional `sessionDidStartRequest:` and `sessionDidFinishRequest:` methods in your application’s Session delegate to show the global network activity indicator in the status bar while Turbolinks issues network requests.
