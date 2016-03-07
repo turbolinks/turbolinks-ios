@@ -9,9 +9,9 @@ public protocol VisitableDelegate: class {
 }
 
 public protocol Visitable: class {
-    weak var visitableDelegate: VisitableDelegate? { get set }
-    var visitableURL: NSURL! { get }
+    weak var visitableDelegate: VisitableDelegate? { get set } 
     var visitableView: VisitableView! { get }
+    var visitableURL: NSURL! { get }
     func visitableDidRender()
 }
 

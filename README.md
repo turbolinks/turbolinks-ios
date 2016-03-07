@@ -49,17 +49,15 @@ The demo includes a simple HTTP server that serves a Turbolinks 5 web app on `lo
 To start the demo application in the Simulator, open `turbolinks-ios.xcworkspace` and run the TurbolinksDemo target.
 
 
-# Understanding Turbolinks Concepts
+# Establishing Turbolinks Concepts
 
 The Session class is the central coordinator in a Turbolinks for iOS application. It creates and manages a single WKWebView instance, and lets its delegate—your application—choose how to handle link taps, present view controllers, and deal with network errors.
 
-To visit a URL, first instantiate a UIViewController that conforms to Turbolinks’ Visitable protocol, then present the view controller, and finally call the Session’s `visit` method. The framework provides a default Visitable implementation called VisitableViewController which you can subclass or use directly.
+To visit a URL, first instantiate a UIViewController that conforms to Turbolinks’ Visitable protocol. Then present the view controller and pass it to the Session’s `visit` method. The framework provides a default Visitable implementation called VisitableViewController which you can subclass or use directly.
 
 Each Visitable view controller must provide a VisitableView instance, which acts as a container for the Session’s shared WKWebView. The VisitableView has a pull-to-refresh control and an activity indicator. It also displays a screenshot of its contents when the web view moves to another VisitableView.
 
 When you tap a Turbolinks-enabled link in the web view, the Session asks your application how to handle the link’s URL. Most of the time, your application will visit the URL by creating and presenting a Visitable. But it might also choose to present a native view controller for the URL, or to ignore the URL entirely.
-
-Visitable view controllers must forward their `viewWillAppear` and `viewDidAppear` methods to the Session. The Session uses these hooks to know when it should move the WKWebView from one VisitableView to another.
 
 ## Creating a Session
 
@@ -96,14 +94,38 @@ Turbolinks calls `session:didFailRequestForVisitable:withError:` when a visit’
 
 See [Handling Failed Turbolinks Visits](#handling-failed-turbolinks-visits) for more details.
 
-## Implementing the Visitable Protocol
+## Understanding Visitables
 
-- Create a `UIViewController` that conforms to the `Visitable` protocol
-- Your controller is responsible for performing the following actions as part of the `Visitable` protocol
-  - Activating and deactivating the web view
-  - Showing and hiding an activity indicator
-  - Showing and hiding a screenshot
-- Your controller should override `viewWillAppear` and `viewDidAppear` to notify its `visitableDelegate` when these events take place
+A Visitable is a UIViewController that can be visited by Turbolinks. Visitable view controllers must conform to the Visitable protocol by implementing the following three properties:
+
+```swift
+protocol Visitable {
+    weak var visitableDelegate: VisitableDelegate? { get set }
+    var visitableView: VisitableView! { get }
+    var visitableURL: NSURL! { get }
+}
+```
+
+Turbolinks for iOS provides a VisitableViewController class that implements the Visitable protocol for you. This view controller displays the VisitableView as its single subview.
+
+For example, to create, display, and visit a VisitableViewController in a UINavigationController-based application, you might write:
+
+```swift
+let visitable = VisitableViewController()
+visitable.URL = NSURL(string: "http://localhost:9292/")!
+
+navigationController.pushViewController(visitable, animated: true)
+session.visit(visitable)
+```
+
+Most applications will want to subclass VisitableViewController to customize its layout or add additional views. For example, the bundled demo application has a [DemoViewController subclass](TurbolinksDemo/DemoViewController.swift) that can display a custom error view in place of the VisitableView.
+
+If your application’s design prevents you from subclassing VisitableViewController, you can implement the Visitable protocol yourself. See the [VisitableViewController implementation](Turbolinks/VisitableViewController.swift) for details.
+
+Note that custom Visitable view controllers must forward their `viewWillAppear` and `viewDidAppear` methods to the Visitable delegate’s `visitableViewWillAppear` and `visitableViewDidAppear` methods. The Session uses these hooks to know when it should move the WKWebView from one VisitableView to another.
+
+
+# Building Your Turbolinks Application
 
 ## Responding to Visit Proposals
 
@@ -113,14 +135,9 @@ See [Handling Failed Turbolinks Visits](#handling-failed-turbolinks-visits) for 
    - Presenting a native view controller for the URL
    - Ignoring the proposal altogether
 
-## Presenting Visitables
+## Handling Failed Turbolinks Visits
 
-- Initialize a visitable and set its URL
-- Present the visitable on the screen
-- Call session.visit(visitable) to load its URL in the web view
-
-
-# Building Your Turbolinks Application
+## Setting Visitable Titles
 
 ## Starting and Stopping the Global Network Activity Indicator
 
@@ -156,8 +173,6 @@ func webView(webView: WKWebView, decidePolicyForNavigationAction navigationActio
 ```
 
 Note that your application _must_ call the navigation delegate’s `decisionHandler` with `WKNavigationActionPolicy.Cancel` to prevent external URLs from loading in the Turbolinks-managed web view.
-
-## Handling Failed Turbolinks Visits
 
 ## Customizing the Web View Configuration
 
