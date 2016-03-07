@@ -199,11 +199,54 @@ Note that your application _must_ call the navigation delegate’s `decisionHand
 
 ## Customizing the Web View Configuration
 
-### Setting a Custom User-Agent
+Turbolinks requires your application to provide a [WKWebViewConfiguration](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKWebViewConfiguration_Ref/index.html) when you instantiate a Session. Use this configuration to set a custom user agent, share cookies with other web views, or install custom JavaScript message handlers.
 
-### Sharing a Process Pool with Other Web Views
+```swift
+let configuration = WKWebViewConfiguration()
+```
 
-### Injecting Custom JavaScript Into the Web View
+Note that changing this configuration after creating the Session has no effect.
+
+### Setting a Custom User Agent
+
+Set the `applicationNameForUserAgent` property to include a custom string in the `User-Agent` header. You can check for this string on the server and use it to send specialized markup or assets to your application.
+
+```swift
+configuration.applicationNameForUserAgent = "MyApplication"
+```
+
+### Sharing Cookies with Other Web Views
+
+If you’re using a separate web view for authentication purposes, or if your application has more than one Turbolinks Session, you can use a single [WKProcessPool](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKProcessPool_Ref/index.html) to share cookies across all web views.
+
+Create and retain a reference to a process pool in your application. Then configure your Turbolinks Session and any other web views you create to use this process pool.
+
+```swift
+let processPool = WKProcessPool()
+// ...
+configuration.processPool = processPool
+```
+
+### Passing Messages from JavaScript to Your Application
+
+You can register a [WKScriptMessageHandler](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKScriptMessageHandler_Ref/index.html) on the configuration’s user content controller to send messages from JavaScript to your iOS application.
+
+```swift
+class ScriptMessageHandler: WKScriptMessageHandler {
+    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+        // ...
+    }
+}
+
+let scriptMessageHandler = ScriptMessageHandler()
+configuration.userContentController.addScriptMessageHandler(scriptMessageHandler, name: "myApplication")
+```
+
+```js
+document.addEventListener("click", function() {
+    webkit.messageHandlers.myApplication.postMessage("Hello!")
+})
+```
 
 
 # Contributing to Turbolinks
