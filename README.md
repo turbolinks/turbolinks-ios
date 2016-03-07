@@ -49,13 +49,11 @@ The demo includes a simple HTTP server that serves a Turbolinks 5 web app on `lo
 To start the demo application in the Simulator, open `turbolinks-ios.xcworkspace` and run the TurbolinksDemo target.
 
 
-# Establishing Turbolinks Concepts
+# Understanding Turbolinks Concepts
 
 The Session class is the central coordinator in a Turbolinks for iOS application. It creates and manages a single WKWebView instance, and lets its delegate—your application—choose how to handle link taps, present view controllers, and deal with network errors.
 
-To visit a URL, first instantiate a UIViewController that conforms to Turbolinks’ Visitable protocol. Then present the view controller and pass it to the Session’s `visit` method. The framework provides a default Visitable implementation called VisitableViewController which you can subclass or use directly.
-
-Each Visitable view controller must provide a VisitableView instance, which acts as a container for the Session’s shared WKWebView. The VisitableView has a pull-to-refresh control and an activity indicator. It also displays a screenshot of its contents when the web view moves to another VisitableView.
+A Visitable is a UIViewController that can be visited by the Session. Each Visitable view controller provides a VisitableView instance, which acts as a container for the Session’s shared WKWebView. The VisitableView has a pull-to-refresh control and an activity indicator. It also displays a screenshot of its contents when the web view moves to another VisitableView.
 
 When you tap a Turbolinks-enabled link in the web view, the Session asks your application how to handle the link’s URL. Most of the time, your application will visit the URL by creating and presenting a Visitable. But it might also choose to present a native view controller for the URL, or to ignore the URL entirely.
 
@@ -94,9 +92,9 @@ Turbolinks calls `session:didFailRequestForVisitable:withError:` when a visit’
 
 See [Handling Failed Turbolinks Visits](#handling-failed-turbolinks-visits) for more details.
 
-## Understanding Visitables
+## Working with Visitables
 
-A Visitable is a UIViewController that can be visited by Turbolinks. Visitable view controllers must conform to the Visitable protocol by implementing the following three properties:
+Visitable view controllers must conform to the Visitable protocol by implementing the following three properties:
 
 ```swift
 protocol Visitable {
@@ -108,16 +106,6 @@ protocol Visitable {
 
 Turbolinks for iOS provides a VisitableViewController class that implements the Visitable protocol for you. This view controller displays the VisitableView as its single subview.
 
-For example, to create, display, and visit a VisitableViewController in a UINavigationController-based application, you might write:
-
-```swift
-let visitable = VisitableViewController()
-visitable.URL = NSURL(string: "http://localhost:9292/")!
-
-navigationController.pushViewController(visitable, animated: true)
-session.visit(visitable)
-```
-
 Most applications will want to subclass VisitableViewController to customize its layout or add additional views. For example, the bundled demo application has a [DemoViewController subclass](TurbolinksDemo/DemoViewController.swift) that can display a custom error view in place of the VisitableView.
 
 If your application’s design prevents you from subclassing VisitableViewController, you can implement the Visitable protocol yourself. See the [VisitableViewController implementation](Turbolinks/VisitableViewController.swift) for details.
@@ -126,6 +114,20 @@ Note that custom Visitable view controllers must forward their `viewWillAppear` 
 
 
 # Building Your Turbolinks Application
+
+## Initiating a Visit
+
+To visit a URL with Turbolinks, first instantiate a Visitable view controller. Then present the view controller and pass it to the Session’s `visit` method.
+
+The framework provides a default Visitable implementation called VisitableViewController which you can subclass or use directly. For example, to create, display, and visit a VisitableViewController in a UINavigationController-based application, you might write:
+
+```swift
+let visitable = VisitableViewController()
+visitable.URL = NSURL(string: "http://localhost:9292/")!
+
+navigationController.pushViewController(visitable, animated: true)
+session.visit(visitable)
+```
 
 ## Responding to Visit Proposals
 
