@@ -131,11 +131,18 @@ session.visit(visitable)
 
 ## Responding to Visit Proposals
 
-- When a visit is initiated from the web view, the session's `session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action)` delegate method is called
-- The delegate method is responsible for deciding how to handle the proposal, either by:
-   - Creating a Visitable, presenting it, and performing a visit
-   - Presenting a native view controller for the URL
-   - Ignoring the proposal altogether
+When you tap a Turbolinks-enabled link, the tap makes its way from the web view to the Session as a proposed visit. Your Session’s delegate must implement the `session:didProposeVisitToURL:withAction:` method to choose how to act on each proposal.
+
+Normally you’ll respond to a visit proposal by simply initiating a visit and loading the URL with Turbolinks. See [Initiating a Visit](#initiating-a-visit) for more details.
+
+### Handling Visit Actions
+
+Each proposed visit has an Action, which tells you how you should present the Visitable.
+
+The default Action is `.Advance`. In most cases you’ll respond to an advance visit by pushing a Visitable view controller for the URL onto the navigation stack.
+
+When you follow a link annotated with `data-turbolinks-action="replace"`, the proposed Action will be `.Replace`. Usually you’ll want to handle a replace visit by popping the topmost view controller in the navigation stack and pushing a new Visitable view controller for the proposed URL without animation.
+
 
 ## Handling Failed Turbolinks Visits
 
