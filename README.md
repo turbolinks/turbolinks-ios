@@ -119,7 +119,7 @@ Note that custom Visitable view controllers must forward their `viewWillAppear` 
 
 To visit a URL with Turbolinks, first instantiate a Visitable view controller. Then present the view controller and pass it to the Session’s `visit` method.
 
-The framework provides a default Visitable implementation called VisitableViewController which you can subclass or use directly. For example, to create, display, and visit a VisitableViewController in a UINavigationController-based application, you might write:
+For example, to create, display, and visit the provided VisitableViewController in a UINavigationController-based application, you might write:
 
 ```swift
 let visitable = VisitableViewController()
