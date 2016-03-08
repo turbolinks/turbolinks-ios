@@ -37,7 +37,7 @@ module TurbolinksDemo
     end
 
     get '/sign-in' do
-      @title = 'Sign in'
+      @title = 'Sign In'
       erb :sign_in, layout: :layout
     end
 

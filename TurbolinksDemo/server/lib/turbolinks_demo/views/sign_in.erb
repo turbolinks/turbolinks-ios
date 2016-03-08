@@ -1,13 +1,9 @@
-<h1>Sign in to continue</h1>
+<h1>Please Sign In</h1>
+<p>The page you requested returned a "401 Unauthorized" HTTP error.</p>
+<p>When a request error occurs, Turbolinks calls the SessionDelegate’s <code>session:<span> </span>didFailRequestForVisitable:<span> </span>withError:</code> method.</p>
+<p>The demo app’s ApplicationController implements this method and decides to handle a 401 error by presenting this screen–a separate web view–to request authorization.</p>
 
 <form action="/sign-in" method="post">
-  <p>Email:<br>
-    <input type="text" value="user@example.com">
-  </p>
-
-  <p>Password:<br>
-    <input type="password" value="secret">
-  </p>
-
-  <input type="submit" value="Sign in">
+  <p>Password:<br><input type="password" value="turbolinks"></p>
+  <p><input type="submit" value="Sign in"></p>
 </form>
