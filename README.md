@@ -46,7 +46,7 @@ Turbolinks for iOS includes a demo application to show off features of the frame
 
 The demo includes a simple HTTP server that serves a Turbolinks 5 web app on `localhost` at port 9292. To start the server, run `TurbolinksDemo/demo-server` from the command line.
 
-To start the demo application in the Simulator, open `turbolinks-ios.xcworkspace` and run the TurbolinksDemo target.
+Once you’ve started the demo server, explore the demo application in the Simulator by opening `turbolinks-ios.xcworkspace` and running the TurbolinksDemo target.
 
 
 # Understanding Turbolinks Concepts
@@ -74,7 +74,7 @@ class ...: ..., SessionDelegate {
 }
 ```
 
-The Session’s delegate should act as a top-level coordinator in your application, and must implement the following methods.
+The Session’s delegate must implement the following two methods.
 
 ```swift
 func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action)
@@ -131,18 +131,19 @@ session.visit(visitable)
 
 ## Responding to Visit Proposals
 
-When you tap a Turbolinks-enabled link, the tap makes its way from the web view to the Session as a proposed visit. Your Session’s delegate must implement the `session:didProposeVisitToURL:withAction:` method to choose how to act on each proposal.
+When you tap a Turbolinks-enabled link, the link’s URL and action make their way from the web view to the Session as a proposed visit. Your Session’s delegate must implement the `session:didProposeVisitToURL:withAction:` method to choose how to act on each proposal.
 
 Normally you’ll respond to a visit proposal by simply initiating a visit and loading the URL with Turbolinks. See [Initiating a Visit](#initiating-a-visit) for more details.
 
-### Handling Visit Actions
+You can also choose to intercept the proposed visit and display a native view controller instead. This lets you transparently upgrade pages to native views on a per-URL basis. See the demo application for an example.
+
+### Implementing Visit Actions
 
 Each proposed visit has an Action, which tells you how you should present the Visitable.
 
 The default Action is `.Advance`. In most cases you’ll respond to an advance visit by pushing a Visitable view controller for the URL onto the navigation stack.
 
-When you follow a link annotated with `data-turbolinks-action="replace"`, the proposed Action will be `.Replace`. Usually you’ll want to handle a replace visit by popping the topmost view controller in the navigation stack and pushing a new Visitable view controller for the proposed URL without animation.
-
+When you follow a link annotated with `data-turbolinks-action="replace"`, the proposed Action will be `.Replace`. Usually you’ll want to handle a replace visit by popping the topmost view controller from the navigation stack and pushing a new Visitable for the proposed URL without animation.
 
 ## Handling Failed Turbolinks Visits
 
