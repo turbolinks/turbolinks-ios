@@ -261,11 +261,44 @@ extension Session: WebViewDelegate {
 }
 
 extension Session: WKNavigationDelegate {
-    public func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> ()) {
-        decisionHandler(WKNavigationActionPolicy.Cancel)
+    private struct NavigationDecision {
+        let navigationAction: WKNavigationAction
 
-        if let URL = navigationAction.request.URL {
+        var policy: WKNavigationActionPolicy {
+            return isMainFrameNavigation ? .Cancel : .Allow
+        }
+
+        var externallyOpenableURL: NSURL? {
+            if let URL = navigationAction.request.URL where shouldOpenURLExternally {
+                return URL
+            } else {
+                return nil
+            }
+        }
+
+        var shouldOpenURLExternally: Bool {
+            let type = navigationAction.navigationType
+            return isMainFrameNavigation && (type == .LinkActivated || type == .Other)
+        }
+
+        var shouldReloadPage: Bool {
+            let type = navigationAction.navigationType
+            return isMainFrameNavigation && type == .Reload
+        }
+
+        var isMainFrameNavigation: Bool {
+            return navigationAction.targetFrame?.mainFrame ?? false
+        }
+    }
+
+    public func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> ()) {
+        let navigationDecision = NavigationDecision(navigationAction: navigationAction)
+        decisionHandler(navigationDecision.policy)
+
+        if let URL = navigationDecision.externallyOpenableURL {
             UIApplication.sharedApplication().openURL(URL)
+        } else if navigationDecision.shouldReloadPage {
+            reload()
         }
     }
 }
