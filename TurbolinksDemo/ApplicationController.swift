@@ -30,8 +30,7 @@ class ApplicationController: UINavigationController {
     }
 
     private func presentVisitableForSession(session: Session, URL: NSURL, action: Action = .Advance) {
-        let visitable = DemoViewController()
-        visitable.visitableURL = URL
+        let visitable = DemoViewController(URL: URL)
 
         if action == .Advance {
             pushViewController(visitable, animated: true)
