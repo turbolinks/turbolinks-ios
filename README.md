@@ -80,7 +80,7 @@ The Session’s delegate must implement the following two methods.
 func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action)
 ```
 
-Turbolinks for iOS calls the `session:didProposeVisitToURL:withAction:` method before every visit, such as when you tap a Turbolinks-enabled link or call `Turbolinks.visit(...)` in your web application. Implement this method to choose how to handle the specified URL and action.
+Turbolinks for iOS calls the `session:didProposeVisitToURL:withAction:` method before every [application visit](https://github.com/turbolinks/turbolinks/blob/master/README.md#application-visits), such as when you tap a Turbolinks-enabled link or call `Turbolinks.visit(...)` in your web application. Implement this method to choose how to handle the specified URL and action.
 
 See [Responding to Visit Proposals](#responding-to-visit-proposals) for more details.
 
