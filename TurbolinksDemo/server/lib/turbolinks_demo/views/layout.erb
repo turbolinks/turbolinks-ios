@@ -5,6 +5,14 @@
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0">
     <title><%= @title %></title>
     <script src="/turbolinks.js"></script>
+    <script>
+      document.addEventListener("click", function(event) {
+        if (event.target && event.target.matches("[data-behavior~=post-message]")) {
+          webkit.messageHandlers.turbolinksDemo.postMessage("Hello from JavaScript!");
+          event.preventDefault();
+        }
+      });
+    </script>
     <style>
       * { -webkit-user-select: none }
       html { -webkit-text-size-adjust: 100% }

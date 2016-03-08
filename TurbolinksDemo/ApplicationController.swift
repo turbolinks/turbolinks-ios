@@ -17,6 +17,7 @@ class ApplicationController: UINavigationController {
 
         let configuration = WKWebViewConfiguration()
         configuration.userContentController.addUserScript(userScript)
+        configuration.userContentController.addScriptMessageHandler(self, name: "turbolinksDemo")
         configuration.processPool = self.webViewProcessPool
         configuration.applicationNameForUserAgent = "TurbolinksDemo"
         return configuration
@@ -108,5 +109,15 @@ extension ApplicationController: AuthenticationControllerDelegate {
     func authenticationControllerDidAuthenticate(authenticationController: AuthenticationController) {
         session.reload()
         dismissViewControllerAnimated(true, completion: nil)
+    }
+}
+
+extension ApplicationController: WKScriptMessageHandler {
+    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+        if let message = message.body as? String {
+            let alertController = UIAlertController(title: "Turbolinks", message: message, preferredStyle: .Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+            presentViewController(alertController, animated: true, completion: nil)
+        }
     }
 }
