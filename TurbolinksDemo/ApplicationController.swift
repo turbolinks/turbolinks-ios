@@ -71,10 +71,10 @@ extension ApplicationController: SessionDelegate {
     
     func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
         NSLog("ERROR: %@", error)
-        guard let demoViewController = visitable as? DemoViewController else { return }
+        guard let demoViewController = visitable as? DemoViewController, errorCode = ErrorCode(rawValue: error.code) else { return }
 
-        switch error.code {
-        case ErrorCode.HTTPFailure.rawValue:
+        switch errorCode {
+        case .HTTPFailure:
             let statusCode = error.userInfo["statusCode"] as! Int
             switch statusCode {
             case 401:
@@ -84,10 +84,8 @@ extension ApplicationController: SessionDelegate {
             default:
                 demoViewController.presentError(Error(HTTPStatusCode: statusCode))
             }
-        case ErrorCode.NetworkFailure.rawValue:
+        case .NetworkFailure:
             demoViewController.presentError(.NetworkError)
-        default:
-            demoViewController.presentError(.UnknownError)
         }
     }
     
