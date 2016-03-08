@@ -149,11 +149,11 @@ When you follow a link annotated with `data-turbolinks-action="replace"`, the pr
 
 Turbolinks for iOS calls the `session:didFailRequestForVisitable:withError:` method when a visit request fails. This might be because of a network error, or because the server returned an HTTP 4xx or 5xx status code.
 
-Details about the error are available in the NSError object. Access its `code` property to see why the request failed.
+The NSError object provides details about the error. Access its `code` property to see why the request failed.
 
-An error code of `.HTTPFailure` indicates that the server returned an HTTP error. The HTTP status code is available in the error object's `userInfo` dictionary under the key `"statusCode"`.
+An error code of `.HTTPFailure` indicates that the server returned an HTTP error. You can access the HTTP status code in the error object's `userInfo` dictionary under the key `"statusCode"`.
 
-An error code of `.NetworkFailure` indicates a problem with the network connection. The connection may be offline, the server may be unavailable, or the request may have timed out without a response.
+An error code of `.NetworkFailure` indicates a problem with the network connection: the connection may be offline, the server may be unavailable, or the request may have timed out without receiving a response.
 
 ```swift
 func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
