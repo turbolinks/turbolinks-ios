@@ -43,6 +43,10 @@ public class Session: NSObject {
         _webView.delegate = self
     }
 
+    public convenience override init() {
+        self.init(webViewConfiguration: WKWebViewConfiguration())
+    }
+   
     // MARK: Visiting
 
     private var currentVisit: Visit?

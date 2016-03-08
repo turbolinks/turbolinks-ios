@@ -5,6 +5,10 @@ public class VisitableViewController: UIViewController, Visitable {
 
     public var visitableURL: NSURL!
 
+    public convenience init(URL: NSURL) {
+        self.init()
+        self.visitableURL = URL
+    }
 
     // MARK: Visitable View
 
