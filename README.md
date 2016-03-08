@@ -179,9 +179,26 @@ func sessionDidFinishRequest(session: Session) {
 
 Note that the network activity indicator is a shared resource, so your application will need to perform its own reference counting if other background operations update the indicator state.
 
-## Changing How Turbolinks Opens External Links
+## Changing How Turbolinks Opens External URLs
 
-By default, Turbolinks for iOS opens external links in Safari. You can change this behavior by becoming the WKWebView’s `navigationDelegate` and implementing the [`webView:decidePolicyForNavigationAction:decisionHandler:`](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKNavigationDelegate_Ref/#//apple_ref/occ/intfm/WKNavigationDelegate/webView:decidePolicyForNavigationAction:decisionHandler:) method yourself.
+By default, Turbolinks for iOS opens external URLs in Safari. You can change this behavior by implementing the Session delegate’s optional `session:openExternalURL:` method.
+
+For example, to open external URLs in an in-app [SFSafariViewController](https://developer.apple.com/library/ios/documentation/SafariServices/Reference/SFSafariViewController_Ref/index.html), you might write:
+
+```swift
+import SafariServices
+
+// ...
+
+func session(session: Session, openExternalURL URL: NSURL) {
+    let safariViewController = SFSafariViewController(URL: URL)
+    presentViewController(safariViewController, animated: true, completion: nil)
+}
+```
+
+### Becoming the Web View’s Navigation Delegate
+
+Your application may require precise control over the web view’s navigation policy. If so, you can assign yourself as the WKWebView’s `navigationDelegate` and implement the [`webView:decidePolicyForNavigationAction:decisionHandler:`](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKNavigationDelegate_Ref/#//apple_ref/occ/intfm/WKNavigationDelegate/webView:decidePolicyForNavigationAction:decisionHandler:) method.
 
 To assign the web view’s `navigationDelegate` property, implement the Session delegate’s optional `sessionDidLoadWebView:` method. Turbolinks calls this method after every “cold boot,” such as on the initial page load and after pulling to refresh the page.
 
@@ -196,7 +213,9 @@ func webView(webView: WKWebView, decidePolicyForNavigationAction navigationActio
 }
 ```
 
-Note that your application _must_ call the navigation delegate’s `decisionHandler` with `WKNavigationActionPolicy.Cancel` to prevent external URLs from loading in the Turbolinks-managed web view.
+Once you assign your own navigation delegate, Turbolinks will no longer invoke the Session delegate’s `session:openExternalURL:` method.
+
+Note that your application _must_ call the navigation delegate’s `decisionHandler` with `WKNavigationActionPolicy.Cancel` for main-frame navigation to prevent external URLs from loading in the Turbolinks-managed web view.
 
 ## Customizing the Web View Configuration
 

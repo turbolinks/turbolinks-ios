@@ -4,6 +4,7 @@ import WebKit
 public protocol SessionDelegate: class {
     func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action)
     func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)
+    func session(session: Session, openExternalURL URL: NSURL)
     func sessionDidLoadWebView(session: Session)
     func sessionDidStartRequest(session: Session)
     func sessionDidFinishRequest(session: Session)
@@ -12,6 +13,10 @@ public protocol SessionDelegate: class {
 public extension SessionDelegate {
     func sessionDidLoadWebView(session: Session) {
         session.webView.navigationDelegate = session
+    }
+
+    func session(session: Session, openExternalURL URL: NSURL) {
+        UIApplication.sharedApplication().openURL(URL)
     }
 
     func sessionDidStartRequest(session: Session) {
@@ -261,6 +266,17 @@ extension Session: WebViewDelegate {
 }
 
 extension Session: WKNavigationDelegate {
+    public func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> ()) {
+        let navigationDecision = NavigationDecision(navigationAction: navigationAction)
+        decisionHandler(navigationDecision.policy)
+
+        if let URL = navigationDecision.externallyOpenableURL {
+            openExternalURL(URL)
+        } else if navigationDecision.shouldReloadPage {
+            reload()
+        }
+    }
+
     private struct NavigationDecision {
         let navigationAction: WKNavigationAction
 
@@ -290,15 +306,8 @@ extension Session: WKNavigationDelegate {
             return navigationAction.targetFrame?.mainFrame ?? false
         }
     }
-
-    public func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> ()) {
-        let navigationDecision = NavigationDecision(navigationAction: navigationAction)
-        decisionHandler(navigationDecision.policy)
-
-        if let URL = navigationDecision.externallyOpenableURL {
-            UIApplication.sharedApplication().openURL(URL)
-        } else if navigationDecision.shouldReloadPage {
-            reload()
-        }
+    
+    private func openExternalURL(URL: NSURL) {
+        delegate?.session(self, openExternalURL: URL)
     }
 }
