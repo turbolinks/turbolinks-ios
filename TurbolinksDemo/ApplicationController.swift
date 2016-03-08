@@ -11,12 +11,7 @@ class ApplicationController: UINavigationController {
     }
 
     private lazy var webViewConfiguration: WKWebViewConfiguration = {
-        let bundle = NSBundle.mainBundle()
-        let source = try! String(contentsOfURL: bundle.URLForResource("TurbolinksDemo", withExtension: "js")!, encoding: NSUTF8StringEncoding)
-        let userScript = WKUserScript(source: source, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
-
         let configuration = WKWebViewConfiguration()
-        configuration.userContentController.addUserScript(userScript)
         configuration.userContentController.addScriptMessageHandler(self, name: "turbolinksDemo")
         configuration.processPool = self.webViewProcessPool
         configuration.applicationNameForUserAgent = "TurbolinksDemo"

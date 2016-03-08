@@ -18,7 +18,6 @@
 		2230A7EF1C874108001B4AC1 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2230A7EE1C874108001B4AC1 /* Error.swift */; };
 		22CB5D901C62981700F24EA7 /* Turbolinks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22CB5D8D1C62980000F24EA7 /* Turbolinks.framework */; };
 		22CB5D911C62982800F24EA7 /* Turbolinks.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 22CB5D8D1C62980000F24EA7 /* Turbolinks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		22CB5D961C6299AB00F24EA7 /* TurbolinksDemo.js in Resources */ = {isa = PBXBuildFile; fileRef = 22CB5D951C6299AB00F24EA7 /* TurbolinksDemo.js */; };
 		92DF45171C81149B0064E606 /* NumbersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92DF45161C81149B0064E606 /* NumbersViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -73,7 +72,6 @@
 		2230A7EC1C869BD2001B4AC1 /* ErrorView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ErrorView.xib; sourceTree = "<group>"; };
 		2230A7EE1C874108001B4AC1 /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		22CB5D881C62980000F24EA7 /* Turbolinks.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Turbolinks.xcodeproj; sourceTree = "<group>"; };
-		22CB5D951C6299AB00F24EA7 /* TurbolinksDemo.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = TurbolinksDemo.js; sourceTree = "<group>"; };
 		92DF45161C81149B0064E606 /* NumbersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumbersViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -116,7 +114,6 @@
 				2230A7EE1C874108001B4AC1 /* Error.swift */,
 				2230A7EA1C8694EC001B4AC1 /* ErrorView.swift */,
 				92DF45161C81149B0064E606 /* NumbersViewController.swift */,
-				22CB5D951C6299AB00F24EA7 /* TurbolinksDemo.js */,
 				2230A7EC1C869BD2001B4AC1 /* ErrorView.xib */,
 				1FC168221B55A16C00AA6F43 /* LaunchScreen.xib */,
 				1F8FC6AA1B55A34500A781C8 /* Main.storyboard */,
@@ -226,7 +223,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				22CB5D961C6299AB00F24EA7 /* TurbolinksDemo.js in Resources */,
 				1F8FC6AC1B55A34500A781C8 /* Main.storyboard in Resources */,
 				1FC168241B55A16C00AA6F43 /* LaunchScreen.xib in Resources */,
 				2230A7ED1C869BD2001B4AC1 /* ErrorView.xib in Resources */,
