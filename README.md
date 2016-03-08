@@ -119,7 +119,7 @@ Note that custom Visitable view controllers must forward their `viewWillAppear` 
 
 To visit a URL with Turbolinks, first instantiate a Visitable view controller. Then present the view controller and pass it to the Session’s `visit` method.
 
-For example, to create, display, and visit the provided VisitableViewController in a UINavigationController-based application, you might write:
+For example, to create, display, and visit Turbolinks’ built-in VisitableViewController in a UINavigationController-based application, you might write:
 
 ```swift
 let visitable = VisitableViewController()
@@ -145,7 +145,33 @@ The default Action is `.Advance`. In most cases you’ll respond to an advance v
 
 When you follow a link annotated with `data-turbolinks-action="replace"`, the proposed Action will be `.Replace`. Usually you’ll want to handle a replace visit by popping the topmost view controller from the navigation stack and pushing a new Visitable for the proposed URL without animation.
 
-## Handling Failed Turbolinks Visits
+## Handling Failed Requests
+
+Turbolinks for iOS calls the `session:didFailRequestForVisitable:withError:` method when a visit request fails. This might be because of a network error, or because the server returned an HTTP 4xx or 5xx status code.
+
+Details about the error are available in the NSError object. Access its `code` property to see why the request failed.
+
+An error code of `.HTTPFailure` indicates that the server returned an HTTP error. The HTTP status code is available in the error object's `userInfo` dictionary under the key `"statusCode"`.
+
+An error code of `.NetworkFailure` indicates a problem with the network connection. The connection may be offline, the server may be unavailable, or the request may have timed out without a response.
+
+```swift
+func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
+    guard let errorCode = ErrorCode(rawValue: error.code) else { return }
+
+    switch errorCode {
+    case .HTTPFailure:
+        let statusCode = error.userInfo["statusCode"] as! Int
+        // Display or handle the HTTP error code
+    case .NetworkFailure:
+        // Display the network failure or retry the visit
+    }
+}
+```
+
+HTTP error codes are a good way for the server to communicate specific requirements to your Turbolinks application. For example, you might use a `401 Unauthorized` response as a signal to prompt the user for authentication.
+
+See the demo app’s [ApplicationController](TurbolinksDemo/ApplicationController.swift) for a detailed example of how to present error messages and perform authorization.
 
 ## Setting Visitable Titles
 
