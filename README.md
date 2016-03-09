@@ -48,7 +48,9 @@ The demo includes a simple HTTP server that serves a Turbolinks 5 web app on `lo
 
 Once you’ve started the demo server, explore the demo application in the Simulator by opening `turbolinks-ios.xcworkspace` and running the TurbolinksDemo target.
 
-## Kicking Off Your Application
+![Turbolinks for iOS demo application](https://s3.amazonaws.com/turbolinks-docs/images/ios-demo.png)
+
+## Getting Started
 
 We recommend playing with the demo app to get familiar with the framework. When you’re ready to start your own application, see our [Quick Start Guide](https://github.com/turbolinks/turbolinks-ios/wiki/Quick-Start-Guide) for step-by-step instructions to lay the foundation.
 
