@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'sinatra/cookies'
+require 'tilt/erb'
 require 'turbolinks/source'
 
 module TurbolinksDemo
