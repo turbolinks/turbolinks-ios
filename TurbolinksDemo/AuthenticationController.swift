@@ -5,7 +5,7 @@ protocol AuthenticationControllerDelegate: class {
     func authenticationControllerDidAuthenticate(authenticationController: AuthenticationController)
 }
 
-class AuthenticationController: UIViewController, WKNavigationDelegate {
+class AuthenticationController: UIViewController {
     var URL: NSURL?
     var webViewConfiguration: WKWebViewConfiguration?
     weak var delegate: AuthenticationControllerDelegate?
@@ -29,9 +29,9 @@ class AuthenticationController: UIViewController, WKNavigationDelegate {
             webView.loadRequest(NSURLRequest(URL: URL))
         }
     }
+}
 
-    // MARK: WKNavigationDelegate
-
+extension AuthenticationController: WKNavigationDelegate {
     func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
         if let URL = navigationAction.request.URL where URL != self.URL {
             decisionHandler(.Cancel)
