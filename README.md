@@ -52,7 +52,7 @@ Once you’ve started the demo server, explore the demo application in the Simul
 
 ## Getting Started
 
-We recommend playing with the demo app to get familiar with the framework. When you’re ready to start your own application, see our [Quick Start Guide](https://github.com/turbolinks/turbolinks-ios/wiki/Quick-Start-Guide) for step-by-step instructions to lay the foundation.
+We recommend playing with the demo app to get familiar with the framework. When you’re ready to start your own application, see our [Quick Start Guide](QuickStartGuide.md) for step-by-step instructions to lay the foundation.
 
 # Understanding Turbolinks Concepts
 
