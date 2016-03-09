@@ -66,19 +66,6 @@ When you tap a Turbolinks-enabled link in the web view, the Session asks your ap
 
 To create a Session, first create a [WKWebViewConfiguration](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKWebViewConfiguration_Ref/index.html) and configure it as needed (see [Customizing the Web View Configuration](#customizing-the-web-view-configuration) for details). Then pass this configuration to the Session initializer and set the `delegate` property on the returned instance.
 
-```swift
-import Turbolinks
-
-class ...: ..., SessionDelegate {
-    lazy var session: Session = {
-        let configuration = WKWebViewConfiguration()
-        let session = Session(webViewConfiguration: configuration)
-        session.delegate = self
-        return session
-    }()
-}
-```
-
 The Session’s delegate must implement the following two methods.
 
 ```swift
@@ -250,10 +237,11 @@ Note that your application _must_ call the navigation delegate’s `decisionHand
 
 ## Customizing the Web View Configuration
 
-Turbolinks requires your application to provide a [WKWebViewConfiguration](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKWebViewConfiguration_Ref/index.html) when you instantiate a Session. Use this configuration to set a custom user agent, share cookies with other web views, or install custom JavaScript message handlers.
+Turbolinks allows your application to provide a [WKWebViewConfiguration](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKWebViewConfiguration_Ref/index.html) when you instantiate a Session. Use this configuration to set a custom user agent, share cookies with other web views, or install custom JavaScript message handlers.
 
 ```swift
 let configuration = WKWebViewConfiguration()
+let session = Session(webViewConfiguration: configuration)
 ```
 
 Note that changing this configuration after creating the Session has no effect.
