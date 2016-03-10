@@ -42,9 +42,9 @@ Then run `pod install`.
 
 ## Running the Demo
 
-This repository includes a demo application to show off features of the framework.
+This repository includes a demo application to show off features of the Turbolinks framework. The demo bundles a simple HTTP server that serves a Turbolinks 5 web app on localhost at port 9292.
 
-The demo includes a simple HTTP server that serves a Turbolinks 5 web app on `localhost` at port 9292. To start the server, run `TurbolinksDemo/demo-server` from the command line.
+To run the demo, clone this repository to your computer and change into its directory. Then, start the demo server by running `TurbolinksDemo/demo-server` from the command line.
 
 Once you’ve started the demo server, explore the demo application in the Simulator by opening `turbolinks-ios.xcworkspace` and running the TurbolinksDemo target.
 
