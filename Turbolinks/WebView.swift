@@ -117,13 +117,10 @@ extension WebView: WKScriptMessageHandler {
         switch message.name {
         case .PageLoaded:
             pageLoadDelegate?.webView(self, didLoadPageWithRestorationIdentifier: message.restorationIdentifier!)
-        case .ErrorRaised:
-            let error = message.data["error"] as? String
-            NSLog("JavaScript error: %@", error ?? "<unknown error>")
-        case .VisitProposed:
-            delegate?.webView(self, didProposeVisitToLocation: message.location!, withAction: message.action!)
         case .PageInvalidated:
             delegate?.webViewDidInvalidatePage(self)
+        case .VisitProposed:
+            delegate?.webView(self, didProposeVisitToLocation: message.location!, withAction: message.action!)
         case .VisitStarted:
             visitDelegate?.webView(self, didStartVisitWithIdentifier: message.identifier!, hasCachedSnapshot: message.data["hasCachedSnapshot"] as! Bool)
         case .VisitRequestStarted:
@@ -138,6 +135,9 @@ extension WebView: WKScriptMessageHandler {
             visitDelegate?.webView(self, didRenderForVisitWithIdentifier: message.identifier!)
         case .VisitCompleted:
             visitDelegate?.webView(self, didCompleteVisitWithIdentifier: message.identifier!, restorationIdentifier: message.restorationIdentifier!)
+        case .ErrorRaised:
+            let error = message.data["error"] as? String
+            NSLog("JavaScript error: %@", error ?? "<unknown error>")
         }
     }
 }
