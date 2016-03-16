@@ -56,11 +56,11 @@ public class Session: NSObject {
         return topmostVisit?.visitable
     }
 
-    public func visit(visitable: Visitable) {
-        visitVisitable(visitable, action: .Advance)
+    public func visit(visitable: Visitable, initialRequestHeaders: [String: String] = [String: String]()) {
+        visitVisitable(visitable, action: .Advance, initialRequestHeaders: initialRequestHeaders)
     }
     
-    private func visitVisitable(visitable: Visitable, action: Action) {
+    private func visitVisitable(visitable: Visitable, action: Action, initialRequestHeaders: [String: String] = [String: String]()) {
         guard visitable.visitableURL != nil else { return }
 
         visitable.visitableDelegate = self
@@ -71,7 +71,8 @@ public class Session: NSObject {
             visit = JavaScriptVisit(visitable: visitable, action: action, webView: _webView)
             visit.restorationIdentifier = restorationIdentifierForVisitable(visitable)
         } else {
-            visit = ColdBootVisit(visitable: visitable, action: action, webView: _webView)
+            visit = ColdBootVisit(visitable: visitable, action: action, webView: _webView,
+                initialRequestHeaders: initialRequestHeaders)
         }
 
         currentVisit?.cancel()
