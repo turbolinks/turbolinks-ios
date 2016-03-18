@@ -82,10 +82,10 @@ public class Session: NSObject {
         visit.start()
     }
 
-    public func reload() {
+    public func reload(requestHeaders: [String: String] = [String: String]()) {
         if let visitable = topmostVisitable {
             initialized = false
-            visit(visitable)
+            visit(visitable, initialRequestHeaders: requestHeaders)
             topmostVisit = currentVisit
         }
     }
