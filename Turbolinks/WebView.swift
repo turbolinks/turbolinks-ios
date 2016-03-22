@@ -103,7 +103,7 @@ class WebView: WKWebView {
 
         if let data = try? NSJSONSerialization.dataWithJSONObject(arguments, options: []),
             string = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
-                return string[Range(start: string.startIndex.successor(), end: string.endIndex.predecessor())]
+                return string[string.startIndex.successor() ..< string.endIndex.predecessor()]
         }
         
         return nil
