@@ -28,6 +28,7 @@ public extension SessionDelegate {
 
 public class Session: NSObject {
     public weak var delegate: SessionDelegate?
+    public var initialRequestHeaders: [String: String] = [String: String]()
 
     public var webView: WKWebView {
         return _webView
@@ -56,11 +57,11 @@ public class Session: NSObject {
         return topmostVisit?.visitable
     }
 
-    public func visit(visitable: Visitable, initialRequestHeaders: [String: String] = [String: String]()) {
-        visitVisitable(visitable, action: .Advance, initialRequestHeaders: initialRequestHeaders)
+    public func visit(visitable: Visitable) {
+        visitVisitable(visitable, action: .Advance)
     }
     
-    private func visitVisitable(visitable: Visitable, action: Action, initialRequestHeaders: [String: String] = [String: String]()) {
+    private func visitVisitable(visitable: Visitable, action: Action) {
         guard visitable.visitableURL != nil else { return }
 
         visitable.visitableDelegate = self
@@ -82,10 +83,10 @@ public class Session: NSObject {
         visit.start()
     }
 
-    public func reload(requestHeaders: [String: String] = [String: String]()) {
+    public func reload() {
         if let visitable = topmostVisitable {
             initialized = false
-            visit(visitable, initialRequestHeaders: requestHeaders)
+            visit(visitable)
             topmostVisit = currentVisit
         }
     }
