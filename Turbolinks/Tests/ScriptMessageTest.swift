@@ -10,21 +10,21 @@ class ScriptMessageTest: XCTestCase {
         XCTAssertNil(message)
     }
     
-    func testParseWithInvalidName() {
+    func test_ParseWithInvalidName() {
         let script = FakeScriptMessage(body: ["name": "foobar"])
         
         let message = ScriptMessage.parse(script)
         XCTAssertNil(message)
     }
     
-    func testParseWithMissingData() {
+    func test_ParseWithMissingData() {
         let script = FakeScriptMessage(body: ["name": "pageLoaded"])
         
         let message = ScriptMessage.parse(script)
         XCTAssertNil(message)
     }
     
-    func testParseWithValidBody() {
+    func test_ParseWithValidBody() {
         let data = ["identifier": "123", "restorationIdentifier": "abc", "action": "advance", "location": "http://turbolinks.test"]
         let script = FakeScriptMessage(body: ["name": "pageLoaded", "data": data])
         

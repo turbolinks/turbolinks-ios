@@ -46,9 +46,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1FC167F91B55A14900AA6F43"
-               BuildableName = "TurbolinksTests.xctest"
-               BlueprintName = "TurbolinksTests"
+               BlueprintIdentifier = "92DF45061C80F7960064E606"
+               BuildableName = "Tests.xctest"
+               BlueprintName = "Tests"
                ReferencedContainer = "container:Turbolinks.xcodeproj">
             </BuildableReference>
          </TestableReference>

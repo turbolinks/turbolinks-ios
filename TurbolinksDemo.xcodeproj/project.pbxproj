@@ -165,7 +165,8 @@
 				8442C5A91C9F83D200FD8CC7 /* Info.plist */,
 				8442C5A71C9F83D200FD8CC7 /* UITests.swift */,
 			);
-			path = "UI Tests";
+			name = "UI Tests";
+			path = TurbolinksDemo/UITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -455,10 +456,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				INFOPLIST_FILE = "UI Tests/Info.plist";
+				INFOPLIST_FILE = TurbolinksDemo/UITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.basecamp.UI-Tests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.basecamp.TurbolinksDemo.UITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_TARGET_NAME = TurbolinksDemo;
 				USES_XCTRUNNER = YES;
@@ -468,10 +469,10 @@
 		8442C5AD1C9F83D200FD8CC7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = "UI Tests/Info.plist";
+				INFOPLIST_FILE = TurbolinksDemo/UITests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.basecamp.UI-Tests";
+				PRODUCT_BUNDLE_IDENTIFIER = com.basecamp.TurbolinksDemo.UITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_TARGET_NAME = TurbolinksDemo;
 				USES_XCTRUNNER = YES;
@@ -506,6 +507,7 @@
 				8442C5AD1C9F83D200FD8CC7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

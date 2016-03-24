@@ -132,7 +132,8 @@
 				92DF450B1C80F7970064E606 /* Info.plist */,
 				92DF45121C80FA190064E606 /* ScriptMessageTest.swift */,
 			);
-			path = Tests;
+			name = Tests;
+			path = Turbolinks/Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -408,7 +409,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				INFOPLIST_FILE = Tests/Info.plist;
+				INFOPLIST_FILE = Turbolinks/Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.basecamp.Turbolinks.Tests;
@@ -421,7 +422,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
-				INFOPLIST_FILE = Tests/Info.plist;
+				INFOPLIST_FILE = Turbolinks/Tests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.basecamp.Turbolinks.Tests;
