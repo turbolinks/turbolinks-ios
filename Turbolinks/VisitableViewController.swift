@@ -24,6 +24,11 @@ public class VisitableViewController: UIViewController, Visitable {
         view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": visitableView ]))
     }
 
+    // MARK: Visitable
+
+    public func visitableDidRender() {
+        self.title = visitableView.webView?.title
+    }
 
     // MARK: View Lifecycle
 
