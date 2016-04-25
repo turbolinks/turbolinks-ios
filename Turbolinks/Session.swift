@@ -34,11 +34,13 @@ public class Session: NSObject {
     }
 
     private var _webView: WebView
+    private var emailer: Emailer
     private var initialized = false
     private var refreshing = false
 
     public init(webViewConfiguration: WKWebViewConfiguration) {
         _webView = WebView(configuration: webViewConfiguration)
+        emailer = Emailer()
         super.init()
         _webView.delegate = self
     }
@@ -275,7 +277,12 @@ extension Session: WKNavigationDelegate {
         decisionHandler(navigationDecision.policy)
 
         if let URL = navigationDecision.externallyOpenableURL {
-            openExternalURL(URL)
+            if URL.scheme == "mailto" {
+                emailer.sendEmail(URL)
+            }
+            else {
+                openExternalURL(URL)
+            }
         } else if navigationDecision.shouldReloadPage {
             reload()
         }
