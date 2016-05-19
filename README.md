@@ -137,6 +137,13 @@ The default Action is `.Advance`. In most cases you’ll respond to an advance v
 
 When you follow a link annotated with `data-turbolinks-action="replace"`, the proposed Action will be `.Replace`. Usually you’ll want to handle a replace visit by popping the topmost view controller from the navigation stack and pushing a new Visitable for the proposed URL without animation.
 
+
+## Handling Form Submission
+
+Form submissions need to be submitted using XMLHttpRequest, and [use the response to tell Turbolinks where to navigate afterwards](https://github.com/turbolinks/turbolinks#redirecting-after-a-form-submission)
+
+The reason standard form submissions don’t work in iOS is because our [default navigation policy handler disables them](https://github.com/turbolinks/turbolinks-ios/blob/b4937ea1bd3786c5552746ccc3cbf9676969c29b/Turbolinks/Session.swift#L273-L282). You can try [implementing your own policy](https://github.com/turbolinks/turbolinks-ios#becoming-the-web-views-navigation-delegate), but it is a much more difficult task than just submitting forms over XHR.
+
 ## Handling Failed Requests
 
 Turbolinks for iOS calls the `session:didFailRequestForVisitable:withError:` method when a visit request fails. This might be because of a network error, or because the server returned an HTTP 4xx or 5xx status code.
