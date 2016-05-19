@@ -52,7 +52,7 @@
         },
 
         // Adapter interface
-       
+
         visitProposedToLocationWithAction: function(location, action) {
             this.postMessage("visitProposed", { location: location.absoluteURL, action: action })
         },
@@ -112,4 +112,4 @@
     }, false)
 
     webView.pageLoaded()
- })()
+})()
