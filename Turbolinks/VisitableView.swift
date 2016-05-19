@@ -131,18 +131,18 @@ public class VisitableView: UIView {
             let screenshot = webView.snapshotViewAfterScreenUpdates(false)
             screenshot.translatesAutoresizingMaskIntoConstraints = false
             screenshotContainerView.addSubview(screenshot)
-            
-            NSLayoutConstraint.activateConstraints([
-                screenshot.centerXAnchor.constraintEqualToAnchor(screenshotContainerView.centerXAnchor),
-                screenshot.topAnchor.constraintEqualToAnchor(screenshotContainerView.topAnchor),
-                screenshot.widthAnchor.constraintEqualToConstant(screenshot.bounds.size.width),
-                screenshot.heightAnchor.constraintEqualToConstant(screenshot.bounds.size.height)
-            ])
+
+            screenshotContainerView.addConstraints([
+                NSLayoutConstraint(item: screenshot, attribute: .CenterX, relatedBy: .Equal, toItem: screenshotContainerView, attribute: .CenterX, multiplier: 1, constant: 0),
+                NSLayoutConstraint(item: screenshot, attribute: .Top, relatedBy: .Equal, toItem: screenshotContainerView, attribute: .Top, multiplier: 1, constant: 0),
+                NSLayoutConstraint(item: screenshot, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: screenshot.bounds.size.width),
+                NSLayoutConstraint(item: screenshot, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: screenshot.bounds.size.height)
+                ])
 
             screenshotView = screenshot
         }
     }
-
+    
     public func showScreenshot() {
         if !isShowingScreenshot && !isRefreshing {
             addSubview(screenshotContainerView)
