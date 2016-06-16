@@ -147,21 +147,27 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
     }
 
     override private func cancelVisit() {
-        webView.navigationDelegate = nil
+        removeNavigationDelegate()
         webView.stopLoading()
         finishRequest()
     }
 
     override private func failVisit() {
-        webView.navigationDelegate = nil
+        removeNavigationDelegate()
         finishRequest()
     }
 
+    private func removeNavigationDelegate() {
+        if webView.navigationDelegate === self {
+            webView.navigationDelegate = nil
+        }
+    }
+    
     // MARK: WKNavigationDelegate
 
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         if navigation === self.navigation {
-            webView.navigationDelegate = nil
+            removeNavigationDelegate()
             delegate?.visitDidInitializeWebView(self)
             finishRequest()
         }
