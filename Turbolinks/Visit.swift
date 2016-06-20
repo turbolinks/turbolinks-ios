@@ -67,6 +67,7 @@ class Visit: NSObject {
     private func complete() {
         if state == .Started {
             state = .Completed
+            completeVisit()
             delegate?.visitDidComplete(self)
             delegate?.visitDidFinish(self)
         }
@@ -84,6 +85,7 @@ class Visit: NSObject {
 
     private func startVisit() {}
     private func cancelVisit() {}
+    private func completeVisit() {}
     private func failVisit() {}
 
     // MARK: Navigation
@@ -152,6 +154,11 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
         finishRequest()
     }
 
+    override private func completeVisit() {
+        removeNavigationDelegate()
+        delegate?.visitDidInitializeWebView(self)
+    }
+
     override private func failVisit() {
         removeNavigationDelegate()
         finishRequest()
@@ -167,8 +174,6 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
 
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
         if navigation === self.navigation {
-            removeNavigationDelegate()
-            delegate?.visitDidInitializeWebView(self)
             finishRequest()
         }
     }
