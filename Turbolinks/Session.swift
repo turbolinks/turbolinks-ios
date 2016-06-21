@@ -152,7 +152,6 @@ extension Session: VisitDelegate {
     func visitDidInitializeWebView(visit: Visit) {
         initialized = true
         delegate?.sessionDidLoadWebView(self)
-        visit.visitable.visitableDidRender()
     }
 
     func visitWillStart(visit: Visit) {
