@@ -3,16 +3,16 @@ import WebKit
 import Turbolinks
 
 class ApplicationController: UINavigationController {
-    private let URL = NSURL(string: "http://localhost:9292")!
+    private let url = URL(string: "http://localhost:9292")!
     private let webViewProcessPool = WKProcessPool()
 
     private var application: UIApplication {
-        return UIApplication.sharedApplication()
+        return UIApplication.shared()
     }
 
     private lazy var webViewConfiguration: WKWebViewConfiguration = {
         let configuration = WKWebViewConfiguration()
-        configuration.userContentController.addScriptMessageHandler(self, name: "turbolinksDemo")
+        configuration.userContentController.add(self, name: "turbolinksDemo")
         configuration.processPool = self.webViewProcessPool
         configuration.applicationNameForUserAgent = "TurbolinksDemo"
         return configuration
@@ -26,16 +26,16 @@ class ApplicationController: UINavigationController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        presentVisitableForSession(session, URL: URL)
+        presentVisitableForSession(session: session, url: url)
     }
 
-    private func presentVisitableForSession(session: Session, URL: NSURL, action: Action = .Advance) {
-        let visitable = DemoViewController(URL: URL)
+    private func presentVisitableForSession(session: Session, url: URL, action: Action = .Advance) {
+        let visitable = DemoViewController(url: url)
 
         if action == .Advance {
             pushViewController(visitable, animated: true)
         } else if action == .Replace {
-            popViewControllerAnimated(false)
+            popViewController(animated: false)
             pushViewController(visitable, animated: false)
         }
         
@@ -51,65 +51,65 @@ class ApplicationController: UINavigationController {
         let authenticationController = AuthenticationController()
         authenticationController.delegate = self
         authenticationController.webViewConfiguration = webViewConfiguration
-        authenticationController.URL = URL.URLByAppendingPathComponent("sign-in")
+        authenticationController.url = try? url.appendingPathComponent("sign-in")
         authenticationController.title = "Sign in"
 
         let authNavigationController = UINavigationController(rootViewController: authenticationController)
-        presentViewController(authNavigationController, animated: true, completion: nil)
+        present(authNavigationController, animated: true, completion: nil)
     }
 }
 
 extension ApplicationController: SessionDelegate {
-    func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action) {
-        if URL.path == "/numbers" {
+    func session(_ session: Session, didProposeVisitToURL url: URL, withAction action: Action) {
+        if url.path == "/numbers" {
             presentNumbersViewController()
         } else {
-            presentVisitableForSession(session, URL: URL, action: action)
+            presentVisitableForSession(session: session, url: url, action: action)
         }
     }
-    
-    func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
+
+    func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
         NSLog("ERROR: %@", error)
         guard let demoViewController = visitable as? DemoViewController, errorCode = ErrorCode(rawValue: error.code) else { return }
 
         switch errorCode {
-        case .HTTPFailure:
+        case .httpFailure:
             let statusCode = error.userInfo["statusCode"] as! Int
             switch statusCode {
             case 401:
                 presentAuthenticationController()
             case 404:
-                demoViewController.presentError(.HTTPNotFoundError)
+                demoViewController.presentError(error: .HTTPNotFoundError)
             default:
-                demoViewController.presentError(Error(HTTPStatusCode: statusCode))
+                demoViewController.presentError(error: Error(HTTPStatusCode: statusCode))
             }
-        case .NetworkFailure:
-            demoViewController.presentError(.NetworkError)
+        case .networkFailure:
+            demoViewController.presentError(error: .NetworkError)
         }
     }
     
     func sessionDidStartRequest(session: Session) {
-        application.networkActivityIndicatorVisible = true
+        application.isNetworkActivityIndicatorVisible = true
     }
 
     func sessionDidFinishRequest(session: Session) {
-        application.networkActivityIndicatorVisible = false
+        application.isNetworkActivityIndicatorVisible = false
     }
 }
 
 extension ApplicationController: AuthenticationControllerDelegate {
     func authenticationControllerDidAuthenticate(authenticationController: AuthenticationController) {
         session.reload()
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
 }
 
 extension ApplicationController: WKScriptMessageHandler {
-    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if let message = message.body as? String {
-            let alertController = UIAlertController(title: "Turbolinks", message: message, preferredStyle: .Alert)
-            alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-            presentViewController(alertController, animated: true, completion: nil)
+            let alertController = UIAlertController(title: "Turbolinks", message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            present(alertController, animated: true, completion: nil)
         }
     }
 }

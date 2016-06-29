@@ -6,13 +6,13 @@ protocol AuthenticationControllerDelegate: class {
 }
 
 class AuthenticationController: UIViewController {
-    var URL: NSURL?
+    var url: URL?
     var webViewConfiguration: WKWebViewConfiguration?
     weak var delegate: AuthenticationControllerDelegate?
 
     lazy var webView: WKWebView = {
         let configuration = self.webViewConfiguration ?? WKWebViewConfiguration()
-        let webView = WKWebView(frame: CGRectZero, configuration: configuration)
+        let webView = WKWebView(frame: CGRect.zero, configuration: configuration)
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.navigationDelegate = self
         return webView
@@ -22,23 +22,23 @@ class AuthenticationController: UIViewController {
         super.viewDidLoad()
 
         view.addSubview(webView)
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": webView ]))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": webView ]))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: [], metrics: nil, views: [ "view": webView ]))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|", options: [], metrics: nil, views: [ "view": webView ]))
 
-        if let URL = self.URL {
-            webView.loadRequest(NSURLRequest(URL: URL))
+        if let url = self.url {
+            webView.load(URLRequest(url: url))
         }
     }
 }
 
 extension AuthenticationController: WKNavigationDelegate {
-    func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
-        if let URL = navigationAction.request.URL where URL != self.URL {
-            decisionHandler(.Cancel)
-            delegate?.authenticationControllerDidAuthenticate(self)
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
+        if let url = navigationAction.request.url where url != self.url {
+            decisionHandler(.cancel)
+            delegate?.authenticationControllerDidAuthenticate(authenticationController: self)
             return
         }
 
-        decisionHandler(.Allow)
+        decisionHandler(.allow)
     }
 }

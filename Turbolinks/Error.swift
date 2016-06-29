@@ -3,8 +3,8 @@ import Foundation
 public let ErrorDomain = "com.basecamp.Turbolinks"
 
 public enum ErrorCode: Int {
-    case HTTPFailure
-    case NetworkFailure
+    case httpFailure
+    case networkFailure
 }
 
 class Error: NSError {

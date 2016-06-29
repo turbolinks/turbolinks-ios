@@ -2,16 +2,16 @@ import UIKit
 import WebKit
 
 public protocol VisitableDelegate: class {
-    func visitableViewWillAppear(visitable: Visitable)
-    func visitableViewDidAppear(visitable: Visitable)
-    func visitableDidRequestReload(visitable: Visitable)
-    func visitableDidRequestRefresh(visitable: Visitable)
+    func visitableViewWillAppear(_ visitable: Visitable)
+    func visitableViewDidAppear(_ visitable: Visitable)
+    func visitableDidRequestReload(_ visitable: Visitable)
+    func visitableDidRequestRefresh(_ visitable: Visitable)
 }
 
 public protocol Visitable: class {
     weak var visitableDelegate: VisitableDelegate? { get set } 
     var visitableView: VisitableView! { get }
-    var visitableURL: NSURL! { get }
+    var visitableURL: URL! { get }
     func visitableDidRender()
 }
 
@@ -28,7 +28,7 @@ extension Visitable {
         visitableDelegate?.visitableDidRequestReload(self)
     }
 
-    func activateVisitableWebView(webView: WKWebView) {
+    func activateVisitableWebView(_ webView: WKWebView) {
         visitableView.activateWebView(webView, forVisitable: self)
     }
 

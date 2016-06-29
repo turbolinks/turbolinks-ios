@@ -22,7 +22,7 @@ public class VisitableView: UIView {
     public var webView: WKWebView?
     private weak var visitable: Visitable?
 
-    public func activateWebView(webView: WKWebView, forVisitable visitable: Visitable) {
+    public func activateWebView(_ webView: WKWebView, forVisitable visitable: Visitable) {
         self.webView = webView
         self.visitable = visitable
         addSubview(webView)
@@ -40,7 +40,7 @@ public class VisitableView: UIView {
     }
 
     private func showOrHideWebView() {
-        webView?.hidden = isShowingScreenshot
+        webView?.isHidden = isShowingScreenshot
     }
 
 
@@ -48,7 +48,7 @@ public class VisitableView: UIView {
 
     public lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(refresh(_:)), forControlEvents: .ValueChanged)
+        refreshControl.addTarget(self, action: #selector(refresh(_:)), for: .valueChanged)
         return refreshControl
     }()
 
@@ -63,7 +63,7 @@ public class VisitableView: UIView {
     }
 
     public var isRefreshing: Bool {
-        return refreshControl.refreshing
+        return refreshControl.isRefreshing
     }
 
     private func installRefreshControl() {
@@ -77,7 +77,7 @@ public class VisitableView: UIView {
         refreshControl.removeFromSuperview()
     }
 
-    func refresh(sender: AnyObject) {
+    func refresh(_ sender: AnyObject) {
         visitable?.visitableViewDidRequestRefresh()
     }
 
@@ -85,9 +85,9 @@ public class VisitableView: UIView {
     // MARK: Activity Indicator
 
     public lazy var activityIndicatorView: UIActivityIndicatorView = {
-        let view = UIActivityIndicatorView(activityIndicatorStyle: .White)
+        let view = UIActivityIndicatorView(activityIndicatorStyle: .white)
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.color = UIColor.grayColor()
+        view.color = UIColor.gray()
         view.hidesWhenStopped = true
         return view
     }()
@@ -100,7 +100,7 @@ public class VisitableView: UIView {
     public func showActivityIndicator() {
         if !isRefreshing {
             activityIndicatorView.startAnimating()
-            bringSubviewToFront(activityIndicatorView)
+            bringSubview(toFront: activityIndicatorView)
         }
     }
 
@@ -112,7 +112,7 @@ public class VisitableView: UIView {
     // MARK: Screenshots
 
     private lazy var screenshotContainerView: UIView = {
-        let view = UIView(frame: CGRectZero)
+        let view = UIView(frame: CGRect.zero)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = self.backgroundColor
         return view
@@ -128,15 +128,15 @@ public class VisitableView: UIView {
         if let webView = self.webView where !isShowingScreenshot {
             screenshotView?.removeFromSuperview()
             
-            let screenshot = webView.snapshotViewAfterScreenUpdates(false)
+            guard let screenshot = webView.snapshotView(afterScreenUpdates: false) else { return }
             screenshot.translatesAutoresizingMaskIntoConstraints = false
             screenshotContainerView.addSubview(screenshot)
 
             screenshotContainerView.addConstraints([
-                NSLayoutConstraint(item: screenshot, attribute: .CenterX, relatedBy: .Equal, toItem: screenshotContainerView, attribute: .CenterX, multiplier: 1, constant: 0),
-                NSLayoutConstraint(item: screenshot, attribute: .Top, relatedBy: .Equal, toItem: screenshotContainerView, attribute: .Top, multiplier: 1, constant: 0),
-                NSLayoutConstraint(item: screenshot, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: screenshot.bounds.size.width),
-                NSLayoutConstraint(item: screenshot, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: screenshot.bounds.size.height)
+                NSLayoutConstraint(item: screenshot, attribute: .centerX, relatedBy: .equal, toItem: screenshotContainerView, attribute: .centerX, multiplier: 1, constant: 0),
+                NSLayoutConstraint(item: screenshot, attribute: .top, relatedBy: .equal, toItem: screenshotContainerView, attribute: .top, multiplier: 1, constant: 0),
+                NSLayoutConstraint(item: screenshot, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: screenshot.bounds.size.width),
+                NSLayoutConstraint(item: screenshot, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: screenshot.bounds.size.height)
                 ])
 
             screenshotView = screenshot
@@ -164,14 +164,14 @@ public class VisitableView: UIView {
     // MARK: Hidden Scroll View
 
     private var hiddenScrollView: UIScrollView = {
-        let scrollView = UIScrollView(frame: CGRectZero)
+        let scrollView = UIScrollView(frame: CGRect.zero)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.scrollsToTop = false
         return scrollView
     }()
 
     private func installHiddenScrollView() {
-        insertSubview(hiddenScrollView, atIndex: 0)
+        insertSubview(hiddenScrollView, at: 0)
         addFillConstraintsForSubview(hiddenScrollView)
     }
 
@@ -191,8 +191,8 @@ public class VisitableView: UIView {
         }
     }
 
-    private func addFillConstraintsForSubview(view: UIView) {
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": view ]))
-        addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": view ]))
+    private func addFillConstraintsForSubview(_ view: UIView) {
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: [], metrics: nil, views: [ "view": view ]))
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|", options: [], metrics: nil, views: [ "view": view ]))
     }
 }

@@ -31,9 +31,9 @@ class ScriptMessage {
         return data["restorationIdentifier"] as? String
     }
    
-    var location: NSURL? {
+    var location: URL? {
         if let locationString = data["location"] as? String {
-            return NSURL(string: locationString)
+            return URL(string: locationString)
         }
         
         return nil
@@ -47,7 +47,7 @@ class ScriptMessage {
         return nil
     }
     
-    static func parse(message: WKScriptMessage) -> ScriptMessage? {
+    static func parse(_ message: WKScriptMessage) -> ScriptMessage? {
         guard let body = message.body as? [String: AnyObject],
             rawName = body["name"] as? String, name = ScriptMessageName(rawValue: rawName),
             data = body["data"] as? [String: AnyObject] else { return nil }
