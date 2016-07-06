@@ -118,7 +118,7 @@ public class Session: NSObject {
 
     // MARK: Visitable restoration identifiers
 
-    private var visitableRestorationIdentifiers: MapTable<UIViewController, NSString> = MapTable(keyOptions: PointerFunctions.Options.weakMemory, valueOptions: PointerFunctions.Options.strongMemory)
+    private var visitableRestorationIdentifiers: MapTable<UIViewController, NSString> = MapTable(keyOptions: PointerFunctions.Options.weakMemory, valueOptions: [])
 
     private func restorationIdentifierForVisitable(_ visitable: Visitable) -> String? {
         return visitableRestorationIdentifiers.object(forKey: visitable.visitableViewController) as? String
