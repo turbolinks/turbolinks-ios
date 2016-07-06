@@ -3,25 +3,25 @@ import UIKit
 public class VisitableViewController: UIViewController, Visitable {
     public weak var visitableDelegate: VisitableDelegate?
 
-    public var visitableURL: NSURL!
+    public var visitableURL: URL!
 
-    public convenience init(URL: NSURL) {
+    public convenience init(url: URL) {
         self.init()
-        self.visitableURL = URL
+        self.visitableURL = url
     }
 
     // MARK: Visitable View
 
     public lazy var visitableView: VisitableView! = {
-        let view = VisitableView(frame: CGRectZero)
+        let view = VisitableView(frame: CGRect.zero)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
     private func installVisitableView() {
         view.addSubview(visitableView)
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": visitableView ]))
-        view.addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": visitableView ]))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: [], metrics: nil, views: [ "view": visitableView ]))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|", options: [], metrics: nil, views: [ "view": visitableView ]))
     }
 
     // MARK: Visitable
@@ -34,16 +34,16 @@ public class VisitableViewController: UIViewController, Visitable {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = UIColor.white()
         installVisitableView()
     }
 
-    public override func viewWillAppear(animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         visitableDelegate?.visitableViewWillAppear(self)
     }
 
-    public override func viewDidAppear(animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         visitableDelegate?.visitableViewDidAppear(self)
     }
