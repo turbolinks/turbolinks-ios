@@ -11,7 +11,7 @@
 
 ## Requirements
 
-Turbolinks for iOS is compatible with Xcode 8/Swift 2.3. It requires iOS 8 or higher. The Swift language requires dependencies to be compiled with the same version as the target that includes them.
+Turbolinks for iOS is compatible with Xcode 8/Swift 2.3. It requires iOS 8 or higher. The Swift language requires dependencies to be compiled with the same version as the target that includes them. If you're using Swift 3.0, use the `swift-3.0` branch. Note: we're not yet using Swift 3 in production, so that branch works, but has not been thoroughly tested. Please open an issue if you find any bugs there.
 
 Web views are backed by [WKWebView](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKWebView_Ref/) for full-speed JavaScript performance.
 
