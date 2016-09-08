@@ -3,24 +3,20 @@ import Foundation
 public let ErrorDomain = "com.basecamp.Turbolinks"
 
 public enum ErrorCode: Int {
-    case HTTPFailure
-    case NetworkFailure
+    case httpFailure
+    case networkFailure
 }
 
-class Error: NSError {
-    init(code: ErrorCode, localizedDescription: String) {
-        super.init(domain: ErrorDomain, code: code.rawValue, userInfo: [NSLocalizedDescriptionKey: localizedDescription])
+extension NSError {
+    convenience init(code: ErrorCode, localizedDescription: String) {
+        self.init(domain: ErrorDomain, code: code.rawValue, userInfo: [NSLocalizedDescriptionKey: localizedDescription])
     }
    
-    init(code: ErrorCode, statusCode: Int) {
-        super.init(domain: ErrorDomain, code: code.rawValue, userInfo: ["statusCode": statusCode, NSLocalizedDescriptionKey: "HTTP Error: \(statusCode)"])
+    convenience init(code: ErrorCode, statusCode: Int) {
+        self.init(domain: ErrorDomain, code: code.rawValue, userInfo: ["statusCode": statusCode, NSLocalizedDescriptionKey: "HTTP Error: \(statusCode)"])
     }
 
-    init(code: ErrorCode, error: NSError) {
-        super.init(domain: ErrorDomain, code: code.rawValue, userInfo: ["error": error, NSLocalizedDescriptionKey: error.localizedDescription])
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    convenience init(code: ErrorCode, error: NSError) {
+        self.init(domain: ErrorDomain, code: code.rawValue, userInfo: ["error": error, NSLocalizedDescriptionKey: error.localizedDescription])
     }
 }

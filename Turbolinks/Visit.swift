@@ -1,28 +1,28 @@
 import WebKit
 
 protocol VisitDelegate: class {
-    func visitDidInitializeWebView(visit: Visit)
+    func visitDidInitializeWebView(_ visit: Visit)
 
-    func visitWillStart(visit: Visit)
-    func visitDidStart(visit: Visit)
-    func visitDidComplete(visit: Visit)
-    func visitDidFail(visit: Visit)
-    func visitDidFinish(visit: Visit)
+    func visitWillStart(_ visit: Visit)
+    func visitDidStart(_ visit: Visit)
+    func visitDidComplete(_ visit: Visit)
+    func visitDidFail(_ visit: Visit)
+    func visitDidFinish(_ visit: Visit)
 
-    func visitWillLoadResponse(visit: Visit)
-    func visitDidRender(visit: Visit)
+    func visitWillLoadResponse(_ visit: Visit)
+    func visitDidRender(_ visit: Visit)
 
-    func visitRequestDidStart(visit: Visit)
-    func visit(visit: Visit, requestDidFailWithError error: NSError)
-    func visitRequestDidFinish(visit: Visit)
+    func visitRequestDidStart(_ visit: Visit)
+    func visit(_ visit: Visit, requestDidFailWithError error: NSError)
+    func visitRequestDidFinish(_ visit: Visit)
 }
 
 enum VisitState {
-    case Initialized
-    case Started
-    case Canceled
-    case Failed
-    case Completed
+    case initialized
+    case started
+    case canceled
+    case failed
+    case completed
 }
 
 class Visit: NSObject {
@@ -33,48 +33,48 @@ class Visit: NSObject {
     var webView: WebView
     var state: VisitState
 
-    var location: NSURL
+    var location: URL
     var hasCachedSnapshot: Bool = false
     var restorationIdentifier: String?
 
     override var description: String {
-        return "<\(self.dynamicType): state=\(state) location=\(location)>"
+        return "<\(type(of: self)): state=\(state) location=\(location)>"
     }
 
     init(visitable: Visitable, action: Action, webView: WebView) {
         self.visitable = visitable
-        self.location = visitable.visitableURL!
+        self.location = visitable.visitableURL! as URL
         self.action = action
         self.webView = webView
-        self.state = .Initialized
+        self.state = .initialized
     }
 
     func start() {
-        if state == .Initialized {
+        if state == .initialized {
             delegate?.visitWillStart(self)
-            state = .Started
+            state = .started
             startVisit()
         }
     }
 
     func cancel() {
-        if state == .Started {
-            state = .Canceled
+        if state == .started {
+            state = .canceled
             cancelVisit()
         }
     }
 
-    private func complete() {
-        if state == .Started {
-            state = .Completed
+    fileprivate func complete() {
+        if state == .started {
+            state = .completed
             delegate?.visitDidComplete(self)
             delegate?.visitDidFinish(self)
         }
     }
 
-    private func fail(callback: (() -> Void)? = nil) {
-        if state == .Started {
-            state = .Failed
+    fileprivate func fail(_ callback: (() -> Void)? = nil) {
+        if state == .started {
+            state = .failed
             callback?()
             failVisit()
             delegate?.visitDidFail(self)
@@ -82,30 +82,30 @@ class Visit: NSObject {
         }
     }
 
-    private func startVisit() {}
-    private func cancelVisit() {}
-    private func failVisit() {}
+    fileprivate func startVisit() {}
+    fileprivate func cancelVisit() {}
+    fileprivate func failVisit() {}
 
     // MARK: Navigation
 
-    private var navigationCompleted = false
-    private var navigationCallback: (() -> Void)?
+    fileprivate var navigationCompleted = false
+    fileprivate var navigationCallback: (() -> Void)?
 
     func completeNavigation() {
-        if state == .Started && !navigationCompleted {
+        if state == .started && !navigationCompleted {
             navigationCompleted = true
             navigationCallback?()
         }
     }
 
-    private func afterNavigationCompletion(callback: () -> Void) {
+    fileprivate func afterNavigationCompletion(_ callback: @escaping () -> Void) {
         if navigationCompleted {
             callback()
         } else {
             let previousNavigationCallback = navigationCallback
             navigationCallback = { [unowned self] in
                 previousNavigationCallback?()
-                if self.state != .Canceled {
+                if self.state != .canceled {
                     callback()
                 }
             }
@@ -114,17 +114,17 @@ class Visit: NSObject {
 
     // MARK: Request state
 
-    private var requestStarted = false
-    private var requestFinished = false
+    fileprivate var requestStarted = false
+    fileprivate var requestFinished = false
 
-    private func startRequest() {
+    fileprivate func startRequest() {
         if !requestStarted {
             requestStarted = true
             delegate?.visitRequestDidStart(self)
         }
     }
 
-    private func finishRequest() {
+    fileprivate func finishRequest() {
         if requestStarted && !requestFinished {
             requestFinished = true
             delegate?.visitRequestDidFinish(self)
@@ -133,31 +133,31 @@ class Visit: NSObject {
 }
 
 class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
-    private var navigation: WKNavigation?
+    fileprivate var navigation: WKNavigation?
 
-    override private func startVisit() {
+    override fileprivate func startVisit() {
         webView.navigationDelegate = self
         webView.pageLoadDelegate = self
 
-        let request = NSURLRequest(URL: location)
-        navigation = webView.loadRequest(request)
+        let request = URLRequest(url: location)
+        navigation = webView.load(request)
 
         delegate?.visitDidStart(self)
         startRequest()
     }
 
-    override private func cancelVisit() {
+    override fileprivate func cancelVisit() {
         removeNavigationDelegate()
         webView.stopLoading()
         finishRequest()
     }
 
-    override private func failVisit() {
+    override fileprivate func failVisit() {
         removeNavigationDelegate()
         finishRequest()
     }
 
-    private func removeNavigationDelegate() {
+    fileprivate func removeNavigationDelegate() {
         if webView.navigationDelegate === self {
             webView.navigationDelegate = nil
         }
@@ -165,7 +165,7 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
     
     // MARK: WKNavigationDelegate
 
-    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if navigation === self.navigation {
             removeNavigationDelegate()
             delegate?.visitDidInitializeWebView(self)
@@ -173,51 +173,51 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
         }
     }
     
-    func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Void) {
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         // Ignore any clicked links before the cold boot finishes navigation
-        if navigationAction.navigationType == .LinkActivated {
-            decisionHandler(.Cancel)
-            if let URL = navigationAction.request.URL {
-                UIApplication.sharedApplication().openURL(URL)
+        if navigationAction.navigationType == .linkActivated {
+            decisionHandler(.cancel)
+            if let URL = navigationAction.request.url {
+                UIApplication.shared.openURL(URL)
             }
         } else {
-            decisionHandler(.Allow)
+            decisionHandler(.allow)
         }
     }
 
-    func webView(webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void) {
-        if let httpResponse = navigationResponse.response as? NSHTTPURLResponse {
+    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+        if let httpResponse = navigationResponse.response as? HTTPURLResponse {
             if httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 {
-                decisionHandler(.Allow)
+                decisionHandler(.allow)
             } else {
-                decisionHandler(.Cancel)
+                decisionHandler(.cancel)
                 fail {
-                    let error = Error(code: .HTTPFailure, statusCode: httpResponse.statusCode)
+                    let error = NSError(code: .httpFailure, statusCode: httpResponse.statusCode)
                     self.delegate?.visit(self, requestDidFailWithError: error)
                 }
             }
         } else {
-            decisionHandler(.Cancel)
+            decisionHandler(.cancel)
             fail {
-                let error = Error(code: .NetworkFailure, localizedDescription: "An unknown error occurred")
+                let error = NSError(code: .networkFailure, localizedDescription: "An unknown error occurred")
                 self.delegate?.visit(self, requestDidFailWithError: error)
             }
         }
     }
 
-    func webView(webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError originalError: NSError) {
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         if navigation === self.navigation {
             fail {
-                let error = Error(code: .NetworkFailure, error: originalError)
+                let error = NSError(code: .networkFailure, error: error as NSError)
                 self.delegate?.visit(self, requestDidFailWithError: error)
             }
         }
     }
 
-    func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError originalError: NSError) {
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         if navigation === self.navigation {
             fail {
-                let error = Error(code: .NetworkFailure, error: originalError)
+                let error = NSError(code: .networkFailure, error: error as NSError)
                 self.delegate?.visit(self, requestDidFailWithError: error)
             }
         }
@@ -225,7 +225,7 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
 
     // MARK: WebViewPageLoadDelegate
 
-    func webView(webView: WebView, didLoadPageWithRestorationIdentifier restorationIdentifier: String) {
+    func webView(_ webView: WebView, didLoadPageWithRestorationIdentifier restorationIdentifier: String) {
         self.restorationIdentifier = restorationIdentifier
         delegate?.visitDidRender(self)
         complete()
@@ -233,29 +233,29 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
 }
 
 class JavaScriptVisit: Visit, WebViewVisitDelegate {
-    private var identifier = "(pending)"
+    fileprivate var identifier = "(pending)"
 
     override var description: String {
-        return "<\(self.dynamicType) \(identifier): state=\(state) location=\(location)>"
+        return "<\(type(of: self)) \(identifier): state=\(state) location=\(location)>"
     }
 
-    override private func startVisit() {
+    override fileprivate func startVisit() {
         webView.visitDelegate = self
         webView.visitLocation(location, withAction: action, restorationIdentifier: restorationIdentifier)
     }
 
-    override private func cancelVisit() {
+    override fileprivate func cancelVisit() {
         webView.cancelVisitWithIdentifier(identifier)
         finishRequest()
     }
 
-    override private func failVisit() {
+    override fileprivate func failVisit() {
         finishRequest()
     }
 
     // MARK: WebViewVisitDelegate
 
-    func webView(webView: WebView, didStartVisitWithIdentifier identifier: String, hasCachedSnapshot: Bool) {
+    func webView(_ webView: WebView, didStartVisitWithIdentifier identifier: String, hasCachedSnapshot: Bool) {
         self.identifier = identifier
         self.hasCachedSnapshot = hasCachedSnapshot
 
@@ -268,13 +268,13 @@ class JavaScriptVisit: Visit, WebViewVisitDelegate {
         }
     }
 
-    func webView(webView: WebView, didStartRequestForVisitWithIdentifier identifier: String) {
+    func webView(_ webView: WebView, didStartRequestForVisitWithIdentifier identifier: String) {
         if identifier == self.identifier {
             startRequest()
         }
     }
 
-    func webView(webView: WebView, didCompleteRequestForVisitWithIdentifier identifier: String) {
+    func webView(_ webView: WebView, didCompleteRequestForVisitWithIdentifier identifier: String) {
         if identifier == self.identifier {
             afterNavigationCompletion { [unowned self] in
                 self.delegate?.visitWillLoadResponse(self)
@@ -283,33 +283,33 @@ class JavaScriptVisit: Visit, WebViewVisitDelegate {
         }
     }
 
-    func webView(webView: WebView, didFailRequestForVisitWithIdentifier identifier: String, statusCode: Int) {
+    func webView(_ webView: WebView, didFailRequestForVisitWithIdentifier identifier: String, statusCode: Int) {
         if identifier == self.identifier {
             fail {
                 let error: NSError
                 if statusCode == 0 {
-                    error = Error(code: .NetworkFailure, localizedDescription: "A network error occurred.")
+                    error = NSError(code: .networkFailure, localizedDescription: "A network error occurred.")
                 } else {
-                    error = Error(code: .HTTPFailure, statusCode: statusCode)
+                    error = NSError(code: .httpFailure, statusCode: statusCode)
                 }
                 self.delegate?.visit(self, requestDidFailWithError: error)
             }
         }
     }
 
-    func webView(webView: WebView, didFinishRequestForVisitWithIdentifier identifier: String) {
+    func webView(_ webView: WebView, didFinishRequestForVisitWithIdentifier identifier: String) {
         if identifier == self.identifier {
             finishRequest()
         }
     }
 
-    func webView(webView: WebView, didRenderForVisitWithIdentifier identifier: String) {
+    func webView(_ webView: WebView, didRenderForVisitWithIdentifier identifier: String) {
         if identifier == self.identifier {
             delegate?.visitDidRender(self)
         }
     }
 
-    func webView(webView: WebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String) {
+    func webView(_ webView: WebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String) {
         if identifier == self.identifier {
             self.restorationIdentifier = restorationIdentifier
             complete()

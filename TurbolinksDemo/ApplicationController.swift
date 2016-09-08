@@ -3,22 +3,22 @@ import WebKit
 import Turbolinks
 
 class ApplicationController: UINavigationController {
-    private let URL = NSURL(string: "http://localhost:9292")!
-    private let webViewProcessPool = WKProcessPool()
+    fileprivate let url = URL(string: "http://localhost:9292")!
+    fileprivate let webViewProcessPool = WKProcessPool()
 
-    private var application: UIApplication {
-        return UIApplication.sharedApplication()
+    fileprivate var application: UIApplication {
+        return UIApplication.shared
     }
 
-    private lazy var webViewConfiguration: WKWebViewConfiguration = {
+    fileprivate lazy var webViewConfiguration: WKWebViewConfiguration = {
         let configuration = WKWebViewConfiguration()
-        configuration.userContentController.addScriptMessageHandler(self, name: "turbolinksDemo")
+        configuration.userContentController.add(self, name: "turbolinksDemo")
         configuration.processPool = self.webViewProcessPool
         configuration.applicationNameForUserAgent = "TurbolinksDemo"
         return configuration
     }()
 
-    private lazy var session: Session = {
+    fileprivate lazy var session: Session = {
         let session = Session(webViewConfiguration: self.webViewConfiguration)
         session.delegate = self
         return session
@@ -26,54 +26,54 @@ class ApplicationController: UINavigationController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        presentVisitableForSession(session, URL: URL)
+        presentVisitableForSession(session, url: url)
     }
 
-    private func presentVisitableForSession(session: Session, URL: NSURL, action: Action = .Advance) {
-        let visitable = DemoViewController(URL: URL)
+    fileprivate func presentVisitableForSession(_ session: Session, url: URL, action: Action = .Advance) {
+        let visitable = DemoViewController(url: url)
 
         if action == .Advance {
             pushViewController(visitable, animated: true)
         } else if action == .Replace {
-            popViewControllerAnimated(false)
+            popViewController(animated: false)
             pushViewController(visitable, animated: false)
         }
         
         session.visit(visitable)
     }
 
-    private func presentNumbersViewController() {
+    fileprivate func presentNumbersViewController() {
         let viewController = NumbersViewController()
         pushViewController(viewController, animated: true)
     }
 
-    private func presentAuthenticationController() {
+    fileprivate func presentAuthenticationController() {
         let authenticationController = AuthenticationController()
         authenticationController.delegate = self
         authenticationController.webViewConfiguration = webViewConfiguration
-        authenticationController.URL = URL.URLByAppendingPathComponent("sign-in")
+        authenticationController.url = url.appendingPathComponent("sign-in")
         authenticationController.title = "Sign in"
 
         let authNavigationController = UINavigationController(rootViewController: authenticationController)
-        presentViewController(authNavigationController, animated: true, completion: nil)
+        present(authNavigationController, animated: true, completion: nil)
     }
 }
 
 extension ApplicationController: SessionDelegate {
-    func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action) {
+    func session(_ session: Session, didProposeVisitToURL URL: Foundation.URL, withAction action: Action) {
         if URL.path == "/numbers" {
             presentNumbersViewController()
         } else {
-            presentVisitableForSession(session, URL: URL, action: action)
+            presentVisitableForSession(session, url: URL, action: action)
         }
     }
     
-    func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
+    func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
         NSLog("ERROR: %@", error)
-        guard let demoViewController = visitable as? DemoViewController, errorCode = ErrorCode(rawValue: error.code) else { return }
+        guard let demoViewController = visitable as? DemoViewController, let errorCode = ErrorCode(rawValue: error.code) else { return }
 
         switch errorCode {
-        case .HTTPFailure:
+        case .httpFailure:
             let statusCode = error.userInfo["statusCode"] as! Int
             switch statusCode {
             case 401:
@@ -83,33 +83,33 @@ extension ApplicationController: SessionDelegate {
             default:
                 demoViewController.presentError(Error(HTTPStatusCode: statusCode))
             }
-        case .NetworkFailure:
+        case .networkFailure:
             demoViewController.presentError(.NetworkError)
         }
     }
     
-    func sessionDidStartRequest(session: Session) {
-        application.networkActivityIndicatorVisible = true
+    func sessionDidStartRequest(_ session: Session) {
+        application.isNetworkActivityIndicatorVisible = true
     }
 
-    func sessionDidFinishRequest(session: Session) {
-        application.networkActivityIndicatorVisible = false
+    func sessionDidFinishRequest(_ session: Session) {
+        application.isNetworkActivityIndicatorVisible = false
     }
 }
 
 extension ApplicationController: AuthenticationControllerDelegate {
-    func authenticationControllerDidAuthenticate(authenticationController: AuthenticationController) {
+    func authenticationControllerDidAuthenticate(_ authenticationController: AuthenticationController) {
         session.reload()
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
 }
 
 extension ApplicationController: WKScriptMessageHandler {
-    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if let message = message.body as? String {
-            let alertController = UIAlertController(title: "Turbolinks", message: message, preferredStyle: .Alert)
-            alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-            presentViewController(alertController, animated: true, completion: nil)
+            let alertController = UIAlertController(title: "Turbolinks", message: message, preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            present(alertController, animated: true, completion: nil)
         }
     }
 }

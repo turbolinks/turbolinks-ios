@@ -2,40 +2,40 @@ import UIKit
 import WebKit
 
 public protocol SessionDelegate: class {
-    func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action)
-    func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)
-    func session(session: Session, openExternalURL URL: NSURL)
-    func sessionDidLoadWebView(session: Session)
-    func sessionDidStartRequest(session: Session)
-    func sessionDidFinishRequest(session: Session)
+    func session(_ session: Session, didProposeVisitToURL URL: URL, withAction action: Action)
+    func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)
+    func session(_ session: Session, openExternalURL URL: URL)
+    func sessionDidLoadWebView(_ session: Session)
+    func sessionDidStartRequest(_ session: Session)
+    func sessionDidFinishRequest(_ session: Session)
 }
 
 public extension SessionDelegate {
-    func sessionDidLoadWebView(session: Session) {
+    func sessionDidLoadWebView(_ session: Session) {
         session.webView.navigationDelegate = session
     }
 
-    func session(session: Session, openExternalURL URL: NSURL) {
-        UIApplication.sharedApplication().openURL(URL)
+    func session(_ session: Session, openExternalURL URL: Foundation.URL) {
+        UIApplication.shared.openURL(URL)
     }
 
-    func sessionDidStartRequest(session: Session) {
+    func sessionDidStartRequest(_ session: Session) {
     }
 
-    func sessionDidFinishRequest(session: Session) {
+    func sessionDidFinishRequest(_ session: Session) {
     }
 }
 
-public class Session: NSObject {
-    public weak var delegate: SessionDelegate?
+open class Session: NSObject {
+    open weak var delegate: SessionDelegate?
 
-    public var webView: WKWebView {
+    open var webView: WKWebView {
         return _webView
     }
 
-    private var _webView: WebView
-    private var initialized = false
-    private var refreshing = false
+    fileprivate var _webView: WebView
+    fileprivate var initialized = false
+    fileprivate var refreshing = false
 
     public init(webViewConfiguration: WKWebViewConfiguration) {
         _webView = WebView(configuration: webViewConfiguration)
@@ -49,18 +49,18 @@ public class Session: NSObject {
    
     // MARK: Visiting
 
-    private var currentVisit: Visit?
-    private var topmostVisit: Visit?
+    fileprivate var currentVisit: Visit?
+    fileprivate var topmostVisit: Visit?
 
-    public var topmostVisitable: Visitable? {
+    open var topmostVisitable: Visitable? {
         return topmostVisit?.visitable
     }
 
-    public func visit(visitable: Visitable) {
+    open func visit(_ visitable: Visitable) {
         visitVisitable(visitable, action: .Advance)
     }
     
-    private func visitVisitable(visitable: Visitable, action: Action) {
+    fileprivate func visitVisitable(_ visitable: Visitable, action: Action) {
         guard visitable.visitableURL != nil else { return }
 
         visitable.visitableDelegate = self
@@ -81,7 +81,7 @@ public class Session: NSObject {
         visit.start()
     }
 
-    public func reload() {
+    open func reload() {
         if let visitable = topmostVisitable {
             initialized = false
             visit(visitable)
@@ -91,9 +91,9 @@ public class Session: NSObject {
 
     // MARK: Visitable activation
 
-    private var activatedVisitable: Visitable?
+    fileprivate var activatedVisitable: Visitable?
 
-    private func activateVisitable(visitable: Visitable) {
+    fileprivate func activateVisitable(_ visitable: Visitable) {
         if visitable !== activatedVisitable {
             if let activatedVisitable = self.activatedVisitable {
                 deactivateVisitable(activatedVisitable, showScreenshot: true)
@@ -104,7 +104,7 @@ public class Session: NSObject {
         }
     }
 
-    private func deactivateVisitable(visitable: Visitable, showScreenshot: Bool = false) {
+    fileprivate func deactivateVisitable(_ visitable: Visitable, showScreenshot: Bool = false) {
         if visitable === activatedVisitable {
             if showScreenshot {
                 visitable.updateVisitableScreenshot()
@@ -118,17 +118,17 @@ public class Session: NSObject {
 
     // MARK: Visitable restoration identifiers
 
-    private var visitableRestorationIdentifiers = NSMapTable(keyOptions: .WeakMemory, valueOptions: .StrongMemory)
+    fileprivate var visitableRestorationIdentifiers = NSMapTable<UIViewController, NSString>(keyOptions: NSPointerFunctions.Options.weakMemory, valueOptions: [])
 
-    private func restorationIdentifierForVisitable(visitable: Visitable) -> String? {
-        return visitableRestorationIdentifiers.objectForKey(visitable) as? String
+    fileprivate func restorationIdentifierForVisitable(_ visitable: Visitable) -> String? {
+        return visitableRestorationIdentifiers.object(forKey: visitable.visitableViewController) as? String
     }
 
-    private func storeRestorationIdentifier(restorationIdentifier: String, forVisitable visitable: Visitable) {
-        visitableRestorationIdentifiers.setObject(restorationIdentifier, forKey: visitable)
+    fileprivate func storeRestorationIdentifier(_ restorationIdentifier: String, forVisitable visitable: Visitable) {
+        visitableRestorationIdentifiers.setObject(restorationIdentifier as NSString, forKey: visitable.visitableViewController)
     }
 
-    private func completeNavigationForCurrentVisit() {
+    fileprivate func completeNavigationForCurrentVisit() {
         if let visit = currentVisit {
             topmostVisit = visit
             visit.completeNavigation()
@@ -137,58 +137,58 @@ public class Session: NSObject {
 }
 
 extension Session: VisitDelegate {
-    func visitRequestDidStart(visit: Visit) {
+    func visitRequestDidStart(_ visit: Visit) {
         delegate?.sessionDidStartRequest(self)
     }
 
-    func visitRequestDidFinish(visit: Visit) {
+    func visitRequestDidFinish(_ visit: Visit) {
         delegate?.sessionDidFinishRequest(self)
     }
 
-    func visit(visit: Visit, requestDidFailWithError error: NSError) {
+    func visit(_ visit: Visit, requestDidFailWithError error: NSError) {
         delegate?.session(self, didFailRequestForVisitable: visit.visitable, withError: error)
     }
 
-    func visitDidInitializeWebView(visit: Visit) {
+    func visitDidInitializeWebView(_ visit: Visit) {
         initialized = true
         delegate?.sessionDidLoadWebView(self)
         visit.visitable.visitableDidRender()
     }
 
-    func visitWillStart(visit: Visit) {
+    func visitWillStart(_ visit: Visit) {
         visit.visitable.showVisitableScreenshot()
         activateVisitable(visit.visitable)
     }
 
-    func visitDidStart(visit: Visit) {
+    func visitDidStart(_ visit: Visit) {
         if !visit.hasCachedSnapshot {
             visit.visitable.showVisitableActivityIndicator()
         }
     }
 
-    func visitWillLoadResponse(visit: Visit) {
+    func visitWillLoadResponse(_ visit: Visit) {
         visit.visitable.updateVisitableScreenshot()
         visit.visitable.showVisitableScreenshot()
     }
 
-    func visitDidRender(visit: Visit) {
+    func visitDidRender(_ visit: Visit) {
         visit.visitable.hideVisitableScreenshot()
         visit.visitable.hideVisitableActivityIndicator()
         visit.visitable.visitableDidRender()
     }
 
-    func visitDidComplete(visit: Visit) {
+    func visitDidComplete(_ visit: Visit) {
         if let restorationIdentifier = visit.restorationIdentifier {
             storeRestorationIdentifier(restorationIdentifier, forVisitable: visit.visitable)
         }
     }
 
-    func visitDidFail(visit: Visit) {
+    func visitDidFail(_ visit: Visit) {
         visit.visitable.clearVisitableScreenshot()
         visit.visitable.showVisitableScreenshot()
     }
 
-    func visitDidFinish(visit: Visit) {
+    func visitDidFinish(_ visit: Visit) {
         if refreshing {
             refreshing = false
             visit.visitable.visitableDidRefresh()
@@ -197,17 +197,17 @@ extension Session: VisitDelegate {
 }
 
 extension Session: VisitableDelegate {
-    public func visitableViewWillAppear(visitable: Visitable) {
-        guard let topmostVisit = self.topmostVisit, currentVisit = self.currentVisit else { return }
+    public func visitableViewWillAppear(_ visitable: Visitable) {
+        guard let topmostVisit = self.topmostVisit, let currentVisit = self.currentVisit else { return }
 
-        if visitable === topmostVisit.visitable && visitable.visitableViewController.isMovingToParentViewController() {
+        if visitable === topmostVisit.visitable && visitable.visitableViewController.isMovingToParentViewController {
             // Back swipe gesture canceled
-            if topmostVisit.state == .Completed {
+            if topmostVisit.state == .completed {
                 currentVisit.cancel()
             } else {
                 visitVisitable(visitable, action: .Advance)
             }
-        } else if visitable === currentVisit.visitable && currentVisit.state == .Started {
+        } else if visitable === currentVisit.visitable && currentVisit.state == .started {
             // Navigating forward - complete navigation early
             completeNavigationForCurrentVisit()
         } else if visitable !== topmostVisit.visitable {
@@ -216,14 +216,14 @@ extension Session: VisitableDelegate {
         }
     }
 
-    public func visitableViewDidAppear(visitable: Visitable) {
-        if let currentVisit = self.currentVisit where visitable === currentVisit.visitable {
+    public func visitableViewDidAppear(_ visitable: Visitable) {
+        if let currentVisit = self.currentVisit , visitable === currentVisit.visitable {
             // Appearing after successful navigation
             completeNavigationForCurrentVisit()
-            if currentVisit.state != .Failed {
+            if currentVisit.state != .failed {
                 activateVisitable(visitable)
             }
-        } else if let topmostVisit = self.topmostVisit where visitable === topmostVisit.visitable && topmostVisit.state == .Completed {
+        } else if let topmostVisit = self.topmostVisit , visitable === topmostVisit.visitable && topmostVisit.state == .completed {
             // Reappearing after canceled navigation
             visitable.hideVisitableScreenshot()
             visitable.hideVisitableActivityIndicator()
@@ -231,13 +231,13 @@ extension Session: VisitableDelegate {
         }
     }
 
-    public func visitableDidRequestReload(visitable: Visitable) {
+    public func visitableDidRequestReload(_ visitable: Visitable) {
         if visitable === topmostVisitable {
             reload()
         }
     }
    
-    public func visitableDidRequestRefresh(visitable: Visitable) {
+    public func visitableDidRequestRefresh(_ visitable: Visitable) {
         if visitable === topmostVisitable {
             refreshing = true
             visitable.visitableWillRefresh()
@@ -247,11 +247,11 @@ extension Session: VisitableDelegate {
 }
 
 extension Session: WebViewDelegate {
-    func webView(webView: WebView, didProposeVisitToLocation location: NSURL, withAction action: Action) {
+    func webView(_ webView: WebView, didProposeVisitToLocation location: URL, withAction action: Action) {
         delegate?.session(self, didProposeVisitToURL: location, withAction: action)
     }
     
-    func webViewDidInvalidatePage(webView: WebView) {
+    func webViewDidInvalidatePage(_ webView: WebView) {
         if let visitable = topmostVisitable {
             visitable.updateVisitableScreenshot()
             visitable.showVisitableScreenshot()
@@ -260,8 +260,8 @@ extension Session: WebViewDelegate {
         }
     }
     
-    func webView(webView: WebView, didFailJavaScriptEvaluationWithError error: NSError) {
-        if let currentVisit = self.currentVisit where initialized {
+    func webView(_ webView: WebView, didFailJavaScriptEvaluationWithError error: NSError) {
+        if let currentVisit = self.currentVisit , initialized {
             initialized = false
             currentVisit.cancel()
             visit(currentVisit.visitable)
@@ -270,7 +270,7 @@ extension Session: WebViewDelegate {
 }
 
 extension Session: WKNavigationDelegate {
-    public func webView(webView: WKWebView, decidePolicyForNavigationAction navigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> ()) {
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> ()) {
         let navigationDecision = NavigationDecision(navigationAction: navigationAction)
         decisionHandler(navigationDecision.policy)
 
@@ -281,15 +281,15 @@ extension Session: WKNavigationDelegate {
         }
     }
 
-    private struct NavigationDecision {
+    fileprivate struct NavigationDecision {
         let navigationAction: WKNavigationAction
 
         var policy: WKNavigationActionPolicy {
-            return isMainFrameNavigation ? .Cancel : .Allow
+            return isMainFrameNavigation ? .cancel : .allow
         }
 
-        var externallyOpenableURL: NSURL? {
-            if let URL = navigationAction.request.URL where shouldOpenURLExternally {
+        var externallyOpenableURL: URL? {
+            if let URL = navigationAction.request.url , shouldOpenURLExternally {
                 return URL
             } else {
                 return nil
@@ -298,20 +298,20 @@ extension Session: WKNavigationDelegate {
 
         var shouldOpenURLExternally: Bool {
             let type = navigationAction.navigationType
-            return isMainFrameNavigation && (type == .LinkActivated || type == .Other)
+            return isMainFrameNavigation && (type == .linkActivated || type == .other)
         }
 
         var shouldReloadPage: Bool {
             let type = navigationAction.navigationType
-            return isMainFrameNavigation && type == .Reload
+            return isMainFrameNavigation && type == .reload
         }
 
         var isMainFrameNavigation: Bool {
-            return navigationAction.targetFrame?.mainFrame ?? false
+            return navigationAction.targetFrame?.isMainFrame ?? false
         }
     }
     
-    private func openExternalURL(URL: NSURL) {
+    fileprivate func openExternalURL(_ URL: Foundation.URL) {
         delegate?.session(self, openExternalURL: URL)
     }
 }

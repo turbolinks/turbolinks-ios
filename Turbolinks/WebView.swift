@@ -1,23 +1,23 @@
 import WebKit
 
 protocol WebViewDelegate: class {
-    func webView(webView: WebView, didProposeVisitToLocation location: NSURL, withAction action: Action)
-    func webViewDidInvalidatePage(webView: WebView)
-    func webView(webView: WebView, didFailJavaScriptEvaluationWithError error: NSError)
+    func webView(_ webView: WebView, didProposeVisitToLocation location: URL, withAction action: Action)
+    func webViewDidInvalidatePage(_ webView: WebView)
+    func webView(_ webView: WebView, didFailJavaScriptEvaluationWithError error: NSError)
 }
 
 protocol WebViewPageLoadDelegate: class {
-    func webView(webView: WebView, didLoadPageWithRestorationIdentifier restorationIdentifier: String)
+    func webView(_ webView: WebView, didLoadPageWithRestorationIdentifier restorationIdentifier: String)
 }
 
 protocol WebViewVisitDelegate: class {
-    func webView(webView: WebView, didStartVisitWithIdentifier identifier: String, hasCachedSnapshot: Bool)
-    func webView(webView: WebView, didStartRequestForVisitWithIdentifier identifier: String)
-    func webView(webView: WebView, didCompleteRequestForVisitWithIdentifier identifier: String)
-    func webView(webView: WebView, didFailRequestForVisitWithIdentifier identifier: String, statusCode: Int)
-    func webView(webView: WebView, didFinishRequestForVisitWithIdentifier identifier: String)
-    func webView(webView: WebView, didRenderForVisitWithIdentifier identifier: String)
-    func webView(webView: WebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String)
+    func webView(_ webView: WebView, didStartVisitWithIdentifier identifier: String, hasCachedSnapshot: Bool)
+    func webView(_ webView: WebView, didStartRequestForVisitWithIdentifier identifier: String)
+    func webView(_ webView: WebView, didCompleteRequestForVisitWithIdentifier identifier: String)
+    func webView(_ webView: WebView, didFailRequestForVisitWithIdentifier identifier: String, statusCode: Int)
+    func webView(_ webView: WebView, didFinishRequestForVisitWithIdentifier identifier: String)
+    func webView(_ webView: WebView, didRenderForVisitWithIdentifier identifier: String)
+    func webView(_ webView: WebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String)
 }
 
 class WebView: WKWebView {
@@ -26,51 +26,49 @@ class WebView: WKWebView {
     weak var visitDelegate: WebViewVisitDelegate?
 
     init(configuration: WKWebViewConfiguration) {
-        super.init(frame: CGRectZero, configuration: configuration)
+        super.init(frame: CGRect.zero, configuration: configuration)
 
-        let bundle = NSBundle(forClass: self.dynamicType)
-        let source = try! String(contentsOfURL: bundle.URLForResource("WebView", withExtension: "js")!, encoding: NSUTF8StringEncoding)
-        let userScript = WKUserScript(source: source, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
+        let bundle = Bundle(for: type(of: self))
+        let source = try! String(contentsOf: bundle.url(forResource: "WebView", withExtension: "js")!, encoding: String.Encoding.utf8)
+        let userScript = WKUserScript(source: source, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
         configuration.userContentController.addUserScript(userScript)
-        configuration.userContentController.addScriptMessageHandler(self, name: "turbolinks")
+        configuration.userContentController.add(self, name: "turbolinks")
 
         translatesAutoresizingMaskIntoConstraints = false
         scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
     }
     
-    #if swift(>=2.3)
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-    #endif
 
-    func visitLocation(location: NSURL, withAction action: Action, restorationIdentifier: String?) {
-        callJavaScriptFunction("webView.visitLocationWithActionAndRestorationIdentifier", withArguments: [location.absoluteString, action.rawValue, restorationIdentifier])
+    func visitLocation(_ location: URL, withAction action: Action, restorationIdentifier: String?) {
+        callJavaScriptFunction("webView.visitLocationWithActionAndRestorationIdentifier", withArguments: [location.absoluteString as Optional<AnyObject>, action.rawValue as Optional<AnyObject>, restorationIdentifier as Optional<AnyObject>])
     }
 
-    func issueRequestForVisitWithIdentifier(identifier: String) {
-        callJavaScriptFunction("webView.issueRequestForVisitWithIdentifier", withArguments: [identifier])
+    func issueRequestForVisitWithIdentifier(_ identifier: String) {
+        callJavaScriptFunction("webView.issueRequestForVisitWithIdentifier", withArguments: [identifier as Optional<AnyObject>])
     }
 
-    func changeHistoryForVisitWithIdentifier(identifier: String) {
-        callJavaScriptFunction("webView.changeHistoryForVisitWithIdentifier", withArguments: [identifier])
+    func changeHistoryForVisitWithIdentifier(_ identifier: String) {
+        callJavaScriptFunction("webView.changeHistoryForVisitWithIdentifier", withArguments: [identifier as Optional<AnyObject>])
     }
 
-    func loadCachedSnapshotForVisitWithIdentifier(identifier: String) {
-        callJavaScriptFunction("webView.loadCachedSnapshotForVisitWithIdentifier", withArguments: [identifier])
+    func loadCachedSnapshotForVisitWithIdentifier(_ identifier: String) {
+        callJavaScriptFunction("webView.loadCachedSnapshotForVisitWithIdentifier", withArguments: [identifier as Optional<AnyObject>])
     }
 
-    func loadResponseForVisitWithIdentifier(identifier: String) {
-        callJavaScriptFunction("webView.loadResponseForVisitWithIdentifier", withArguments: [identifier])
+    func loadResponseForVisitWithIdentifier(_ identifier: String) {
+        callJavaScriptFunction("webView.loadResponseForVisitWithIdentifier", withArguments: [identifier as Optional<AnyObject>])
     }
 
-    func cancelVisitWithIdentifier(identifier: String) {
-        callJavaScriptFunction("webView.cancelVisitWithIdentifier", withArguments: [identifier])
+    func cancelVisitWithIdentifier(_ identifier: String) {
+        callJavaScriptFunction("webView.cancelVisitWithIdentifier", withArguments: [identifier as Optional<AnyObject>])
     }
 
     // MARK: JavaScript Evaluation
 
-    private func callJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject?] = [], completionHandler: ((AnyObject?) -> ())? = nil) {
+    private func callJavaScriptFunction(_ functionExpression: String, withArguments arguments: [AnyObject?] = [], completionHandler: ((AnyObject?) -> ())? = nil) {
         guard let script = scriptForCallingJavaScriptFunction(functionExpression, withArguments: arguments) else {
             NSLog("Error encoding arguments for JavaScript function `%@'", functionExpression)
             return
@@ -78,18 +76,18 @@ class WebView: WKWebView {
         
         evaluateJavaScript(script) { (result, error) in
             if let result = result as? [String: AnyObject] {
-                if let error = result["error"] as? String, stack = result["stack"] as? String {
+                if let error = result["error"] as? String, let stack = result["stack"] as? String {
                     NSLog("Error evaluating JavaScript function `%@': %@\n%@", functionExpression, error, stack)
                 } else {
                     completionHandler?(result["value"])
                 }
             } else if let error = error {
-                self.delegate?.webView(self, didFailJavaScriptEvaluationWithError: error)
+                self.delegate?.webView(self, didFailJavaScriptEvaluationWithError: error as NSError)
             }
         }
     }
 
-    private func scriptForCallingJavaScriptFunction(functionExpression: String, withArguments arguments: [AnyObject?]) -> String? {
+    private func scriptForCallingJavaScriptFunction(_ functionExpression: String, withArguments arguments: [AnyObject?]) -> String? {
         guard let encodedArguments = encodeJavaScriptArguments(arguments) else { return nil }
 
         return
@@ -104,12 +102,12 @@ class WebView: WKWebView {
             "})({})"
     }
 
-    private func encodeJavaScriptArguments(arguments: [AnyObject?]) -> String? {
+    private func encodeJavaScriptArguments(_ arguments: [AnyObject?]) -> String? {
         let arguments = arguments.map { $0 == nil ? NSNull() : $0! }
 
-        if let data = try? NSJSONSerialization.dataWithJSONObject(arguments, options: []),
-            string = NSString(data: data, encoding: NSUTF8StringEncoding) as? String {
-                return string[string.startIndex.successor() ..< string.endIndex.predecessor()]
+        if let data = try? JSONSerialization.data(withJSONObject: arguments, options: []),
+            let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue) as? String {
+                return string[string.characters.index(after: string.startIndex) ..< string.characters.index(before: string.endIndex)]
         }
         
         return nil
@@ -117,7 +115,7 @@ class WebView: WKWebView {
 }
 
 extension WebView: WKScriptMessageHandler {
-    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard let message = ScriptMessage.parse(message) else { return }
         
         switch message.name {
