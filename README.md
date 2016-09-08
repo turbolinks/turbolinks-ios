@@ -11,7 +11,7 @@
 
 ## Requirements
 
-Turbolinks for iOS is compatible with XCode 7/Swift 2.2 and XCode 8/Swift 2.3. It requires iOS 8 or higher. The Swift language requires dependencies to be compiled with the same version as the target that includes them.
+Turbolinks for iOS is compatible with Xcode 8/Swift 2.3. It requires iOS 8 or higher. The Swift language requires dependencies to be compiled with the same version as the target that includes them.
 
 Web views are backed by [WKWebView](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKWebView_Ref/) for full-speed JavaScript performance.
 
@@ -29,13 +29,7 @@ Add the following to your `Cartfile`:
 github "turbolinks/turbolinks-ios" "master"
 ```
 
-#### XCode 7
-
-Then run `carthage update`.
-
-#### XCode 8 and Swift 2.3
-
-(The XCode 8 command line compiler defaults to Swift 3, so you will need to instruct Carthage to use the Swift 2.3 toolchain.)
+The Xcode 8 command-line compiler defaults to Swift 3, so you will need to instruct Carthage to use the Swift 2.3 toolchain.
 
 Then run `TOOLCHAINS=com.apple.dt.toolchain.Swift_2_3 carthage update`.
 
