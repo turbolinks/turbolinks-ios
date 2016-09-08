@@ -125,22 +125,20 @@ public class VisitableView: UIView {
     }
 
     public func updateScreenshot() {
-        if let webView = self.webView where !isShowingScreenshot {
-            screenshotView?.removeFromSuperview()
-            
-            let screenshot = webView.snapshotViewAfterScreenUpdates(false)
-            screenshot.translatesAutoresizingMaskIntoConstraints = false
-            screenshotContainerView.addSubview(screenshot)
+        guard let webView = self.webView where !isShowingScreenshot, let screenshot = webView.snapshotViewAfterScreenUpdates(false) else { return }
+        
+        screenshotView?.removeFromSuperview()
+        screenshot.translatesAutoresizingMaskIntoConstraints = false
+        screenshotContainerView.addSubview(screenshot)
+        
+        screenshotContainerView.addConstraints([
+            NSLayoutConstraint(item: screenshot, attribute: .CenterX, relatedBy: .Equal, toItem: screenshotContainerView, attribute: .CenterX, multiplier: 1, constant: 0),
+            NSLayoutConstraint(item: screenshot, attribute: .Top, relatedBy: .Equal, toItem: screenshotContainerView, attribute: .Top, multiplier: 1, constant: 0),
+            NSLayoutConstraint(item: screenshot, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: screenshot.bounds.size.width),
+            NSLayoutConstraint(item: screenshot, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: screenshot.bounds.size.height)
+            ])
 
-            screenshotContainerView.addConstraints([
-                NSLayoutConstraint(item: screenshot, attribute: .CenterX, relatedBy: .Equal, toItem: screenshotContainerView, attribute: .CenterX, multiplier: 1, constant: 0),
-                NSLayoutConstraint(item: screenshot, attribute: .Top, relatedBy: .Equal, toItem: screenshotContainerView, attribute: .Top, multiplier: 1, constant: 0),
-                NSLayoutConstraint(item: screenshot, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: screenshot.bounds.size.width),
-                NSLayoutConstraint(item: screenshot, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1, constant: screenshot.bounds.size.height)
-                ])
-
-            screenshotView = screenshot
-        }
+        screenshotView = screenshot
     }
     
     public func showScreenshot() {

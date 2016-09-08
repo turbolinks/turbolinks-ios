@@ -37,6 +37,12 @@ class WebView: WKWebView {
         translatesAutoresizingMaskIntoConstraints = false
         scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
     }
+    
+    #if swift(>=2.3)
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    #endif
 
     func visitLocation(location: NSURL, withAction action: Action, restorationIdentifier: String?) {
         callJavaScriptFunction("webView.visitLocationWithActionAndRestorationIdentifier", withArguments: [location.absoluteString, action.rawValue, restorationIdentifier])
