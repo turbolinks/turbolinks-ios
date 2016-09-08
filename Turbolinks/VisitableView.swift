@@ -125,7 +125,7 @@ public class VisitableView: UIView {
     }
 
     public func updateScreenshot() {
-        guard let webView = self.webView where !isShowingScreenshot, let screenshot = webView.tl_snapshotView(false) else { return }
+        guard let webView = self.webView where !isShowingScreenshot, let screenshot = webView.snapshotViewAfterScreenUpdates(false) else { return }
         
         screenshotView?.removeFromSuperview()
         screenshot.translatesAutoresizingMaskIntoConstraints = false
@@ -192,13 +192,5 @@ public class VisitableView: UIView {
     private func addFillConstraintsForSubview(view: UIView) {
         addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|", options: [], metrics: nil, views: [ "view": view ]))
         addConstraints(NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|", options: [], metrics: nil, views: [ "view": view ]))
-    }
-}
-
-extension UIView {
-    // Workaround iOS 10 change where snapshotView returns an optional UIView?, which causes crash on iOS 9
-    // Can remove when we build against the iOS 10 SDK or fixed - rdar://27402891
-    func tl_snapshotView(afterUpdates: Bool) -> UIView? {
-        return snapshotViewAfterScreenUpdates(afterUpdates)
     }
 }
