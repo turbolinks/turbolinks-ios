@@ -20,6 +20,11 @@ public class VisitableView: UIView {
     // MARK: Web View
 
     public var webView: WKWebView?
+    public var contentInset: UIEdgeInsets? {
+        didSet {
+            updateWebViewScrollViewInsets()
+        }
+    }
     private weak var visitable: Visitable?
 
     public func activateWebView(webView: WKWebView, forVisitable visitable: Visitable) {
@@ -180,13 +185,22 @@ public class VisitableView: UIView {
         super.layoutSubviews()
         updateWebViewScrollViewInsets()
     }
-
-    private func updateWebViewScrollViewInsets() {
-        let adjustedInsets = hiddenScrollView.contentInset
-        if let scrollView = webView?.scrollView where scrollView.contentInset.top != adjustedInsets.top && adjustedInsets.top != 0 && !isRefreshing {
+    
+    private func needsUpdateForInsets(adjustedInsets: UIEdgeInsets) -> Bool {
+        guard let scrollView = webView?.scrollView else { return false }
+        return (scrollView.contentInset.top != adjustedInsets.top && adjustedInsets.top != 0) ||
+            (scrollView.contentInset.bottom != adjustedInsets.bottom && adjustedInsets.bottom != 0)
+    }
+    
+    private func updateContentInsets(adjustedInsets: UIEdgeInsets) {
+        if let scrollView = webView?.scrollView where needsUpdateForInsets(adjustedInsets) && !isRefreshing {
             scrollView.scrollIndicatorInsets = adjustedInsets
             scrollView.contentInset = adjustedInsets
         }
+    }
+
+    private func updateWebViewScrollViewInsets() {
+        updateContentInsets(contentInset ?? hiddenScrollView.contentInset)
     }
 
     private func addFillConstraintsForSubview(view: UIView) {
