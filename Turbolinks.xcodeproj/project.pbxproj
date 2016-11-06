@@ -7,19 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1F8FC6B31B55A37400A781C8 /* WebView.js in Resources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AE1B55A37400A781C8 /* WebView.js */; };
-		1F8FC6B71B55A37400A781C8 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B01B55A37400A781C8 /* Session.swift */; };
-		1F8FC6B91B55A37400A781C8 /* Visit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B11B55A37400A781C8 /* Visit.swift */; };
-		1F8FC6BB1B55A37400A781C8 /* Visitable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B21B55A37400A781C8 /* Visitable.swift */; };
 		224BE7D31B581DE600909D74 /* Turbolinks.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1FC167EF1B55A14900AA6F43 /* Turbolinks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		2286D72F1C81FCF500E34B1D /* VisitableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2286D72E1C81FCF500E34B1D /* VisitableView.swift */; };
-		2286D75A1C83F7C600E34B1D /* VisitableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2286D7591C83F7C600E34B1D /* VisitableViewController.swift */; };
-		22960AAB1B9F51E100AA144A /* ScriptMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22960AAA1B9F51E100AA144A /* ScriptMessage.swift */; };
-		22C197DE1B59835300749B4E /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C197DD1B59835300749B4E /* WebView.swift */; };
-		22C81A1D1BA72CDA00E47138 /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C81A1C1BA72CDA00E47138 /* Action.swift */; };
-		22F1C91F1BB1FD6A008FDFFB /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F1C91E1BB1FD6A008FDFFB /* Error.swift */; };
 		92DF450C1C80F7970064E606 /* Turbolinks.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FC167EF1B55A14900AA6F43 /* Turbolinks.framework */; };
-		92DF45131C80FA190064E606 /* ScriptMessageTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92DF45121C80FA190064E606 /* ScriptMessageTest.swift */; };
+		92EF83731DCFF9CA00D7F4FD /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EF836A1DCFF9CA00D7F4FD /* Action.swift */; };
+		92EF83741DCFF9CA00D7F4FD /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EF836B1DCFF9CA00D7F4FD /* Error.swift */; };
+		92EF83751DCFF9CA00D7F4FD /* ScriptMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EF836C1DCFF9CA00D7F4FD /* ScriptMessage.swift */; };
+		92EF83761DCFF9CA00D7F4FD /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EF836D1DCFF9CA00D7F4FD /* Session.swift */; };
+		92EF83771DCFF9CA00D7F4FD /* Visit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EF836E1DCFF9CA00D7F4FD /* Visit.swift */; };
+		92EF83781DCFF9CA00D7F4FD /* Visitable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EF836F1DCFF9CA00D7F4FD /* Visitable.swift */; };
+		92EF83791DCFF9CA00D7F4FD /* VisitableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EF83701DCFF9CA00D7F4FD /* VisitableView.swift */; };
+		92EF837A1DCFF9CA00D7F4FD /* VisitableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EF83711DCFF9CA00D7F4FD /* VisitableViewController.swift */; };
+		92EF837B1DCFF9CA00D7F4FD /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EF83721DCFF9CA00D7F4FD /* WebView.swift */; };
+		92EF837D1DCFF9D300D7F4FD /* WebView.js in Resources */ = {isa = PBXBuildFile; fileRef = 92EF837C1DCFF9D300D7F4FD /* WebView.js */; };
+		92EF837F1DCFF9DB00D7F4FD /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 92EF837E1DCFF9DB00D7F4FD /* Info.plist */; };
+		92EF83821DCFF9F800D7F4FD /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 92EF83801DCFF9F800D7F4FD /* Info.plist */; };
+		92EF83831DCFF9F800D7F4FD /* ScriptMessageTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EF83811DCFF9F800D7F4FD /* ScriptMessageTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,21 +48,21 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1F8FC6AE1B55A37400A781C8 /* WebView.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = WebView.js; sourceTree = "<group>"; };
-		1F8FC6B01B55A37400A781C8 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
-		1F8FC6B11B55A37400A781C8 /* Visit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Visit.swift; sourceTree = "<group>"; };
-		1F8FC6B21B55A37400A781C8 /* Visitable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Visitable.swift; sourceTree = "<group>"; };
 		1FC167EF1B55A14900AA6F43 /* Turbolinks.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Turbolinks.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		1FC167F31B55A14900AA6F43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2286D72E1C81FCF500E34B1D /* VisitableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisitableView.swift; sourceTree = "<group>"; };
-		2286D7591C83F7C600E34B1D /* VisitableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisitableViewController.swift; sourceTree = "<group>"; };
-		22960AAA1B9F51E100AA144A /* ScriptMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptMessage.swift; sourceTree = "<group>"; };
-		22C197DD1B59835300749B4E /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
-		22C81A1C1BA72CDA00E47138 /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
-		22F1C91E1BB1FD6A008FDFFB /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		92DF45071C80F7970064E606 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		92DF450B1C80F7970064E606 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		92DF45121C80FA190064E606 /* ScriptMessageTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptMessageTest.swift; sourceTree = "<group>"; };
+		92EF836A1DCFF9CA00D7F4FD /* Action.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Action.swift; path = Sources/Action.swift; sourceTree = SOURCE_ROOT; };
+		92EF836B1DCFF9CA00D7F4FD /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Error.swift; path = Sources/Error.swift; sourceTree = SOURCE_ROOT; };
+		92EF836C1DCFF9CA00D7F4FD /* ScriptMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScriptMessage.swift; path = Sources/ScriptMessage.swift; sourceTree = SOURCE_ROOT; };
+		92EF836D1DCFF9CA00D7F4FD /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Session.swift; path = Sources/Session.swift; sourceTree = SOURCE_ROOT; };
+		92EF836E1DCFF9CA00D7F4FD /* Visit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Visit.swift; path = Sources/Visit.swift; sourceTree = SOURCE_ROOT; };
+		92EF836F1DCFF9CA00D7F4FD /* Visitable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Visitable.swift; path = Sources/Visitable.swift; sourceTree = SOURCE_ROOT; };
+		92EF83701DCFF9CA00D7F4FD /* VisitableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VisitableView.swift; path = Sources/VisitableView.swift; sourceTree = SOURCE_ROOT; };
+		92EF83711DCFF9CA00D7F4FD /* VisitableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VisitableViewController.swift; path = Sources/VisitableViewController.swift; sourceTree = SOURCE_ROOT; };
+		92EF83721DCFF9CA00D7F4FD /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WebView.swift; path = Sources/WebView.swift; sourceTree = SOURCE_ROOT; };
+		92EF837C1DCFF9D300D7F4FD /* WebView.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = WebView.js; path = Sources/WebView.js; sourceTree = SOURCE_ROOT; };
+		92EF837E1DCFF9DB00D7F4FD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Sources/Info.plist; sourceTree = SOURCE_ROOT; };
+		92EF83801DCFF9F800D7F4FD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Tests/Info.plist; sourceTree = SOURCE_ROOT; };
+		92EF83811DCFF9F800D7F4FD /* ScriptMessageTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScriptMessageTest.swift; path = Tests/ScriptMessageTest.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,15 +105,15 @@
 		1FC167F11B55A14900AA6F43 /* Turbolinks */ = {
 			isa = PBXGroup;
 			children = (
-				22C81A1C1BA72CDA00E47138 /* Action.swift */,
-				22F1C91E1BB1FD6A008FDFFB /* Error.swift */,
-				22960AAA1B9F51E100AA144A /* ScriptMessage.swift */,
-				1F8FC6B01B55A37400A781C8 /* Session.swift */,
-				1F8FC6B11B55A37400A781C8 /* Visit.swift */,
-				1F8FC6B21B55A37400A781C8 /* Visitable.swift */,
-				2286D72E1C81FCF500E34B1D /* VisitableView.swift */,
-				2286D7591C83F7C600E34B1D /* VisitableViewController.swift */,
-				22C197DD1B59835300749B4E /* WebView.swift */,
+				92EF836A1DCFF9CA00D7F4FD /* Action.swift */,
+				92EF836B1DCFF9CA00D7F4FD /* Error.swift */,
+				92EF836C1DCFF9CA00D7F4FD /* ScriptMessage.swift */,
+				92EF836D1DCFF9CA00D7F4FD /* Session.swift */,
+				92EF836E1DCFF9CA00D7F4FD /* Visit.swift */,
+				92EF836F1DCFF9CA00D7F4FD /* Visitable.swift */,
+				92EF83701DCFF9CA00D7F4FD /* VisitableView.swift */,
+				92EF83711DCFF9CA00D7F4FD /* VisitableViewController.swift */,
+				92EF83721DCFF9CA00D7F4FD /* WebView.swift */,
 				1FC167F21B55A14900AA6F43 /* Supporting Files */,
 			);
 			path = Turbolinks;
@@ -120,8 +122,8 @@
 		1FC167F21B55A14900AA6F43 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				1F8FC6AE1B55A37400A781C8 /* WebView.js */,
-				1FC167F31B55A14900AA6F43 /* Info.plist */,
+				92EF837C1DCFF9D300D7F4FD /* WebView.js */,
+				92EF837E1DCFF9DB00D7F4FD /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -129,8 +131,8 @@
 		92DF45081C80F7970064E606 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				92DF450B1C80F7970064E606 /* Info.plist */,
-				92DF45121C80FA190064E606 /* ScriptMessageTest.swift */,
+				92EF83801DCFF9F800D7F4FD /* Info.plist */,
+				92EF83811DCFF9F800D7F4FD /* ScriptMessageTest.swift */,
 			);
 			name = Tests;
 			path = Turbolinks/Tests;
@@ -230,7 +232,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1F8FC6B31B55A37400A781C8 /* WebView.js in Resources */,
+				92EF837F1DCFF9DB00D7F4FD /* Info.plist in Resources */,
+				92EF837D1DCFF9D300D7F4FD /* WebView.js in Resources */,
+				92EF83821DCFF9F800D7F4FD /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,15 +252,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2286D72F1C81FCF500E34B1D /* VisitableView.swift in Sources */,
-				22960AAB1B9F51E100AA144A /* ScriptMessage.swift in Sources */,
-				2286D75A1C83F7C600E34B1D /* VisitableViewController.swift in Sources */,
-				1F8FC6B71B55A37400A781C8 /* Session.swift in Sources */,
-				1F8FC6BB1B55A37400A781C8 /* Visitable.swift in Sources */,
-				22C197DE1B59835300749B4E /* WebView.swift in Sources */,
-				1F8FC6B91B55A37400A781C8 /* Visit.swift in Sources */,
-				22C81A1D1BA72CDA00E47138 /* Action.swift in Sources */,
-				22F1C91F1BB1FD6A008FDFFB /* Error.swift in Sources */,
+				92EF83751DCFF9CA00D7F4FD /* ScriptMessage.swift in Sources */,
+				92EF83781DCFF9CA00D7F4FD /* Visitable.swift in Sources */,
+				92EF83831DCFF9F800D7F4FD /* ScriptMessageTest.swift in Sources */,
+				92EF83741DCFF9CA00D7F4FD /* Error.swift in Sources */,
+				92EF83731DCFF9CA00D7F4FD /* Action.swift in Sources */,
+				92EF83761DCFF9CA00D7F4FD /* Session.swift in Sources */,
+				92EF837A1DCFF9CA00D7F4FD /* VisitableViewController.swift in Sources */,
+				92EF83791DCFF9CA00D7F4FD /* VisitableView.swift in Sources */,
+				92EF837B1DCFF9CA00D7F4FD /* WebView.swift in Sources */,
+				92EF83771DCFF9CA00D7F4FD /* Visit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,7 +269,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				92DF45131C80FA190064E606 /* ScriptMessageTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
