@@ -284,7 +284,7 @@ extension Session: WKNavigationDelegate {
         let navigationAction: WKNavigationAction
 
         var policy: WKNavigationActionPolicy {
-            return isMainFrameNavigation ? .Cancel : .Allow
+            return navigationAction.navigationType == .LinkActivated || isMainFrameNavigation ? .Cancel : .Allow
         }
 
         var externallyOpenableURL: NSURL? {
@@ -297,7 +297,7 @@ extension Session: WKNavigationDelegate {
 
         var shouldOpenURLExternally: Bool {
             let type = navigationAction.navigationType
-            return isMainFrameNavigation && (type == .LinkActivated || type == .Other)
+            return type == .LinkActivated || (isMainFrameNavigation && type == .Other)
         }
 
         var shouldReloadPage: Bool {
