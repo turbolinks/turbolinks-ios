@@ -11,6 +11,7 @@
 		1F8FC6B71B55A37400A781C8 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B01B55A37400A781C8 /* Session.swift */; };
 		1F8FC6B91B55A37400A781C8 /* Visit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B11B55A37400A781C8 /* Visit.swift */; };
 		1F8FC6BB1B55A37400A781C8 /* Visitable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B21B55A37400A781C8 /* Visitable.swift */; };
+		21B79F431CCEC5E3006DCE4B /* Emailer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B79F421CCEC5E3006DCE4B /* Emailer.swift */; };
 		224BE7D31B581DE600909D74 /* Turbolinks.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1FC167EF1B55A14900AA6F43 /* Turbolinks.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2286D72F1C81FCF500E34B1D /* VisitableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2286D72E1C81FCF500E34B1D /* VisitableView.swift */; };
 		2286D75A1C83F7C600E34B1D /* VisitableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2286D7591C83F7C600E34B1D /* VisitableViewController.swift */; };
@@ -52,6 +53,7 @@
 		1F8FC6B21B55A37400A781C8 /* Visitable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Visitable.swift; sourceTree = "<group>"; };
 		1FC167EF1B55A14900AA6F43 /* Turbolinks.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Turbolinks.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FC167F31B55A14900AA6F43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		21B79F421CCEC5E3006DCE4B /* Emailer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Emailer.swift; sourceTree = "<group>"; };
 		2286D72E1C81FCF500E34B1D /* VisitableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisitableView.swift; sourceTree = "<group>"; };
 		2286D7591C83F7C600E34B1D /* VisitableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisitableViewController.swift; sourceTree = "<group>"; };
 		22960AAA1B9F51E100AA144A /* ScriptMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptMessage.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 		1FC167F11B55A14900AA6F43 /* Turbolinks */ = {
 			isa = PBXGroup;
 			children = (
+				21B79F421CCEC5E3006DCE4B /* Emailer.swift */,
 				22C81A1C1BA72CDA00E47138 /* Action.swift */,
 				22F1C91E1BB1FD6A008FDFFB /* Error.swift */,
 				22960AAA1B9F51E100AA144A /* ScriptMessage.swift */,
@@ -251,6 +254,7 @@
 				2286D72F1C81FCF500E34B1D /* VisitableView.swift in Sources */,
 				22960AAB1B9F51E100AA144A /* ScriptMessage.swift in Sources */,
 				2286D75A1C83F7C600E34B1D /* VisitableViewController.swift in Sources */,
+				21B79F431CCEC5E3006DCE4B /* Emailer.swift in Sources */,
 				1F8FC6B71B55A37400A781C8 /* Session.swift in Sources */,
 				1F8FC6BB1B55A37400A781C8 /* Visitable.swift in Sources */,
 				22C197DE1B59835300749B4E /* WebView.swift in Sources */,
