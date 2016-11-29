@@ -67,6 +67,7 @@ class Visit: NSObject {
     fileprivate func complete() {
         if state == .started {
             state = .completed
+            completeVisit()
             delegate?.visitDidComplete(self)
             delegate?.visitDidFinish(self)
         }
@@ -84,6 +85,7 @@ class Visit: NSObject {
 
     fileprivate func startVisit() {}
     fileprivate func cancelVisit() {}
+    fileprivate func completeVisit() {}
     fileprivate func failVisit() {}
 
     // MARK: Navigation
@@ -152,6 +154,11 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
         finishRequest()
     }
 
+    override fileprivate func completeVisit() {
+        removeNavigationDelegate()
+        delegate?.visitDidInitializeWebView(self)
+    }
+
     override fileprivate func failVisit() {
         removeNavigationDelegate()
         finishRequest()
@@ -162,17 +169,15 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
             webView.navigationDelegate = nil
         }
     }
-    
+
     // MARK: WKNavigationDelegate
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if navigation === self.navigation {
-            removeNavigationDelegate()
-            delegate?.visitDidInitializeWebView(self)
             finishRequest()
         }
     }
-    
+
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         // Ignore any clicked links before the cold boot finishes navigation
         if navigationAction.navigationType == .linkActivated {

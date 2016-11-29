@@ -20,14 +20,19 @@ open class VisitableView: UIView {
     // MARK: Web View
 
     open var webView: WKWebView?
+    public var contentInset: UIEdgeInsets? {
+        didSet {
+            updateContentInsets()
+        }
+    }
     private weak var visitable: Visitable?
 
     open func activateWebView(_ webView: WKWebView, forVisitable visitable: Visitable) {
         self.webView = webView
         self.visitable = visitable
         addSubview(webView)
-        addFillConstraintsForSubview(webView)
-        updateWebViewScrollViewInsets()
+        addFillConstraints(forView: webView)
+        updateContentInsets()
         installRefreshControl()
         showOrHideWebView()
     }
@@ -94,7 +99,7 @@ open class VisitableView: UIView {
 
     private func installActivityIndicatorView() {
         addSubview(activityIndicatorView)
-        addFillConstraintsForSubview(activityIndicatorView)
+        addFillConstraints(forView: activityIndicatorView)
     }
 
     open func showActivityIndicator() {
@@ -117,7 +122,7 @@ open class VisitableView: UIView {
         view.backgroundColor = self.backgroundColor
         return view
     }()
-    
+
     private var screenshotView: UIView?
 
     var isShowingScreenshot: Bool {
@@ -126,11 +131,11 @@ open class VisitableView: UIView {
 
     open func updateScreenshot() {
         guard let webView = self.webView , !isShowingScreenshot, let screenshot = webView.snapshotView(afterScreenUpdates: false) else { return }
-        
+
         screenshotView?.removeFromSuperview()
         screenshot.translatesAutoresizingMaskIntoConstraints = false
         screenshotContainerView.addSubview(screenshot)
-        
+
         screenshotContainerView.addConstraints([
             NSLayoutConstraint(item: screenshot, attribute: .centerX, relatedBy: .equal, toItem: screenshotContainerView, attribute: .centerX, multiplier: 1, constant: 0),
             NSLayoutConstraint(item: screenshot, attribute: .top, relatedBy: .equal, toItem: screenshotContainerView, attribute: .top, multiplier: 1, constant: 0),
@@ -140,11 +145,11 @@ open class VisitableView: UIView {
 
         screenshotView = screenshot
     }
-    
+
     open func showScreenshot() {
         if !isShowingScreenshot && !isRefreshing {
             addSubview(screenshotContainerView)
-            addFillConstraintsForSubview(screenshotContainerView)
+            addFillConstraints(forView: screenshotContainerView)
             showOrHideWebView()
         }
     }
@@ -170,7 +175,7 @@ open class VisitableView: UIView {
 
     private func installHiddenScrollView() {
         insertSubview(hiddenScrollView, at: 0)
-        addFillConstraintsForSubview(hiddenScrollView)
+        addFillConstraints(forView: hiddenScrollView)
     }
 
 
@@ -178,18 +183,27 @@ open class VisitableView: UIView {
 
     override open func layoutSubviews() {
         super.layoutSubviews()
-        updateWebViewScrollViewInsets()
+        updateContentInsets()
     }
 
-    private func updateWebViewScrollViewInsets() {
-        let adjustedInsets = hiddenScrollView.contentInset
-        if let scrollView = webView?.scrollView , scrollView.contentInset.top != adjustedInsets.top && adjustedInsets.top != 0 && !isRefreshing {
-            scrollView.scrollIndicatorInsets = adjustedInsets
-            scrollView.contentInset = adjustedInsets
-        }
+    private func needsUpdateForContentInsets(_ insets: UIEdgeInsets) -> Bool {
+        guard let scrollView = webView?.scrollView else { return false }
+        return (scrollView.contentInset.top != insets.top && insets.top != 0) ||
+            (scrollView.contentInset.bottom != insets.bottom && insets.bottom != 0)
     }
 
-    private func addFillConstraintsForSubview(_ view: UIView) {
+    private func updateWebViewScrollViewInsets(_ insets: UIEdgeInsets) {
+        guard let scrollView = webView?.scrollView, needsUpdateForContentInsets(insets) && !isRefreshing else { return }
+
+        scrollView.scrollIndicatorInsets = insets
+        scrollView.contentInset = insets
+    }
+
+    private func updateContentInsets() {
+        updateWebViewScrollViewInsets(contentInset ?? hiddenScrollView.contentInset)
+    }
+
+    private func addFillConstraints(forView view: UIView) {
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: [], metrics: nil, views: [ "view": view ]))
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|", options: [], metrics: nil, views: [ "view": view ]))
     }

@@ -46,7 +46,7 @@ open class Session: NSObject {
     public convenience override init() {
         self.init(webViewConfiguration: WKWebViewConfiguration())
     }
-   
+
     // MARK: Visiting
 
     fileprivate var currentVisit: Visit?
@@ -59,7 +59,7 @@ open class Session: NSObject {
     open func visit(_ visitable: Visitable) {
         visitVisitable(visitable, action: .Advance)
     }
-    
+
     fileprivate func visitVisitable(_ visitable: Visitable, action: Action) {
         guard visitable.visitableURL != nil else { return }
 
@@ -152,7 +152,6 @@ extension Session: VisitDelegate {
     func visitDidInitializeWebView(_ visit: Visit) {
         initialized = true
         delegate?.sessionDidLoadWebView(self)
-        visit.visitable.visitableDidRender()
     }
 
     func visitWillStart(_ visit: Visit) {
@@ -236,7 +235,7 @@ extension Session: VisitableDelegate {
             reload()
         }
     }
-   
+
     public func visitableDidRequestRefresh(_ visitable: Visitable) {
         if visitable === topmostVisitable {
             refreshing = true
@@ -250,7 +249,7 @@ extension Session: WebViewDelegate {
     func webView(_ webView: WebView, didProposeVisitToLocation location: URL, withAction action: Action) {
         delegate?.session(self, didProposeVisitToURL: location, withAction: action)
     }
-    
+
     func webViewDidInvalidatePage(_ webView: WebView) {
         if let visitable = topmostVisitable {
             visitable.updateVisitableScreenshot()
@@ -259,7 +258,7 @@ extension Session: WebViewDelegate {
             reload()
         }
     }
-    
+
     func webView(_ webView: WebView, didFailJavaScriptEvaluationWithError error: NSError) {
         if let currentVisit = self.currentVisit , initialized {
             initialized = false
@@ -285,7 +284,7 @@ extension Session: WKNavigationDelegate {
         let navigationAction: WKNavigationAction
 
         var policy: WKNavigationActionPolicy {
-            return isMainFrameNavigation ? .cancel : .allow
+            return navigationAction.navigationType == .linkActivated || isMainFrameNavigation ? .cancel : .allow
         }
 
         var externallyOpenableURL: URL? {
@@ -298,7 +297,7 @@ extension Session: WKNavigationDelegate {
 
         var shouldOpenURLExternally: Bool {
             let type = navigationAction.navigationType
-            return isMainFrameNavigation && (type == .linkActivated || type == .other)
+            return type == .linkActivated || (isMainFrameNavigation && type == .other)
         }
 
         var shouldReloadPage: Bool {
@@ -310,7 +309,7 @@ extension Session: WKNavigationDelegate {
             return navigationAction.targetFrame?.isMainFrame ?? false
         }
     }
-    
+
     fileprivate func openExternalURL(_ URL: Foundation.URL) {
         delegate?.session(self, openExternalURL: URL)
     }
