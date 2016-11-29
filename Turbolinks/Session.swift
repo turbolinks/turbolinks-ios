@@ -28,6 +28,7 @@ public extension SessionDelegate {
 
 public class Session: NSObject {
     public weak var delegate: SessionDelegate?
+    public var initialRequestHeaders: [String: String] = [String: String]()
 
     public var webView: WKWebView {
         return _webView
@@ -71,7 +72,8 @@ public class Session: NSObject {
             visit = JavaScriptVisit(visitable: visitable, action: action, webView: _webView)
             visit.restorationIdentifier = restorationIdentifierForVisitable(visitable)
         } else {
-            visit = ColdBootVisit(visitable: visitable, action: action, webView: _webView)
+            visit = ColdBootVisit(visitable: visitable, action: action, webView: _webView,
+                initialRequestHeaders: initialRequestHeaders)
         }
 
         currentVisit?.cancel()
