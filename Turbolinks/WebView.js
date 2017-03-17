@@ -97,10 +97,14 @@
         },
 
         postMessageAfterNextRepaint: function(name, data) {
-            var postMessage = this.postMessage.bind(this, name, data)
-            requestAnimationFrame(function() {
-                requestAnimationFrame(postMessage)
-            })
+            if (document.visibilityState == "hidden") {
+                this.postMessage(name, data);
+            } else {
+                var postMessage = this.postMessage.bind(this, name, data)
+                requestAnimationFrame(function() {
+                    requestAnimationFrame(postMessage)
+                })
+            }
         }
     }
 
