@@ -97,7 +97,8 @@
         },
 
         postMessageAfterNextRepaint: function(name, data) {
-            if (document.visibilityState == "hidden") {
+            // Post immediately if document is hidden or message may be queued by call to rAF
+            if (document.hidden) {
                 this.postMessage(name, data);
             } else {
                 var postMessage = this.postMessage.bind(this, name, data)
