@@ -18,9 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var navigationController = UINavigationController()
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func applicationDidFinishLaunching(_ application: UIApplication) {
         window?.rootViewController = navigationController
-        return true
     }
 }
 ```
@@ -59,18 +58,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var navigationController = UINavigationController()
     var session = Session()
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func applicationDidFinishLaunching(_ application: UIApplication) {
         window?.rootViewController = navigationController
         startApplication()
-        return true
     }
 
     func startApplication() {
-        visit(NSURL(string: "http://localhost:9292")!)
+        visit(URL: URL(string: "http://localhost:9292")!)
     }
 
-    func visit(URL: NSURL) {
-        let visitableViewController = VisitableViewController(URL: URL)
+    func visit(URL: URL) {
+        let visitableViewController = VisitableViewController(url: URL)
         navigationController.pushViewController(visitableViewController, animated: true)
         session.visit(visitableViewController)
     }
