@@ -121,7 +121,7 @@ open class Session: NSObject {
     fileprivate var visitableRestorationIdentifiers = NSMapTable<UIViewController, NSString>(keyOptions: NSPointerFunctions.Options.weakMemory, valueOptions: [])
 
     fileprivate func restorationIdentifierForVisitable(_ visitable: Visitable) -> String? {
-        return visitableRestorationIdentifiers.object(forKey: visitable.visitableViewController) as? String
+        return visitableRestorationIdentifiers.object(forKey: visitable.visitableViewController) as String?
     }
 
     fileprivate func storeRestorationIdentifier(_ restorationIdentifier: String, forVisitable visitable: Visitable) {
