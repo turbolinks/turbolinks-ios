@@ -82,7 +82,7 @@ func session(session: Session, didFailRequestForVisitable visitable: Visitable, 
 
 Turbolinks calls `session:didFailRequestForVisitable:withError:` when a visit’s network request fails. Use this method to respond to the error by displaying an appropriate message, or by requesting authentication credentials in the case of an authorization failure.
 
-See [Handling Failed Turbolinks Visits](#handling-failed-turbolinks-visits) for more details.
+See [Handling Failed Turbolinks Visits](handling-failed-requests) for more details.
 
 ## Working with Visitables
 
