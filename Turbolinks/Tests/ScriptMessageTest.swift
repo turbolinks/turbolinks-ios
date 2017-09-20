@@ -4,7 +4,7 @@ import WebKit
 
 class ScriptMessageTest: XCTestCase {
     func testParseWithInvalidBody() {
-        let script = FakeScriptMessage(body: "foo")
+        let script = FakeScriptMessage(body: "foo" as AnyObject)
         
         let message = ScriptMessage.parse(script)
         XCTAssertNil(message)
@@ -34,7 +34,7 @@ class ScriptMessageTest: XCTestCase {
         XCTAssertEqual(message?.identifier, "123")
         XCTAssertEqual(message?.restorationIdentifier, "abc")
         XCTAssertEqual(message?.action, Action.Advance)
-        XCTAssertEqual(message?.location, NSURL(string: "http://turbolinks.test")!)
+        XCTAssertEqual(message?.location, URL(string: "http://turbolinks.test")!)
     }
 }
 
