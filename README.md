@@ -277,7 +277,7 @@ configuration.processPool = processPool
 You can register a [WKScriptMessageHandler](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKScriptMessageHandler_Ref/index.html) on the configuration’s user content controller to send messages from JavaScript to your iOS application.
 
 ```swift
-class ScriptMessageHandler: WKScriptMessageHandler {
+extension ScriptMessageHandler: WKScriptMessageHandler {
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         // ...
     }
