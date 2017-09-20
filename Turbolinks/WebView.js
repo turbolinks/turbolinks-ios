@@ -97,10 +97,15 @@
         },
 
         postMessageAfterNextRepaint: function(name, data) {
-            var postMessage = this.postMessage.bind(this, name, data)
-            requestAnimationFrame(function() {
-                requestAnimationFrame(postMessage)
-            })
+            // Post immediately if document is hidden or message may be queued by call to rAF
+            if (document.hidden) {
+                this.postMessage(name, data);
+            } else {
+                var postMessage = this.postMessage.bind(this, name, data)
+                requestAnimationFrame(function() {
+                    requestAnimationFrame(postMessage)
+                })
+            }
         }
     }
 
