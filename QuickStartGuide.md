@@ -18,9 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var navigationController = UINavigationController()
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func applicationDidFinishLaunching(_ application: UIApplication) {
         window?.rootViewController = navigationController
-        return true
     }
 }
 ```
@@ -59,18 +58,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var navigationController = UINavigationController()
     var session = Session()
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func applicationDidFinishLaunching(_ application: UIApplication) {
         window?.rootViewController = navigationController
         startApplication()
-        return true
     }
 
     func startApplication() {
-        visit(NSURL(string: "http://localhost:9292")!)
+        visit(URL: URL(string: "http://localhost:9292")!)
     }
 
-    func visit(URL: NSURL) {
-        let visitableViewController = VisitableViewController(URL: URL)
+    func visit(URL: URL) {
+        let visitableViewController = VisitableViewController(url: URL)
         navigationController.pushViewController(visitableViewController, animated: true)
         session.visit(visitableViewController)
     }
@@ -93,7 +91,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func startApplication() {
         session.delegate = self
-        visit(NSURL(string: "http://localhost:9292")!)
+        visit(URL: URL(string: "http://localhost:9292")!)
     }
 }
 ```
@@ -102,14 +100,14 @@ Next, implement the SessionDelegate protocol to handle proposed and failed visit
 
 ```swift
 extension AppDelegate: SessionDelegate {
-    func session(session: Session, didProposeVisitToURL URL: NSURL, withAction action: Action) {
-        visit(URL)
+    func session(_ session: Session, didProposeVisitToURL URL: URL, withAction action: Action) {
+        visit(URL: URL)
     }
 
-    func session(session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
-        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .Alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
-        navigationController.presentViewController(alert, animated: true, completion: nil)
+    func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError) {
+        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        navigationController.present(alert, animated: true, completion: nil)
     }
 }
 ```
