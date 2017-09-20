@@ -4,7 +4,7 @@ import WebKit
 
 class ScriptMessageTest: XCTestCase {
     func testParseWithInvalidBody() {
-        let script = FakeScriptMessage(body: "foo" as AnyObject)
+        let script = FakeScriptMessage(body: "foo")
         
         let message = ScriptMessage.parse(script)
         XCTAssertNil(message)
@@ -40,13 +40,13 @@ class ScriptMessageTest: XCTestCase {
 
 // Can't instantiate a WKScriptMessage directly
 private class FakeScriptMessage: WKScriptMessage {
-    override var body: AnyObject {
+    override var body: Any {
         return actualBody
     }
     
-    var actualBody: AnyObject
+    var actualBody: Any
     
-    init(body: AnyObject) {
+    init(body: Any) {
         self.actualBody = body
     }
 }
