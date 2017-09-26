@@ -82,7 +82,7 @@ open class VisitableView: UIView {
         refreshControl.removeFromSuperview()
     }
 
-    func refresh(_ sender: AnyObject) {
+    @objc func refresh(_ sender: AnyObject) {
         visitable?.visitableViewDidRequestRefresh()
     }
 

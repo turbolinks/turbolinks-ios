@@ -107,7 +107,7 @@ class WebView: WKWebView {
 
         if let data = try? JSONSerialization.data(withJSONObject: arguments, options: []),
             let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue) as String? {
-                return string[string.characters.index(after: string.startIndex) ..< string.characters.index(before: string.endIndex)]
+                return String(string[string.characters.index(after: string.startIndex) ..< string.characters.index(before: string.endIndex)])
         }
         
         return nil
