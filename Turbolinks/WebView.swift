@@ -36,6 +36,10 @@ class WebView: WKWebView {
 
         translatesAutoresizingMaskIntoConstraints = false
         scrollView.decelerationRate = UIScrollViewDecelerationRateNormal
+        
+        if #available(iOS 11, *) {
+            scrollView.contentInsetAdjustmentBehavior = .never
+        }
     }
     
     required init?(coder: NSCoder) {
