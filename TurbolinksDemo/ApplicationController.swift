@@ -26,6 +26,10 @@ class ApplicationController: UINavigationController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Switching this to false will prevent content from sitting beneath scrollbar
+        navigationBar.isTranslucent = true
+        
         presentVisitableForSession(session, url: url)
     }
 
