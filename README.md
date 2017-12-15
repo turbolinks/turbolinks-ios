@@ -214,9 +214,15 @@ import SafariServices
 
 // ...
 
-func session(session: Session, openExternalURL URL: NSURL) {
-    let safariViewController = SFSafariViewController(URL: URL)
-    presentViewController(safariViewController, animated: true, completion: nil)
+extension ApplicationController: SessionDelegate {
+    ...
+    
+    func session(_ session: Session, openExternalURL URL: URL) {
+        let safariViewController = SFSafariViewController.init(url: URL)
+        present(safariViewController, animated: true, completion: nil)
+    }
+    
+    ...
 }
 ```
 
