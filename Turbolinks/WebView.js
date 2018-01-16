@@ -51,10 +51,18 @@
             }
         },
 
+        locationIsSamePageAnchor: function (location) {
+            return location.anchor && location.requestURL == this.currentVisit.location.requestURL
+        },
+
         // Adapter interface
 
         visitProposedToLocationWithAction: function(location, action) {
-            this.postMessage("visitProposed", { location: location.absoluteURL, action: action })
+            if (this.locationIsSamePageAnchor(location)) {
+                this.controller.scrollToAnchor(location.anchor)
+            } else {
+                this.postMessage("visitProposed", { location: location.absoluteURL, action: action })
+            }
         },
 
         visitStarted: function(visit) {
