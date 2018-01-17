@@ -52,7 +52,7 @@
         },
 
         locationIsSamePageAnchor: function (location) {
-            return location.anchor && location.requestURL == window.location.href.split('#')[0]
+            return location.anchor != null && location.requestURL == window.location.href.split('#')[0]
         },
 
         // Adapter interface
