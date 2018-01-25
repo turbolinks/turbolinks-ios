@@ -192,12 +192,12 @@ func formatTitle(title: String) -> String {
 Implement the optional `sessionDidStartRequest:` and `sessionDidFinishRequest:` methods in your application’s Session delegate to show the global network activity indicator in the status bar while Turbolinks issues network requests.
 
 ```swift
-func sessionDidStartRequest(session: Session) {
-    UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+func sessionDidStartRequest(_ session: Session) {
+    UIApplication.shared.isNetworkActivityIndicatorVisible = true
 }
 
-func sessionDidFinishRequest(session: Session) {
-    UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+func sessionDidFinishRequest(_ session: Session) {
+    UIApplication.shared.isNetworkActivityIndicatorVisible = false
 }
 ```
 
