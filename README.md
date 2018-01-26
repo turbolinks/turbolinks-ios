@@ -227,7 +227,7 @@ Your application may require precise control over the web view’s navigation po
 To assign the web view’s `navigationDelegate` property, implement the Session delegate’s optional `sessionDidLoadWebView:` method. Turbolinks calls this method after every “cold boot,” such as on the initial page load and after pulling to refresh the page.
 
 ```swift
-func sessionDidLoadWebView(session: Session) {
+func sessionDidLoadWebView(_ session: Session) {
     session.webView.navigationDelegate = self
 }
 
