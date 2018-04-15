@@ -9,7 +9,7 @@ public protocol VisitableDelegate: class {
 }
 
 public protocol Visitable: class {
-    weak var visitableDelegate: VisitableDelegate? { get set } 
+    var visitableDelegate: VisitableDelegate? { get set } 
     var visitableView: VisitableView! { get }
     var visitableURL: URL! { get }
     func visitableDidRender()
