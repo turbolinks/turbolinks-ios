@@ -26,6 +26,8 @@ public extension SessionDelegate {
     }
 }
 
+public typealias HTTPHeaders = [String: String]
+
 open class Session: NSObject {
     open weak var delegate: SessionDelegate?
 
@@ -36,10 +38,16 @@ open class Session: NSObject {
     fileprivate var _webView: WebView
     fileprivate var initialized = false
     fileprivate var refreshing = false
+    
+    private let headers: HTTPHeaders?
 
-    public init(webViewConfiguration: WKWebViewConfiguration) {
+    public init(webViewConfiguration: WKWebViewConfiguration, headers: HTTPHeaders? = nil) {
+        webViewConfiguration.customizeTurbolinksAjaxRequests(withHeaders: headers)
         _webView = WebView(configuration: webViewConfiguration)
+        self.headers = headers
+      
         super.init()
+      
         _webView.delegate = self
     }
 
