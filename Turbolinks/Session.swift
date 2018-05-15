@@ -79,7 +79,7 @@ open class Session: NSObject {
             visit = JavaScriptVisit(visitable: visitable, action: action, webView: _webView)
             visit.restorationIdentifier = restorationIdentifierForVisitable(visitable)
         } else {
-            visit = ColdBootVisit(visitable: visitable, action: action, webView: _webView)
+            visit = ColdBootVisit(visitable: visitable, action: action, webView: _webView, headers: headers)
         }
 
         currentVisit?.cancel()
