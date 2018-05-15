@@ -84,6 +84,14 @@ Turbolinks calls `session:didFailRequestForVisitable:withError:` when a visit’
 
 See [Handling Failed Requests](#handling-failed-requests) for more details.
 
+## Customizing HTTP Headers
+
+You can customize the headers sent when loading the first page and when navigating by giving them to the session upon its creation.
+
+```swift
+let session = Session(webViewConfiguration: self.webViewConfiguration, headers: [ "X-Custom": "foo" ])
+```
+
 ## Working with Visitables
 
 Visitable view controllers must conform to the Visitable protocol by implementing the following three properties:
