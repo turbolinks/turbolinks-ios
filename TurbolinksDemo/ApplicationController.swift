@@ -33,12 +33,12 @@ class ApplicationController: UINavigationController {
         presentVisitableForSession(session, url: url)
     }
 
-    fileprivate func presentVisitableForSession(_ session: Session, url: URL, action: Action = .Advance) {
+    fileprivate func presentVisitableForSession(_ session: Session, url: URL, action: Action = .advance) {
         let visitable = DemoViewController(url: url)
 
-        if action == .Advance {
+        if action == .advance {
             pushViewController(visitable, animated: true)
-        } else if action == .Replace {
+        } else if action == .replace {
             popViewController(animated: false)
             pushViewController(visitable, animated: false)
         }
