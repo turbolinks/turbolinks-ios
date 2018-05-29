@@ -1,7 +1,7 @@
 import Foundation
 
 public enum Action: String {
-    case Advance = "advance"
-    case Replace = "replace"
-    case Restore = "restore"
+    case advance = "advance"
+    case replace = "replace"
+    case restore = "restore"
 }

@@ -125,27 +125,27 @@ extension WebView: WKScriptMessageHandler {
         guard let message = ScriptMessage.parse(message) else { return }
         
         switch message.name {
-        case .PageLoaded:
+        case .pageLoaded:
             pageLoadDelegate?.webView(self, didLoadPageWithRestorationIdentifier: message.restorationIdentifier!)
-        case .PageInvalidated:
+        case .pageInvalidated:
             delegate?.webViewDidInvalidatePage(self)
-        case .VisitProposed:
+        case .visitProposed:
             delegate?.webView(self, didProposeVisitToLocation: message.location!, withAction: message.action!)
-        case .VisitStarted:
+        case .visitStarted:
             visitDelegate?.webView(self, didStartVisitWithIdentifier: message.identifier!, hasCachedSnapshot: message.data["hasCachedSnapshot"] as! Bool)
-        case .VisitRequestStarted:
+        case .visitRequestStarted:
             visitDelegate?.webView(self, didStartRequestForVisitWithIdentifier: message.identifier!)
-        case .VisitRequestCompleted:
+        case .visitRequestCompleted:
             visitDelegate?.webView(self, didCompleteRequestForVisitWithIdentifier: message.identifier!)
-        case .VisitRequestFailed:
+        case .visitRequestFailed:
             visitDelegate?.webView(self, didFailRequestForVisitWithIdentifier: message.identifier!, statusCode: message.data["statusCode"] as! Int)
-        case .VisitRequestFinished:
+        case .visitRequestFinished:
             visitDelegate?.webView(self, didFinishRequestForVisitWithIdentifier: message.identifier!)
-        case .VisitRendered:
+        case .visitRendered:
             visitDelegate?.webView(self, didRenderForVisitWithIdentifier: message.identifier!)
-        case .VisitCompleted:
+        case .visitCompleted:
             visitDelegate?.webView(self, didCompleteVisitWithIdentifier: message.identifier!, restorationIdentifier: message.restorationIdentifier!)
-        case .ErrorRaised:
+        case .errorRaised:
             let error = message.data["error"] as? String
             NSLog("JavaScript error: %@", error ?? "<unknown error>")
         }
