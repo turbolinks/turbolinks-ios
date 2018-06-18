@@ -33,18 +33,30 @@ open class Session: NSObject {
         return _webView
     }
 
+    open var host: String? {
+        return _host
+    }
+    
+    fileprivate var _host: String?
     fileprivate var _webView: WebView
     fileprivate var initialized = false
     fileprivate var refreshing = false
 
-    public init(webViewConfiguration: WKWebViewConfiguration) {
+    public init(hostUrl: String?, webViewConfiguration: WKWebViewConfiguration) {
+        if let host = hostUrl {
+            _host = URL.init(string: host)?.host
+        }
         _webView = WebView(configuration: webViewConfiguration)
         super.init()
         _webView.delegate = self
     }
+    
+    public convenience init(webViewConfiguration: WKWebViewConfiguration) {
+        self.init(hostUrl: nil, webViewConfiguration: webViewConfiguration)
+    }
 
     public convenience override init() {
-        self.init(webViewConfiguration: WKWebViewConfiguration())
+        self.init(hostUrl: nil, webViewConfiguration: WKWebViewConfiguration())
     }
 
     // MARK: Visiting
@@ -269,8 +281,8 @@ extension Session: WebViewDelegate {
 }
 
 extension Session: WKNavigationDelegate {
-    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> ()) {
-        let navigationDecision = NavigationDecision(navigationAction: navigationAction)
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> ()) {        
+        let navigationDecision = NavigationDecision(navigationAction: navigationAction, host: _host)
         decisionHandler(navigationDecision.policy)
 
         if let URL = navigationDecision.externallyOpenableURL {
@@ -282,22 +294,40 @@ extension Session: WKNavigationDelegate {
 
     fileprivate struct NavigationDecision {
         let navigationAction: WKNavigationAction
+        let host: String?
+        
+        var url: URL? {
+            if let URL = navigationAction.request.url {
+                return URL
+            } else {
+                return nil
+            }
+        }
+        
+        var navigationType: WKNavigationType {
+            return navigationAction.navigationType
+        }
 
         var policy: WKNavigationActionPolicy {
-            return navigationAction.navigationType == .linkActivated || isMainFrameNavigation ? .cancel : .allow
+//            print("==============")
+//            print("url: \(String(describing: url))")
+//            print("link activated? \(navigationType == .linkActivated)")
+//            print("main frame? \(isMainFrameNavigation)")
+//            print("other? \(navigationType == .other)")
+//            print("same host? \(isSameHost(url))")
+            return navigationType == .linkActivated || isMainFrameOutsideApp ? .cancel : .allow
         }
 
         var externallyOpenableURL: URL? {
-            if let URL = navigationAction.request.url , shouldOpenURLExternally {
-                return URL
+            if shouldOpenURLExternally {
+                return url
             } else {
                 return nil
             }
         }
 
         var shouldOpenURLExternally: Bool {
-            let type = navigationAction.navigationType
-            return type == .linkActivated || (isMainFrameNavigation && type == .other)
+            return navigationType == .linkActivated || isMainFrameOutsideApp
         }
 
         var shouldReloadPage: Bool {
@@ -307,6 +337,17 @@ extension Session: WKNavigationDelegate {
 
         var isMainFrameNavigation: Bool {
             return navigationAction.targetFrame?.isMainFrame ?? false
+        }
+        
+        var isMainFrameOutsideApp: Bool {
+            return isMainFrameNavigation && navigationType == .other && !isSameHost(url)
+        }
+        
+        func isSameHost(_ url: URL?) -> Bool {
+            guard host != nil else {
+                return false
+            }
+            return url?.host == host
         }
     }
 
