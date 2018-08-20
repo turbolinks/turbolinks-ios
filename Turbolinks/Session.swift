@@ -8,6 +8,7 @@ public protocol SessionDelegate: class {
     func sessionDidLoadWebView(_ session: Session)
     func sessionDidStartRequest(_ session: Session)
     func sessionDidFinishRequest(_ session: Session)
+    func sessionDidReceiveGoodResponse(_ session: Session)
 }
 
 public extension SessionDelegate {
@@ -178,6 +179,7 @@ extension Session: VisitDelegate {
     }
 
     func visitWillLoadResponse(_ visit: Visit) {
+        delegate?.sessionDidReceiveGoodResponse(self)
         visit.visitable.updateVisitableScreenshot()
         visit.visitable.showVisitableScreenshot()
     }
