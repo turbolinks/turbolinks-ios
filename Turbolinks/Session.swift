@@ -309,12 +309,6 @@ extension Session: WKNavigationDelegate {
         }
 
         var policy: WKNavigationActionPolicy {
-//            print("==============")
-//            print("url: \(String(describing: url))")
-//            print("link activated? \(navigationType == .linkActivated)")
-//            print("main frame? \(isMainFrameNavigation)")
-//            print("other? \(navigationType == .other)")
-//            print("same host? \(isSameHost(url))")
             return navigationType == .linkActivated || isMainFrameOutsideApp ? .cancel : .allow
         }
 
