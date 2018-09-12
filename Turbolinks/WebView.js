@@ -51,14 +51,10 @@
             }
         },
 
-        locationIsSamePageAnchor: function (location) {
-            return location.anchor != null && location.requestURL == window.location.href.split('#')[0]
-        },
-
         // Adapter interface
 
         visitProposedToLocationWithAction: function(location, action) {
-            if (this.locationIsSamePageAnchor(location)) {
+            if (this.controller.locationIsSamePageAnchor(location)) {
                 this.controller.scrollToAnchor(location.anchor)
             } else {
                 this.postMessage("visitProposed", { location: location.absoluteURL, action: action })
