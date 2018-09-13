@@ -132,6 +132,10 @@ class Visit: NSObject {
             delegate?.visitRequestDidFinish(self)
         }
     }
+    
+    fileprivate func isGoodResponse(_ httpResponse: HTTPURLResponse) -> Bool {
+        return httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 && httpResponse.statusCode != 250
+    }
 }
 
 class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
@@ -192,7 +196,8 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
         if let httpResponse = navigationResponse.response as? HTTPURLResponse {
-            if httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 {
+            print("Visit navigationResponse \(httpResponse.statusCode)")
+            if isGoodResponse(httpResponse) {
                 self.delegate?.visitWillLoadResponse(self)
                 decisionHandler(.allow)
             } else {
