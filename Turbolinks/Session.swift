@@ -285,7 +285,19 @@ extension Session: WebViewDelegate {
 }
 
 extension Session: WKNavigationDelegate {
-    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> ()) {        
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+        if let httpResponse = navigationResponse.response as? HTTPURLResponse {
+            if httpResponse.statusCode == 202, let visit = currentVisit {
+                let error = NSError(code: .httpFailure, statusCode: httpResponse.statusCode)
+                delegate?.session(self, didFailRequestForVisitable: visit.visitable, withError: error)
+                decisionHandler(.cancel)
+                return
+            }
+        }
+        decisionHandler(.allow)
+    }
+    
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> ()) {
         let navigationDecision = NavigationDecision(navigationAction: navigationAction, host: _host)
         decisionHandler(navigationDecision.policy)
 

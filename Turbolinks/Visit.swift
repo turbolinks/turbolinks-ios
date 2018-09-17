@@ -134,7 +134,7 @@ class Visit: NSObject {
     }
     
     fileprivate func isGoodResponse(_ httpResponse: HTTPURLResponse) -> Bool {
-        return httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 && httpResponse.statusCode != 250
+        return httpResponse.statusCode >= 200 && httpResponse.statusCode < 300 && httpResponse.statusCode != 202
     }
 }
 
