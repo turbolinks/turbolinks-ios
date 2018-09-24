@@ -89,7 +89,7 @@ open class VisitableView: UIView {
     // MARK: Activity Indicator
 
     open lazy var activityIndicatorView: UIActivityIndicatorView = {
-        let view = UIActivityIndicatorView(activityIndicatorStyle: .white)
+        let view = UIActivityIndicatorView(style: .white)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.color = UIColor.gray
         view.hidesWhenStopped = true
@@ -104,7 +104,7 @@ open class VisitableView: UIView {
     open func showActivityIndicator() {
         if !isRefreshing {
             activityIndicatorView.startAnimating()
-            bringSubview(toFront: activityIndicatorView)
+            bringSubviewToFront(activityIndicatorView)
         }
     }
 
