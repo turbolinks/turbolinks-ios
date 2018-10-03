@@ -6,8 +6,11 @@
 	objectVersion = 46;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		1F35399F1B6FB21A00AA7462 /* ApplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */; };
+
+
+/*begin PBXBuildFile sections */
+
+1F35399F1B6FB21A00AA7462 /* ApplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F35399E1B6FB21A00AA7462 /* ApplicationController.swift */; };
 		1F5A34FA1B67FF900029FDF3 /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5A34F91B67FF900029FDF3 /* AuthenticationController.swift */; };
 		1F8FC6A51B55A32000A781C8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6A41B55A32000A781C8 /* AppDelegate.swift */; };
 		1F8FC6AC1B55A34500A781C8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AA1B55A34500A781C8 /* Main.storyboard */; };
