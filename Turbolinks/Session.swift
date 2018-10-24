@@ -5,7 +5,6 @@ public protocol SessionDelegate: class {
     func session(_ session: Session, didProposeVisitToURL URL: URL, withAction action: Action)
     func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)
     func session(_ session: Session, openExternalURL URL: URL)
-    func sessionDidInitialize(_ session: Session)
     func sessionDidLoadWebView(_ session: Session)
     func sessionDidStartRequest(_ session: Session)
     func sessionDidFinishRequest(_ session: Session)
@@ -166,7 +165,6 @@ extension Session: VisitDelegate {
     func visitDidInitializeWebView(_ visit: Visit) {
         initialized = true
         delegate?.sessionDidLoadWebView(self)
-        delegate?.sessionDidInitialize(self)
     }
 
     func visitWillStart(_ visit: Visit) {
