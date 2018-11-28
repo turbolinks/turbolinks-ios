@@ -199,7 +199,7 @@ extension Session: VisitableDelegate {
     public func visitableViewWillAppear(_ visitable: Visitable) {
         guard let topmostVisit = self.topmostVisit, let currentVisit = self.currentVisit else { return }
 
-        if visitable === topmostVisit.visitable && visitable.visitableViewController.isMovingToParentViewController {
+        if visitable === topmostVisit.visitable && visitable.visitableViewController.isMovingToParent {
             // Back swipe gesture canceled
             if topmostVisit.state == .completed {
                 currentVisit.cancel()
