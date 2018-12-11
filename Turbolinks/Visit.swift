@@ -196,7 +196,6 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
         if let httpResponse = navigationResponse.response as? HTTPURLResponse {
-            print("Visit navigationResponse \(httpResponse.statusCode)")
             if isGoodResponse(httpResponse) {
                 self.delegate?.visitWillLoadResponse(self)
                 decisionHandler(.allow)
