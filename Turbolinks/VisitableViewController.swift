@@ -20,8 +20,8 @@ open class VisitableViewController: UIViewController, Visitable {
 
     fileprivate func installVisitableView() {
         view.addSubview(visitableView)
-        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: [], metrics: nil, views: [ "view": visitableView ]))
-        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|", options: [], metrics: nil, views: [ "view": visitableView ]))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: [], metrics: nil, views: [ "view": visitableView! ]))
+        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|", options: [], metrics: nil, views: [ "view": visitableView! ]))
     }
 
     // MARK: Visitable
