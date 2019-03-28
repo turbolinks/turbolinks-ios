@@ -11,7 +11,7 @@
 
 ## Requirements
 
-Turbolinks for iOS is written in Swift 4.0 and requires Xcode 9. It should also work with Swift 3.2 as well. It currently supports iOS 8 or higher, but we'll most likely drop iOS 8 support soon.
+Turbolinks for iOS is written in Swift 5.0 and requires Xcode 10.2. It should also work with Swift 4.2 as well. It currently supports iOS 10 or higher, but we'll be dropping iOS 10 support in the next version.
 
 Web views are backed by [WKWebView](https://developer.apple.com/library/ios/documentation/WebKit/Reference/WKWebView_Ref/) for full-speed JavaScript performance.
 
