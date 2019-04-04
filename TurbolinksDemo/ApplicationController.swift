@@ -3,7 +3,7 @@ import WebKit
 import Turbolinks
 
 class ApplicationController: UINavigationController {
-    fileprivate let url = URL(string: "http://localhost:9292")!
+    fileprivate let url = URL(string: "http://localhost:9292/slow")!
     fileprivate let webViewProcessPool = WKProcessPool()
 
     fileprivate var application: UIApplication {
@@ -94,10 +94,12 @@ extension ApplicationController: SessionDelegate {
     
     func sessionDidStartRequest(_ session: Session) {
         application.isNetworkActivityIndicatorVisible = true
+        print("\(ObjectIdentifier(self)) \(#function)")
     }
 
     func sessionDidFinishRequest(_ session: Session) {
         application.isNetworkActivityIndicatorVisible = false
+        print("\(ObjectIdentifier(self)) \(#function)")
     }
 }
 

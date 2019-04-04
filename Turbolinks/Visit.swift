@@ -173,6 +173,7 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
     // MARK: WKNavigationDelegate
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        print("ColdBootVisit \(#function)")
         if navigation === self.navigation {
             finishRequest()
         }

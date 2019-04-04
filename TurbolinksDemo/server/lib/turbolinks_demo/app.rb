@@ -23,7 +23,7 @@ module TurbolinksDemo
     end
 
     get '/slow' do
-      sleep 2
+      sleep 5
       @title = 'Slow Page'
       erb :slow, layout: :layout
     end
