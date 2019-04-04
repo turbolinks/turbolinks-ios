@@ -157,6 +157,7 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
     override fileprivate func completeVisit() {
         removeNavigationDelegate()
         delegate?.visitDidInitializeWebView(self)
+        finishRequest()
     }
 
     override fileprivate func failVisit() {
