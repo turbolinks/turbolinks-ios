@@ -7,7 +7,7 @@ protocol WebViewDelegate: class {
 }
 
 protocol WebViewPageLoadDelegate: class {
-    func webView(_ webView: WebView, didLoadPageWithRestorationIdentifier restorationIdentifier: String)
+    func webView(_ webView: WebView, didLoadPageWithRestorationIdentifier restorationIdentifier: String, location: URL)
 }
 
 protocol WebViewVisitDelegate: class {
@@ -17,7 +17,7 @@ protocol WebViewVisitDelegate: class {
     func webView(_ webView: WebView, didFailRequestForVisitWithIdentifier identifier: String, statusCode: Int)
     func webView(_ webView: WebView, didFinishRequestForVisitWithIdentifier identifier: String)
     func webView(_ webView: WebView, didRenderForVisitWithIdentifier identifier: String)
-    func webView(_ webView: WebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String)
+    func webView(_ webView: WebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String, location: URL)
 }
 
 class WebView: WKWebView {
@@ -126,7 +126,7 @@ extension WebView: WKScriptMessageHandler {
         
         switch message.name {
         case .PageLoaded:
-            pageLoadDelegate?.webView(self, didLoadPageWithRestorationIdentifier: message.restorationIdentifier!)
+            pageLoadDelegate?.webView(self, didLoadPageWithRestorationIdentifier: message.restorationIdentifier!, location: message.location!)
         case .PageInvalidated:
             delegate?.webViewDidInvalidatePage(self)
         case .VisitProposed:
@@ -144,7 +144,7 @@ extension WebView: WKScriptMessageHandler {
         case .VisitRendered:
             visitDelegate?.webView(self, didRenderForVisitWithIdentifier: message.identifier!)
         case .VisitCompleted:
-            visitDelegate?.webView(self, didCompleteVisitWithIdentifier: message.identifier!, restorationIdentifier: message.restorationIdentifier!)
+            visitDelegate?.webView(self, didCompleteVisitWithIdentifier: message.identifier!, restorationIdentifier: message.restorationIdentifier!, location: message.location!)
         case .ErrorRaised:
             let error = message.data["error"] as? String
             NSLog("JavaScript error: %@", error ?? "<unknown error>")

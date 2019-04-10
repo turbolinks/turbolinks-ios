@@ -8,7 +8,8 @@
     WebView.prototype = {
         pageLoaded: function() {
             var restorationIdentifier = this.controller.restorationIdentifier
-            this.postMessageAfterNextRepaint("pageLoaded", { restorationIdentifier: restorationIdentifier })
+            var location = this.controller.location
+            this.postMessageAfterNextRepaint("pageLoaded", { restorationIdentifier: restorationIdentifier, location: location.absoluteURL })
         },
 
         errorRaised: function(error) {
@@ -83,7 +84,8 @@
         },
 
         visitCompleted: function(visit) {
-            this.postMessageAfterNextRepaint("visitCompleted", { identifier: visit.identifier, restorationIdentifier: visit.restorationIdentifier })
+            visit.followRedirect()
+            this.postMessageAfterNextRepaint("visitCompleted", { identifier: visit.identifier, restorationIdentifier: visit.restorationIdentifier, location: visit.location.absoluteURL })
         },
 
         pageInvalidated: function() {
