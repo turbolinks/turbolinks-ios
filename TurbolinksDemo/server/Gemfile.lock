@@ -3,8 +3,8 @@ GEM
   specs:
     backports (3.6.8)
     multi_json (1.11.2)
-    rack (1.6.4)
-    rack-protection (1.5.3)
+    rack (1.6.11)
+    rack-protection (1.5.5)
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
