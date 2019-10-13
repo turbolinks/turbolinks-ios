@@ -20,8 +20,14 @@ open class VisitableViewController: UIViewController, Visitable {
 
     fileprivate func installVisitableView() {
         view.addSubview(visitableView)
-        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[view]|", options: [], metrics: nil, views: [ "view": visitableView! ]))
-        view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|[view]|", options: [], metrics: nil, views: [ "view": visitableView! ]))
+        if #available(iOS 11, *) {
+            visitableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        } else {
+            visitableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        }
+        visitableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        visitableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        visitableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
     }
 
     // MARK: Visitable
