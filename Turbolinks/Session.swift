@@ -102,6 +102,12 @@ open class Session: NSObject {
         }
     }
 
+    public func cancelCurrentVisit() {
+        if let currentVisit = currentVisit {
+            currentVisit.cancel()
+        }
+    }
+
     // MARK: Visitable activation
 
     fileprivate var activatedVisitable: Visitable?
