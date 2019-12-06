@@ -28,7 +28,7 @@ extension Visitable {
         visitableDelegate?.visitableDidRequestReload(self)
     }
 
-    public func activateVisitableWebView(_ webView: WKWebView) {
+    func activateVisitableWebView(_ webView: WKWebView) {
         visitableView.activateWebView(webView, forVisitable: self)
     }
 
