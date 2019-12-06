@@ -105,6 +105,7 @@ open class Session: NSObject {
     public func cancelCurrentVisit() {
         if let currentVisit = currentVisit {
             currentVisit.cancel()
+            deactivateVisitable(currentVisit.visitable)
         }
     }
 
