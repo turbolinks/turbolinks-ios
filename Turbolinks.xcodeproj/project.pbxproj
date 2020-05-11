@@ -265,7 +265,7 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		0A8109F821A46F0A00A8C1C6 /* Debug Production */ = {
+		0A8109F821A46F0A00A8C1C6 /* DebugProduction */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -323,9 +323,9 @@
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = "Debug Production";
+			name = DebugProduction;
 		};
-		0A8109F921A46F0A00A8C1C6 /* Debug Production */ = {
+		0A8109F921A46F0A00A8C1C6 /* DebugProduction */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
@@ -342,9 +342,9 @@
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
-			name = "Debug Production";
+			name = DebugProduction;
 		};
-		0A8109FA21A46F0A00A8C1C6 /* Debug Production */ = {
+		0A8109FA21A46F0A00A8C1C6 /* DebugProduction */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
@@ -356,9 +356,9 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
-			name = "Debug Production";
+			name = DebugProduction;
 		};
-		1FC168031B55A14900AA6F43 /* Debug Local */ = {
+		1FC168031B55A14900AA6F43 /* DebugLocal */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -416,7 +416,7 @@
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = "Debug Local";
+			name = DebugLocal;
 		};
 		1FC168041B55A14900AA6F43 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -471,7 +471,7 @@
 			};
 			name = Release;
 		};
-		1FC168061B55A14900AA6F43 /* Debug Local */ = {
+		1FC168061B55A14900AA6F43 /* DebugLocal */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
@@ -489,7 +489,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
-			name = "Debug Local";
+			name = DebugLocal;
 		};
 		1FC168071B55A14900AA6F43 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -510,7 +510,7 @@
 			};
 			name = Release;
 		};
-		92DF450F1C80F7970064E606 /* Debug Local */ = {
+		92DF450F1C80F7970064E606 /* DebugLocal */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
@@ -523,7 +523,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
-			name = "Debug Local";
+			name = DebugLocal;
 		};
 		92DF45101C80F7970064E606 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -544,8 +544,8 @@
 		1FC167E91B55A14900AA6F43 /* Build configuration list for PBXProject "Turbolinks" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1FC168031B55A14900AA6F43 /* Debug Local */,
-				0A8109F821A46F0A00A8C1C6 /* Debug Production */,
+				1FC168031B55A14900AA6F43 /* DebugLocal */,
+				0A8109F821A46F0A00A8C1C6 /* DebugProduction */,
 				1FC168041B55A14900AA6F43 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -554,8 +554,8 @@
 		1FC168051B55A14900AA6F43 /* Build configuration list for PBXNativeTarget "Turbolinks" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1FC168061B55A14900AA6F43 /* Debug Local */,
-				0A8109F921A46F0A00A8C1C6 /* Debug Production */,
+				1FC168061B55A14900AA6F43 /* DebugLocal */,
+				0A8109F921A46F0A00A8C1C6 /* DebugProduction */,
 				1FC168071B55A14900AA6F43 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -564,8 +564,8 @@
 		92DF45111C80F7970064E606 /* Build configuration list for PBXNativeTarget "Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				92DF450F1C80F7970064E606 /* Debug Local */,
-				0A8109FA21A46F0A00A8C1C6 /* Debug Production */,
+				92DF450F1C80F7970064E606 /* DebugLocal */,
+				0A8109FA21A46F0A00A8C1C6 /* DebugProduction */,
 				92DF45101C80F7970064E606 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
