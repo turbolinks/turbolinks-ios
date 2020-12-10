@@ -1,3 +1,4 @@
+import UIKit
 import WebKit
 
 open class VisitableView: UIView {
