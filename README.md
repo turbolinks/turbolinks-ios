@@ -1,5 +1,9 @@
 # Turbolinks for iOS
 
+⚠️ Note: this repo is no longer being maintained. We recommend migrating to [Turbo iOS](https://github.com/hotwired/turbo-ios) which supports both Turbo 7 and Turbolinks 5 apps. Follow the [migration guide](https://github.com/hotwired/turbo-ios/blob/main/Docs/Migration.md) to update from this framework to Turbo. ⚠️
+
+---
+
 **Build high-fidelity hybrid apps with native navigation and a single shared web view.** Turbolinks for iOS provides the tooling to wrap your [Turbolinks 5](https://github.com/turbolinks/turbolinks)-enabled web app in a native iOS shell. It manages a single WKWebView instance across multiple view controllers, giving you native navigation UI with all the client-side performance benefits of Turbolinks.
 
 ## Features
