@@ -135,13 +135,22 @@ class Visit: NSObject {
 }
 
 class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
+    init(visitable: Visitable, action: Action, webView: WebView, headers: HTTPHeaders? = nil) {
+        self.headers = headers
+        
+        super.init(visitable: visitable, action: action, webView: webView)
+    }
+    
+    private let headers: HTTPHeaders?
+    
     fileprivate var navigation: WKNavigation?
 
     override fileprivate func startVisit() {
         webView.navigationDelegate = self
         webView.pageLoadDelegate = self
 
-        let request = URLRequest(url: location)
+        var request = URLRequest(url: location)
+        request.allHTTPHeaderFields = headers
         navigation = webView.load(request)
 
         delegate?.visitDidStart(self)

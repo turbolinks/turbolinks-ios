@@ -19,7 +19,7 @@ class ApplicationController: UINavigationController {
     }()
 
     fileprivate lazy var session: Session = {
-        let session = Session(webViewConfiguration: self.webViewConfiguration)
+        let session = Session(webViewConfiguration: self.webViewConfiguration, headers: [ "X-Custom": "foo" ])
         session.delegate = self
         return session
     }()

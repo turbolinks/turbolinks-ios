@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0391476C20AAC1C5009D356B /* WKWebViewConfiguration+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0391476B20AAC1C5009D356B /* WKWebViewConfiguration+.swift */; };
 		1F8FC6B31B55A37400A781C8 /* WebView.js in Resources */ = {isa = PBXBuildFile; fileRef = 1F8FC6AE1B55A37400A781C8 /* WebView.js */; };
 		1F8FC6B71B55A37400A781C8 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B01B55A37400A781C8 /* Session.swift */; };
 		1F8FC6B91B55A37400A781C8 /* Visit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F8FC6B11B55A37400A781C8 /* Visit.swift */; };
@@ -32,6 +33,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0391476B20AAC1C5009D356B /* WKWebViewConfiguration+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WKWebViewConfiguration+.swift"; sourceTree = "<group>"; };
 		1F8FC6AE1B55A37400A781C8 /* WebView.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = WebView.js; sourceTree = "<group>"; };
 		1F8FC6B01B55A37400A781C8 /* Session.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
 		1F8FC6B11B55A37400A781C8 /* Visit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Visit.swift; sourceTree = "<group>"; };
@@ -98,6 +100,7 @@
 				2286D72E1C81FCF500E34B1D /* VisitableView.swift */,
 				2286D7591C83F7C600E34B1D /* VisitableViewController.swift */,
 				22C197DD1B59835300749B4E /* WebView.swift */,
+				0391476B20AAC1C5009D356B /* WKWebViewConfiguration+.swift */,
 				1FC167F21B55A14900AA6F43 /* Supporting Files */,
 			);
 			path = Turbolinks;
@@ -236,6 +239,7 @@
 			files = (
 				2286D72F1C81FCF500E34B1D /* VisitableView.swift in Sources */,
 				22960AAB1B9F51E100AA144A /* ScriptMessage.swift in Sources */,
+				0391476C20AAC1C5009D356B /* WKWebViewConfiguration+.swift in Sources */,
 				2286D75A1C83F7C600E34B1D /* VisitableViewController.swift in Sources */,
 				1F8FC6B71B55A37400A781C8 /* Session.swift in Sources */,
 				1F8FC6BB1B55A37400A781C8 /* Visitable.swift in Sources */,

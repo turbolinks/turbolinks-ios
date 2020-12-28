@@ -7,6 +7,10 @@ module TurbolinksDemo
   class App < Sinatra::Base
     helpers Sinatra::Cookies
 
+    before do
+      puts "X-Custom = #{request.env["HTTP_X_CUSTOM"]}"
+    end
+
     get '/' do
       @title = 'Demo'
       erb :index, layout: :layout
