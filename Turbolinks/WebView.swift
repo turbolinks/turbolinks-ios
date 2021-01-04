@@ -28,8 +28,7 @@ class WebView: WKWebView {
     init(configuration: WKWebViewConfiguration) {
         super.init(frame: CGRect.zero, configuration: configuration)
 
-        let bundle = Bundle(for: type(of: self))
-        let source = try! String(contentsOf: bundle.url(forResource: "WebView", withExtension: "js")!, encoding: String.Encoding.utf8)
+        let source = try! String(contentsOf: Bundle.turbolinks.url(forResource: "WebView", withExtension: "js")!, encoding: String.Encoding.utf8)
         let userScript = WKUserScript(source: source, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
         configuration.userContentController.addUserScript(userScript)
         configuration.userContentController.add(self, name: "turbolinks")
