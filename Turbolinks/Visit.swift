@@ -230,8 +230,10 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
 
     // MARK: WebViewPageLoadDelegate
 
-    func webView(_ webView: WebView, didLoadPageWithRestorationIdentifier restorationIdentifier: String) {
+    func webView(_ webView: WebView, didLoadPageWithRestorationIdentifier restorationIdentifier: String, location: URL) {
         self.restorationIdentifier = restorationIdentifier
+        self.location = location
+        visitable.visitableURL = location
         delegate?.visitDidRender(self)
         complete()
     }
@@ -314,9 +316,11 @@ class JavaScriptVisit: Visit, WebViewVisitDelegate {
         }
     }
 
-    func webView(_ webView: WebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String) {
+    func webView(_ webView: WebView, didCompleteVisitWithIdentifier identifier: String, restorationIdentifier: String, location: URL) {
         if identifier == self.identifier {
             self.restorationIdentifier = restorationIdentifier
+            self.location = location
+            visitable.visitableURL = location
             complete()
         }
     }
