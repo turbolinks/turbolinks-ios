@@ -16,7 +16,7 @@ find-writable-gem-home() {
 }
 
 find-bundle-executable() {
-  gem contents bundler | grep "/exe/bundle$" | head -n 1
+  gem contents bundler | grep "/bin/bundle$" | head -n 1
 }
 
 warn() {
