@@ -182,11 +182,15 @@ By default, Turbolinks for iOS sets your Visitable view controller’s `title` p
 If you want to customize the title or pull it from another element on the page, you can implement the `visitableDidRender` method on your Visitable:
 
 ```swift
-func visitableDidRender() {
+override func visitableDidRender() {
     title = formatTitle(visitableView.webView?.title)
 }
 
-func formatTitle(title: String) -> String {
+func formatTitle(title: String?) -> String {
+    guard let title = title else {
+        return "Default Title"
+    }
+    
     // ...
 }
 ```
