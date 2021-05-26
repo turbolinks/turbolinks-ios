@@ -10,6 +10,10 @@ public protocol SessionDelegate: class {
     func sessionDidFinishRequest(_ session: Session)
 }
 
+public protocol SessionDataSource: class {
+    func session(_ session: Session, additionalHeadersForRequestWithURL url: URL) -> [String: String]?
+}
+
 public extension SessionDelegate {
     func sessionDidLoadWebView(_ session: Session) {
         session.webView.navigationDelegate = session
@@ -26,8 +30,15 @@ public extension SessionDelegate {
     }
 }
 
+public extension SessionDataSource {
+    func session(_ session: Session, additionalHeadersForRequestWithURL url: URL) -> [String: String]? {
+        return nil
+    }
+}
+
 open class Session: NSObject {
     open weak var delegate: SessionDelegate?
+    open weak var dataSource: SessionDataSource?
 
     open var webView: WKWebView {
         return _webView
@@ -78,6 +89,7 @@ open class Session: NSObject {
         currentVisit = visit
 
         visit.delegate = self
+        visit.dataSource = self
         visit.start()
     }
 
@@ -192,6 +204,12 @@ extension Session: VisitDelegate {
             refreshing = false
             visit.visitable.visitableDidRefresh()
         }
+    }
+}
+
+extension Session: VisitDataSource {
+    func visit(_ visit: Visit, additionalHeadersForRequestWithURL url: URL) -> [String : String]? {
+        return dataSource?.session(self, additionalHeadersForRequestWithURL: url)
     }
 }
 

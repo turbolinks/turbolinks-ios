@@ -17,6 +17,10 @@ protocol VisitDelegate: class {
     func visitRequestDidFinish(_ visit: Visit)
 }
 
+protocol VisitDataSource: class {
+    func visit(_ visit: Visit, additionalHeadersForRequestWithURL url: URL) -> [String: String]?
+}
+
 enum VisitState {
     case initialized
     case started
@@ -27,6 +31,7 @@ enum VisitState {
 
 class Visit: NSObject {
     weak var delegate: VisitDelegate?
+    weak var dataSource: VisitDataSource?
 
     var visitable: Visitable
     var action: Action
@@ -141,7 +146,12 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
         webView.navigationDelegate = self
         webView.pageLoadDelegate = self
 
-        let request = URLRequest(url: location)
+        var request = URLRequest(url: location)
+        if let headers = dataSource?.visit(self, additionalHeadersForRequestWithURL: location) {
+            for header in headers {
+                request.setValue(header.value, forHTTPHeaderField: header.key)
+            }
+        }
         navigation = webView.load(request)
 
         delegate?.visitDidStart(self)
