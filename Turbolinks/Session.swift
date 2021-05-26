@@ -57,7 +57,7 @@ open class Session: NSObject {
     }
 
     open func visit(_ visitable: Visitable) {
-        visitVisitable(visitable, action: .Advance)
+        visitVisitable(visitable, action: .advance)
     }
 
     fileprivate func visitVisitable(_ visitable: Visitable, action: Action) {
@@ -204,14 +204,14 @@ extension Session: VisitableDelegate {
             if topmostVisit.state == .completed {
                 currentVisit.cancel()
             } else {
-                visitVisitable(visitable, action: .Advance)
+                visitVisitable(visitable, action: .advance)
             }
         } else if visitable === currentVisit.visitable && currentVisit.state == .started {
             // Navigating forward - complete navigation early
             completeNavigationForCurrentVisit()
         } else if visitable !== topmostVisit.visitable {
             // Navigating backward
-            visitVisitable(visitable, action: .Restore)
+            visitVisitable(visitable, action: .restore)
         }
     }
 

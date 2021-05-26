@@ -1,17 +1,17 @@
 import WebKit
 
 enum ScriptMessageName: String {
-    case PageLoaded = "pageLoaded"
-    case ErrorRaised = "errorRaised"
-    case VisitProposed = "visitProposed"
-    case VisitStarted = "visitStarted"
-    case VisitRequestStarted = "visitRequestStarted"
-    case VisitRequestCompleted = "visitRequestCompleted"
-    case VisitRequestFailed = "visitRequestFailed"
-    case VisitRequestFinished = "visitRequestFinished"
-    case VisitRendered = "visitRendered"
-    case VisitCompleted = "visitCompleted"
-    case PageInvalidated = "pageInvalidated"
+    case pageLoaded = "pageLoaded"
+    case errorRaised = "errorRaised"
+    case visitProposed = "visitProposed"
+    case visitStarted = "visitStarted"
+    case visitRequestStarted = "visitRequestStarted"
+    case visitRequestCompleted = "visitRequestCompleted"
+    case visitRequestFailed = "visitRequestFailed"
+    case visitRequestFinished = "visitRequestFinished"
+    case visitRendered = "visitRendered"
+    case visitCompleted = "visitCompleted"
+    case pageInvalidated = "pageInvalidated"
 }
 
 class ScriptMessage {
