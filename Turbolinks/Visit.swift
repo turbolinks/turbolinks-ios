@@ -153,19 +153,24 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
     }
 
     override fileprivate func cancelVisit() {
-        removeNavigationDelegate()
+        cleanup()
         webView.stopLoading()
         finishRequest()
     }
 
     override fileprivate func completeVisit() {
-        removeNavigationDelegate()
+        cleanup()
         delegate?.visitDidInitializeWebView(self)
     }
 
     override fileprivate func failVisit() {
-        removeNavigationDelegate()
+        cleanup()
         finishRequest()
+    }
+
+    fileprivate func cleanup() {
+        removeNavigationDelegate()
+        clearRequest()
     }
 
     fileprivate func removeNavigationDelegate() {
@@ -174,8 +179,27 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
         }
     }
 
+    fileprivate func clearRequest() {
+        navigation = nil
+        responseReceived = false
+    }
+
+    fileprivate func checkForRequestResponse(_ navigation: WKNavigation) {
+        if navigation === self.navigation && !responseReceived {
+            cancel()
+            start()
+        }
+    }
+
     // MARK: WKNavigationDelegate
 
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        guard navigation === self.navigation else { return }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            self.checkForRequestResponse(navigation)
+        }
+    }
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if navigation === self.navigation {
             finishRequest()
@@ -195,6 +219,8 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+        responseReceived = true
+
         if let httpResponse = navigationResponse.response as? HTTPURLResponse {
             if isGoodResponse(httpResponse) {
                 self.delegate?.visitWillLoadResponse(self)
