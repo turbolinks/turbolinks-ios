@@ -1,7 +1,7 @@
 import UIKit
 import WebKit
 
-public protocol SessionDelegate: class {
+public protocol SessionDelegate: AnyObject {
     func session(_ session: Session, didProposeVisitToURL URL: URL, withAction action: Action)
     func session(_ session: Session, didFailRequestForVisitable visitable: Visitable, withError error: NSError)
     func session(_ session: Session, openExternalURL URL: URL)
@@ -17,7 +17,7 @@ public extension SessionDelegate {
     }
 
     func session(_ session: Session, openExternalURL URL: Foundation.URL) {
-        UIApplication.shared.openURL(URL)
+        UIApplication.shared.open(URL)
     }
 
     func sessionDidStartRequest(_ session: Session) {
