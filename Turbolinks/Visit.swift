@@ -140,6 +140,7 @@ class Visit: NSObject {
 
 class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
     fileprivate var navigation: WKNavigation?
+    fileprivate var responseReceived = false
 
     override fileprivate func startVisit() {
         webView.navigationDelegate = self
@@ -186,9 +187,15 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
 
     fileprivate func checkForRequestResponse(_ navigation: WKNavigation) {
         if navigation === self.navigation && !responseReceived {
-            cancel()
-            start()
+            restartRequest()
         }
+    }
+
+    fileprivate func restartRequest() {
+        cancel()
+        state = .initialized
+        requestStarted = false
+        start()
     }
 
     // MARK: WKNavigationDelegate
