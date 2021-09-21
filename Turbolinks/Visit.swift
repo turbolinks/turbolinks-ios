@@ -1,6 +1,6 @@
 import WebKit
 
-protocol VisitDelegate: class {
+protocol VisitDelegate: AnyObject {
     func visitDidInitializeWebView(_ visit: Visit)
 
     func visitWillStart(_ visit: Visit)

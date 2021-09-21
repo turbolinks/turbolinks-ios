@@ -1,14 +1,14 @@
 import UIKit
 import WebKit
 
-public protocol VisitableDelegate: class {
+public protocol VisitableDelegate: AnyObject {
     func visitableViewWillAppear(_ visitable: Visitable)
     func visitableViewDidAppear(_ visitable: Visitable)
     func visitableDidRequestReload(_ visitable: Visitable)
     func visitableDidRequestRefresh(_ visitable: Visitable)
 }
 
-public protocol Visitable: class {
+public protocol Visitable: AnyObject {
     var visitableDelegate: VisitableDelegate? { get set } 
     var visitableView: VisitableView! { get }
     var visitableURL: URL! { get }
