@@ -207,6 +207,7 @@ class ColdBootVisit: Visit, WKNavigationDelegate, WebViewPageLoadDelegate {
             self.checkForRequestResponse(navigation)
         }
     }
+
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if navigation === self.navigation {
             finishRequest()
